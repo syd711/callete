@@ -15,6 +15,11 @@ public class WeatherServiceImpl implements WeatherService {
   private YahooWeather yahooWeather = new YahooWeather();
 
   @Override
+  public Weather getWeatherAt(int pos) {
+    return yahooWeather.getWeatherAt(pos);
+  }
+
+  @Override
   public List<Weather> getWeather() {
     return yahooWeather.getWeather();
   }

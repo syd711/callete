@@ -32,7 +32,7 @@ public class Simulator {
 
     //center window
     Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-    frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
+    frame.setLocation(20, dim.height/2-frame.getSize().height/2);
     frame.setLayout(new BorderLayout(5, 5));
 
     // on close window the close method is called
@@ -58,9 +58,6 @@ public class Simulator {
     JPanel displayPanel = new JPanel(new FlowLayout());
     displayPanel.setBorder(BorderFactory.createTitledBorder("LCD"));
     center.add(displayPanel);
-
-    PlaylistPanel playlistPanel = new PlaylistPanel();
-    frame.add(playlistPanel, BorderLayout.EAST);
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));

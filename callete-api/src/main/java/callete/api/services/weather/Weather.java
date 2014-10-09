@@ -57,10 +57,6 @@ public interface Weather {
 
   public void setTemp(String temp);
 
-  public boolean isDefaultLocation();
-
-  public void setDefaultLocation(boolean defaultLocation);
-
   public double getWind();
 
   public void setWind(double wind);

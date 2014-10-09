@@ -155,16 +155,6 @@ public class WeatherImpl implements Weather {
   }
 
   @Override
-  public boolean isDefaultLocation() {
-    return defaultLocation;
-  }
-
-  @Override
-  public void setDefaultLocation(boolean defaultLocation) {
-    this.defaultLocation = defaultLocation;
-  }
-
-  @Override
   public double getWind() {
     return wind;
   }

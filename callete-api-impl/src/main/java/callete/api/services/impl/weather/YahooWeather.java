@@ -1,12 +1,12 @@
 package callete.api.services.impl.weather;
 
 import callete.api.Callete;
+import callete.api.services.weather.Weather;
+import callete.api.services.weather.WeatherImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
-import callete.api.services.weather.Weather;
-import callete.api.services.weather.WeatherImpl;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
@@ -74,25 +74,29 @@ import java.util.Locale;
  */
 public class YahooWeather {
   private final static Logger LOG = LoggerFactory.getLogger(YahooWeather.class);
+  private Configuration configuration = Callete.getConfiguration();
 
   public List<Weather> getWeather() {
-    List<Weather> weatherList = new ArrayList<Weather>();
-    final Configuration configuration = Callete.getConfiguration();
+    List<Weather> weatherList = new ArrayList<>();
     int count = 0;
     while (true) {
       count++;
-      String url = configuration.getString("weather." + String.valueOf(count));
-      if (!StringUtils.isEmpty(url)) {
-        Weather info = getWeather(url);
-        if (info != null) {
-          weatherList.add(info);
-          info.setDefaultLocation(count == 1);
-        }
+      Weather info = getWeatherAt(count);
+      if (info != null) {
+        weatherList.add(info);
       } else {
         break;
       }
     }
     return weatherList;
+  }
+
+  public Weather getWeatherAt(int pos) {
+    String url = configuration.getString("weather." + String.valueOf(pos));
+    if (!StringUtils.isEmpty(url)) {
+      return getWeather(url);
+    }
+    return null;
   }
 
   /**
