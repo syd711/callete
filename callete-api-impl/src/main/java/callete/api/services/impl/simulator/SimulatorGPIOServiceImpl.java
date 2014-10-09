@@ -3,6 +3,7 @@ package callete.api.services.impl.simulator;
 import callete.api.services.gpio.DigitalOutputPin;
 import callete.api.services.gpio.PinState;
 import callete.api.services.gpio.PushButton;
+import callete.api.services.gpio.RotaryEncoder;
 import callete.api.services.impl.gpio.GPIOServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,13 +34,18 @@ public class SimulatorGPIOServiceImpl {
     return simulatorDigitalOutputPin;
   }
 
+  public RotaryEncoder connectRotaryEncoder(int pinA, int pinB, String name) {
+    SimulatorRotaryEncoder simulatorRotaryEncoder = new SimulatorRotaryEncoder(pinA, pinB, name);
+    Simulator.getInstance().addRotaryEncoder(simulatorRotaryEncoder);
+    return simulatorRotaryEncoder;
+  }
+
   public Object convertPinStateToApiInstance(PinState state) {
     return null;
   }
 
+
   public Object convertPinToApiInstance(int pin) {
     return null;
   }
-
-
 }

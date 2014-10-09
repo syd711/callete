@@ -3,6 +3,7 @@ package callete.api.services.impl.gpio;
 import callete.api.services.gpio.*;
 import callete.api.services.impl.gpio.raspi.RaspiGPIOServiceImpl;
 import callete.api.services.impl.simulator.SimulatorGPIOServiceImpl;
+import callete.api.services.impl.simulator.SimulatorRotaryEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +29,7 @@ public class GPIOServiceImpl implements GPIOService {
   @Override
   public RotaryEncoder connectRotaryEncoder(int pinA, int pinB, String name) {
     if (simulationMode) {
-      return null; //TODO getSimulator().connectPushButton(pin, name);
+      return getSimulator().connectRotaryEncoder(pinA, pinB, name);
     }
     return raspiGPIO.connectRotaryEncoder(pinA, pinB, name);
   }

@@ -13,7 +13,7 @@ public class DeploymentDescriptor {
 
   public DeploymentDescriptor() {
     String host = Callete.getConfiguration().getString("deployment.host");
-    String port = Callete.getConfiguration().getString("deployment.port");
+    String port = Callete.getConfiguration().getString("deployment.port", "80");
 
     this.targetDirectory = Callete.getConfiguration().getString("deployment.targetDirectory");
     this.requestBasePath = "http://" + host + ":" + port + "/deployment/";

@@ -105,4 +105,24 @@ public class Simulator {
     });
   }
 
+  public void addRotaryEncoder(final SimulatorRotaryEncoder simulatorRotaryEncoder) {
+    final JButton right = new JButton(simulatorRotaryEncoder.getName() + " >");
+    inputPanel.add(right);
+    right.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        simulatorRotaryEncoder.right();
+      }
+    });
+
+    final JButton left = new JButton("< " + simulatorRotaryEncoder.getName());
+    inputPanel.add(left);
+    left.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        simulatorRotaryEncoder.left();
+      }
+    });
+
+  }
 }

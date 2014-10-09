@@ -11,4 +11,9 @@ public interface RotaryEncoder {
    * @param listener The listener to add to the rotary encoder.
    */
   void addChangeListener(RotaryEncoderListener listener);
+
+  /**
+   * Returns the name of the rotary encoder
+   */
+  String getName();
 }
