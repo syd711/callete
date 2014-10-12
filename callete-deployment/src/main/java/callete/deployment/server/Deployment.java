@@ -45,8 +45,9 @@ public class Deployment {
     }
 
     File target = new File(status.getDeploymentDirectory());
+    target.mkdirs();
     if (!target.exists()) {
-      status.setErrorMessage("Could not found deployment directory '" + status.getDeploymentDirectory() + ", " +
+      status.setErrorMessage("Could not create deployment directory '" + status.getDeploymentDirectory() + ", " +
               "please create it manually.");
     }
     return status;

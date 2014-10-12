@@ -9,10 +9,12 @@ public class PushEventImpl implements PushEvent {
 
   private Object source;
   private int pin;
+  private boolean longPush;
 
-  public PushEventImpl(Object source, int pin) {
+  public PushEventImpl(Object source, int pin, boolean longPush) {
     this.source = source;
     this.pin = pin;
+    this.longPush = longPush;
   }
 
   @Override
@@ -23,5 +25,10 @@ public class PushEventImpl implements PushEvent {
   @Override
   public int getPin() {
     return pin;
+  }
+
+  @Override
+  public boolean isLongPush() {
+    return longPush;
   }
 }

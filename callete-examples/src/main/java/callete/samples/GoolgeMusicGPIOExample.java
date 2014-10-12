@@ -34,6 +34,11 @@ public class GoolgeMusicGPIOExample {
       public long getPushDebounceMillis() {
         return 700;
       }
+
+      @Override
+      public long getLongPushDebounceMillis() {
+        return 1000;
+      }
     });
 
   }

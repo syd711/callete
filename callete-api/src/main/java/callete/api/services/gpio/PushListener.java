@@ -18,4 +18,11 @@ public interface PushListener {
    * @return the button debounce value in milliseconds.
    */
   long getPushDebounceMillis();
+
+  /**
+   * Returns the amount of milliseconds the button should have been pressed before
+   * the push event for a long push is fired.
+   * @return the button debounce value in milliseconds.
+   */
+  long getLongPushDebounceMillis();
 }

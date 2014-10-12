@@ -55,10 +55,6 @@ public class Simulator {
     inputPanel.setBorder(BorderFactory.createTitledBorder("Inputs"));
     center.add(inputPanel);
 
-    JPanel displayPanel = new JPanel(new FlowLayout());
-    displayPanel.setBorder(BorderFactory.createTitledBorder("LCD"));
-    center.add(displayPanel);
-
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
     JButton close = new JButton("Close");
@@ -100,14 +96,22 @@ public class Simulator {
     button.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        simulatorPushButton.push();
+        simulatorPushButton.push(false);
+      }
+    });
+
+    final JButton longPushButton = new JButton(pushButton.getName() + " (long push)");
+    inputPanel.add(longPushButton);
+    longPushButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        simulatorPushButton.push(true);
       }
     });
   }
 
   public void addRotaryEncoder(final SimulatorRotaryEncoder simulatorRotaryEncoder) {
     final JButton right = new JButton(simulatorRotaryEncoder.getName() + " >");
-    inputPanel.add(right);
     right.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -116,7 +120,6 @@ public class Simulator {
     });
 
     final JButton left = new JButton("< " + simulatorRotaryEncoder.getName());
-    inputPanel.add(left);
     left.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -124,5 +127,7 @@ public class Simulator {
       }
     });
 
+    inputPanel.add(left);
+    inputPanel.add(right);
   }
 }

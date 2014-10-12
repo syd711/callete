@@ -64,8 +64,11 @@ public class PiPushButton implements PushButton {
             LOG.info("Push event detected for " + PiPushButton.this);
             long pushEnd = new Date().getTime();
             for(PushListener listener : pushListeners) {
-              if (pushStart > 0 && (pushEnd - pushStart) > listener.getPushDebounceMillis()) {
-                listener.pushed(new PushEventImpl(this, pin));
+              if (pushStart > 0 && (pushEnd - pushStart) > listener.getLongPushDebounceMillis()) {
+                listener.pushed(new PushEventImpl(this, pin, true));
+              }
+              else if (pushStart > 0 && (pushEnd - pushStart) > listener.getPushDebounceMillis()) {
+                listener.pushed(new PushEventImpl(this, pin, false));
               }
             }
           }

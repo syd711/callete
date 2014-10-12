@@ -46,6 +46,11 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
   }
 
   @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
   public void addChangeListener(RotaryEncoderListener listener) {
     listeners.add(listener);
   }

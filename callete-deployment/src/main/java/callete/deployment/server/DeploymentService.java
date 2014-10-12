@@ -16,7 +16,7 @@ public class DeploymentService {
   private final static Logger LOG = LoggerFactory.getLogger(DeploymentService.class);
 
   public static void main(String[] args) throws IOException {
-    int port = Callete.getConfiguration().getInt("deployment.port");
+    int port = Callete.getConfiguration().getInt("deployment.port", 8080);
     String host = Callete.getConfiguration().getString("deployment.host");
     if(StringUtils.isEmpty(host)) {
       host = SystemUtils.resolveHostAddress();

@@ -35,9 +35,9 @@ public class SimulatorPushButton implements PushButton {
     return name;
   }
 
-  public void push() {
+  public void push(boolean longPush) {
     for(PushListener l : listeners) {
-      l.pushed(new PushEventImpl(this, pin));
+      l.pushed(new PushEventImpl(this, pin, longPush));
     }
   }
 }

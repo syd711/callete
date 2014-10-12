@@ -27,6 +27,11 @@ public class GPIOSimulationExample {
       public long getPushDebounceMillis() {
         return 700;
       }
+
+      @Override
+      public long getLongPushDebounceMillis() {
+        return 1000;
+      }
     });
 
     System.in.read();

@@ -14,4 +14,9 @@ public interface PushEvent {
    * Returns the pin number ob the push button
    */
   int getPin();
+
+  /**
+   * True if the button has been pressed for the amount of specified long push debounce millis.
+   */
+  boolean isLongPush();
 }
