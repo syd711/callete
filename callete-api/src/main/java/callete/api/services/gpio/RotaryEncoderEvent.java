@@ -8,7 +8,7 @@ public interface RotaryEncoderEvent {
   /**
    * Returns the amount of steps the rotary encoder has been rotated.
    */
-  int getSteps();
+  long getSteps();
 
   /**
    * If true, the encoder has been rotated to the left, to right otherwise.

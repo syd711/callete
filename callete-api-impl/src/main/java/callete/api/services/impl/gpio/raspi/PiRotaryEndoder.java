@@ -27,15 +27,18 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
   private GpioPinDigitalInput inputA;
   private GpioPinDigitalInput inputB;
 
-  private int lastEncoded;
-  private int encoderValue;
+  private long encoderValue = 0;
+  private int lastEncoded = 0;
+  private boolean firstPass = true;
 
-  private static final int stateTable[][] = {
+  // based on [lastEncoded][encoded] lookup
+  private static final int stateTable[][]= {
           {0, 1, 1, -1},
           {-1, 0, 1, -1},
           {-1, 1, 0, -1},
           {-1, 1, 1, 0}
   };
+
 
   public PiRotaryEndoder(int pinA, int pinB, String name) {
     this.pinA = pinA;
@@ -63,16 +66,25 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
     // converting the 2 pin value to single number to end up with 00, 01, 10 or 11
     int encoded = (stateA << 1) | stateB;
 
-    encoderValue += stateTable[lastEncoded][encoded];
+    if (firstPass) {
+      firstPass = false;
+    } else {
+      // going up states, 01, 11
+      // going down states 00, 10
+      int state = stateTable[lastEncoded][encoded];
+      encoderValue += state;
+      System.out.println("Encoder "+ encoderValue);
+      System.out.println("State "+ state);
+      RotaryEncoderEventImpl e = new RotaryEncoderEventImpl(encoderValue, state == -1);
+      for (RotaryEncoderListener l : listeners) {
+        l.rotated(e);
+      }
+    }
+
     lastEncoded = encoded;
 
-    System.out.println("Encoder Value: " + encoderValue);
-    System.out.println("Last Encoded Value: " + lastEncoded);
 
-    RotaryEncoderEventImpl e = new RotaryEncoderEventImpl(encoderValue, true);
-    for (RotaryEncoderListener l : listeners) {
-      l.rotated(e);
-    }
+
   }
 
   // --------------------- Helper -----------------------------------
@@ -84,11 +96,10 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
     Pin raspiPinA = (Pin) Callete.getGPIOService().convertPinToApiInstance(pinA);
     Pin raspiPinB = (Pin) Callete.getGPIOService().convertPinToApiInstance(pinB);
 
-    inputA = GpioFactory.getInstance().provisionDigitalInputPin(raspiPinA, PinPullResistance.PULL_DOWN);
-    inputB = GpioFactory.getInstance().provisionDigitalInputPin(raspiPinB, PinPullResistance.PULL_DOWN);
+    inputA = GpioFactory.getInstance().provisionDigitalInputPin(raspiPinA, PinPullResistance.PULL_UP);
+    inputB = GpioFactory.getInstance().provisionDigitalInputPin(raspiPinB, PinPullResistance.PULL_UP);
 
     inputA.addListener(this);
-    inputB.addListener(this);
   }
 
 
