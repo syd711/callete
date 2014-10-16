@@ -31,6 +31,11 @@ public class SimulatorRotaryEncoder implements RotaryEncoder {
     }
   }
 
+  @Override
+  public void setIgnoreHalfSteps(boolean b) {
+    //not used here
+  }
+
   public void right() {
     step++;
     for(RotaryEncoderListener l : listeners) {

@@ -1,5 +1,6 @@
 package callete.api.services.music.model;
 
+import callete.api.services.ServiceModel;
 import org.apache.commons.lang.time.DateFormatUtils;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * A collection of songs, identified by a name.
  */
-public abstract class Playlist {
+public abstract class Playlist implements ServiceModel {
   private List<Song> songs = new ArrayList<>();
 
   private String name;

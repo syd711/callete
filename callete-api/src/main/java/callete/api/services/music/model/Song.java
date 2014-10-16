@@ -6,7 +6,7 @@ import org.apache.commons.lang.time.DateFormatUtils;
 /**
  * The model that represents a song.
  */
-public class Song extends PlaylistItem implements Comparable<Song> {
+public class Song implements PlaylistItem, Comparable<Song> {
   private String id;
   private String name;
   private int year;

@@ -1,12 +1,14 @@
 package callete.api.services.weather;
 
+import callete.api.services.ServiceModel;
+
 import java.util.Date;
 import java.util.List;
 
 /**
  * Interface for the common weather data to be initialized.
  */
-public interface Weather {
+public interface Weather extends ServiceModel {
   public static enum WeatherState {SUNNY, SUNNY_CLOUDY, SUNNY_CLOUDS, CLOUDY, SNOW, SNOW_RAINY, SUNNY_RAINY, RAINY, STORMY}
 
   public String getCity();

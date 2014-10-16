@@ -4,7 +4,7 @@ import callete.api.services.music.streams.StreamMetaDataProvider;
 
 import java.io.IOException;
 
-public class Stream extends PlaylistItem {
+public class Stream implements PlaylistItem {
   private StreamMetaDataProvider metaDataProvider;
 
   public Stream(StreamMetaDataProvider metaDataProvider) {

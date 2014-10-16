@@ -30,6 +30,7 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
   private long encoderValue = 0;
   private int lastEncoded = 0;
   private boolean firstPass = true;
+  private boolean ignoreHalfSteps = false;
 
   // based on [lastEncoded][encoded] lookup
   private static final int stateTable[][]= {
@@ -54,6 +55,11 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
   }
 
   @Override
+  public void setIgnoreHalfSteps(boolean b) {
+    this.ignoreHalfSteps = b;
+  }
+
+  @Override
   public void addChangeListener(RotaryEncoderListener listener) {
     listeners.add(listener);
   }
@@ -73,8 +79,12 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
       // going down states 00, 10
       int state = stateTable[lastEncoded][encoded];
       encoderValue += state;
-      System.out.println("Encoder "+ encoderValue);
-      System.out.println("State "+ state);
+
+      //ignore half steps, so we use %2
+      if(ignoreHalfSteps && ((encoderValue % 2) != 0)) {
+        return;
+      }
+
       RotaryEncoderEventImpl e = new RotaryEncoderEventImpl(encoderValue, state == -1);
       for (RotaryEncoderListener l : listeners) {
         l.rotated(e);

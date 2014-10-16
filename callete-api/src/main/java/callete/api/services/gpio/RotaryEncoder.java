@@ -16,4 +16,9 @@ public interface RotaryEncoder {
    * Returns the name of the rotary encoder
    */
   String getName();
+
+  /**
+   * If true, every second encoder event is ignored, since it has not been rotated a full step.
+   */
+  void setIgnoreHalfSteps(boolean b);
 }
