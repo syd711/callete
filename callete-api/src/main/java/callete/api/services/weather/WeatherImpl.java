@@ -9,13 +9,10 @@ import java.util.List;
  */
 public class WeatherImpl implements Weather {
 
-  private List<Weather> forecast = new ArrayList<Weather>();
+  private List<Weather> forecast = new ArrayList<>();
 
   private String city;
   private String country;
-
-  private boolean defaultLocation;
-
   private String lowTemp;
   private String temp;
   private String highTemp;
@@ -41,7 +38,7 @@ public class WeatherImpl implements Weather {
 
   @Override
   public void setWeatherState(WeatherState state) {
-    this.weatherState = weatherState;
+    this.weatherState = state;
   }
 
   @Override
