@@ -1,8 +1,8 @@
 package callete.api.services.impl.gpio.raspi;
 
-import com.pi4j.io.gpio.RaspiPin;
 import callete.api.services.gpio.*;
 import callete.api.services.impl.gpio.GPIOServiceImpl;
+import com.pi4j.io.gpio.RaspiPin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

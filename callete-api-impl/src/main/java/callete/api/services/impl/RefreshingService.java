@@ -1,13 +1,7 @@
 package callete.api.services.impl;
 
-import javafx.application.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Abstract superclass for services that regularly refresh their data to send them to the UI.

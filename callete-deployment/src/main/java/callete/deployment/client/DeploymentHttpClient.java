@@ -1,5 +1,9 @@
 package callete.deployment.client;
 
+import callete.deployment.server.Deployment;
+import callete.deployment.server.DeploymentResource;
+import callete.deployment.server.DeploymentStatus;
+import callete.deployment.util.FileUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -9,10 +13,6 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
-import callete.deployment.server.Deployment;
-import callete.deployment.server.DeploymentResource;
-import callete.deployment.server.DeploymentStatus;
-import callete.deployment.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,9 @@ import javax.annotation.Nonnull;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The http client that executes the REST request for the deployment.

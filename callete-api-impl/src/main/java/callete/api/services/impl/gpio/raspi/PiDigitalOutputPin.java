@@ -1,12 +1,12 @@
 package callete.api.services.impl.gpio.raspi;
 
 import callete.api.Callete;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.Pin;
 import callete.api.services.gpio.DigitalOutputPin;
 import callete.api.services.gpio.PinState;
 import callete.api.services.gpio.PinStateChangeListener;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.Pin;
 
 import java.util.ArrayList;
 import java.util.List;

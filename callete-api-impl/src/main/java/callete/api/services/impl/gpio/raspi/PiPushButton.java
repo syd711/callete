@@ -1,11 +1,11 @@
 package callete.api.services.impl.gpio.raspi;
 
 import callete.api.Callete;
+import callete.api.services.gpio.PushButton;
+import callete.api.services.gpio.PushListener;
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import callete.api.services.gpio.PushButton;
-import callete.api.services.gpio.PushListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

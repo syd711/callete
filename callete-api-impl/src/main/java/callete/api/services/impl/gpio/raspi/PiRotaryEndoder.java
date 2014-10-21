@@ -1,14 +1,14 @@
 package callete.api.services.impl.gpio.raspi;
 
 import callete.api.Callete;
+import callete.api.services.gpio.RotaryEncoder;
+import callete.api.services.gpio.RotaryEncoderListener;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import callete.api.services.gpio.RotaryEncoder;
-import callete.api.services.gpio.RotaryEncoderListener;
 
 import java.util.ArrayList;
 import java.util.List;

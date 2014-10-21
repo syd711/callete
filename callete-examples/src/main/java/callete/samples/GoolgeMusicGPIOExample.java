@@ -1,7 +1,10 @@
 package callete.samples;
 
 import callete.api.Callete;
-import callete.api.services.gpio.*;
+import callete.api.services.gpio.GPIOService;
+import callete.api.services.gpio.PushButton;
+import callete.api.services.gpio.PushEvent;
+import callete.api.services.gpio.PushListener;
 import callete.api.services.music.MusicServiceAuthenticationException;
 import callete.api.services.music.google.GoogleMusicService;
 import callete.api.services.music.model.Album;

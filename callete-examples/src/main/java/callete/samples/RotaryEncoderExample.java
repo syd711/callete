@@ -1,7 +1,10 @@
 package callete.samples;
 
 import callete.api.Callete;
-import callete.api.services.gpio.*;
+import callete.api.services.gpio.GPIOService;
+import callete.api.services.gpio.RotaryEncoder;
+import callete.api.services.gpio.RotaryEncoderEvent;
+import callete.api.services.gpio.RotaryEncoderListener;
 
 import java.io.IOException;
 

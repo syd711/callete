@@ -3,7 +3,6 @@ package callete.api.services.impl.gpio;
 import callete.api.services.gpio.*;
 import callete.api.services.impl.gpio.raspi.RaspiGPIOServiceImpl;
 import callete.api.services.impl.simulator.SimulatorGPIOServiceImpl;
-import callete.api.services.impl.simulator.SimulatorRotaryEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

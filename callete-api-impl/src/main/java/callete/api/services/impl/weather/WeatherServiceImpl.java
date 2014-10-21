@@ -4,7 +4,10 @@ import callete.api.services.impl.RefreshingService;
 import callete.api.services.weather.Weather;
 import callete.api.services.weather.WeatherService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Service implementation for retrieving the weather information.

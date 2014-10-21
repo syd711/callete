@@ -1,9 +1,9 @@
 package callete.api.services.impl.music.resources;
 
 import callete.api.Callete;
-import com.echonest.api.v4.*;
 import callete.api.services.music.resources.ArtistResourcesService;
 import callete.api.services.music.resources.ImageResource;
+import com.echonest.api.v4.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
