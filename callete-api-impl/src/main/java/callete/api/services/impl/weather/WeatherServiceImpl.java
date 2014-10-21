@@ -4,8 +4,7 @@ import callete.api.services.impl.RefreshingService;
 import callete.api.services.weather.Weather;
 import callete.api.services.weather.WeatherService;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Service implementation for retrieving the weather information.
@@ -17,7 +16,7 @@ public class WeatherServiceImpl extends RefreshingService implements WeatherServ
 
   private YahooWeather yahooWeather = new YahooWeather();
 
-  private List<Weather> cachedWeather = Collections.emptyList();
+  private Map<Integer, Weather> cachedWeather = Collections.emptyMap();
 
   public WeatherServiceImpl() {
     super(WeatherService.DEFAULT_REFRESH_INTERVAL);
@@ -36,7 +35,7 @@ public class WeatherServiceImpl extends RefreshingService implements WeatherServ
     if(cachedWeather.isEmpty()) {
       forceRefresh();
     }
-    return cachedWeather;
+    return new ArrayList<>(cachedWeather.values());
   }
 
   @Override

@@ -9,7 +9,7 @@ import java.util.List;
  * Interface for the common weather data to be initialized.
  */
 public interface Weather extends ServiceModel {
-  public static enum WeatherState {SUNNY, SUNNY_CLOUDY, SUNNY_CLOUDS, CLOUDY, SNOW, SNOW_RAINY, SUNNY_RAINY, RAINY, STORMY}
+
 
   public String getCity();
 
@@ -71,4 +71,7 @@ public interface Weather extends ServiceModel {
 
   public void setSunrise(Date sunrise);
 
+  public int getHumidity();
+
+  public void setHumidity(int humidity);
 }

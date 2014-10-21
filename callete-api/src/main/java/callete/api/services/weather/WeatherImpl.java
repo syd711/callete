@@ -29,6 +29,7 @@ public class WeatherImpl implements Weather {
   private Date sunset;
 
   private double wind;
+  private int humidity;
   private WeatherState weatherState;
 
   @Override
@@ -179,6 +180,16 @@ public class WeatherImpl implements Weather {
   @Override
   public void setSunrise(Date sunrise) {
     this.sunrise = sunrise;
+  }
+
+  @Override
+  public int getHumidity() {
+    return humidity;
+  }
+
+  @Override
+  public void setHumidity(int humidity) {
+    this.humidity = humidity;
   }
 
   @Override

@@ -3,6 +3,7 @@ package callete.api.services.impl.weather;
 import callete.api.Callete;
 import callete.api.services.weather.Weather;
 import callete.api.services.weather.WeatherImpl;
+import callete.api.services.weather.WeatherState;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
@@ -16,10 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * 0	tornado
@@ -76,14 +74,14 @@ public class YahooWeather {
   private final static Logger LOG = LoggerFactory.getLogger(YahooWeather.class);
   private Configuration configuration = Callete.getConfiguration();
 
-  public List<Weather> getWeather() {
-    List<Weather> weatherList = new ArrayList<>();
+  public Map<Integer, Weather> getWeather() {
+    Map<Integer,Weather> weatherList = new HashMap<>();
     int count = 0;
     while (true) {
       count++;
       Weather info = getWeatherAt(count);
       if (info != null) {
-        weatherList.add(info);
+        weatherList.put(count, info);
       } else {
         break;
       }
@@ -161,6 +159,9 @@ public class YahooWeather {
           LOG.error("Error retrieving sunrise time for " + element.getAttributeValue("sunrise") + ": " + e.getMessage());
         }
       }
+      else if (element.getName().equalsIgnoreCase("atmosphere")) {
+        info.setHumidity(Integer.parseInt(element.getAttributeValue("humidity")));
+      }
     }
 
 
@@ -176,7 +177,7 @@ public class YahooWeather {
           String description = element.getAttributeValue("text");
           int code = Integer.parseInt(element.getAttribute("code").getValue());
           String date = element.getAttribute("date").getValue();
-          Weather.WeatherState state = convertTypeCodeWeatherState(code);
+          WeatherState state = convertTypeCodeWeatherState(code);
 
           //e.g. Fri, 06 Sep 2013 11:49 am CEST
           Date formatted = null;
@@ -210,7 +211,7 @@ public class YahooWeather {
             info.setDescription(element.getAttributeValue("text"));
 
             int code = Integer.parseInt(element.getAttribute("code").getValue());
-            Weather.WeatherState state = convertTypeCodeWeatherState(code);
+            WeatherState state = convertTypeCodeWeatherState(code);
             info.setWeatherState(state);
           } catch (ParseException e) {
             LOG.error("Error retrieving local time for " + date + ": " + e.getMessage());
@@ -227,26 +228,26 @@ public class YahooWeather {
     return info;
   }
 
-  private Weather.WeatherState convertTypeCodeWeatherState(Integer code) {
-    Weather.WeatherState state = Weather.WeatherState.SUNNY_CLOUDY;
+  private WeatherState convertTypeCodeWeatherState(Integer code) {
+    WeatherState state = WeatherState.SUNNY_CLOUDY;
     if (code < 5 || code == 45) {
-      state = Weather.WeatherState.STORMY;
+      state = WeatherState.STORMY;
     } else if ((code >= 5 && code < 9) || code == 17 || code == 18 || code == 13 || code == 14 || code == 46 || code == 47) {
-      state = Weather.WeatherState.SNOW_RAINY;
+      state = WeatherState.SNOW_RAINY;
     } else if ((code >= 15 && code <= 16) || (code >= 40 && code <= 43)) {
-      state = Weather.WeatherState.SNOW;
+      state = WeatherState.SNOW;
     } else if ((code >= 9 && code < 13) || (code >= 35 && code <= 39)) {
-      state = Weather.WeatherState.RAINY;
+      state = WeatherState.RAINY;
     } else if (code == 36 || (code >= 32 && code <= 34) || code == 31) {
-      state = Weather.WeatherState.SUNNY;
+      state = WeatherState.SUNNY;
     } else if ((code >= 20 && code <= 25) || code == 19) {
-      state = Weather.WeatherState.CLOUDY;
+      state = WeatherState.CLOUDY;
     } else if ((code >= 9 && code < 13)) {
-      state = Weather.WeatherState.SUNNY_RAINY;
+      state = WeatherState.SUNNY_RAINY;
     } else if ((code >= 29 && code <= 30)) {
-      state = Weather.WeatherState.SUNNY_CLOUDY;
+      state = WeatherState.SUNNY_CLOUDY;
     } else if ((code >= 26 && code <= 28) || code == 44) {
-      state = Weather.WeatherState.SUNNY_CLOUDS;
+      state = WeatherState.SUNNY_CLOUDS;
     } else {
       LOG.warn("Unmapped weather code: " + code);
     }
