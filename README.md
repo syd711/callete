@@ -59,36 +59,28 @@ Clone the callete repository into your pi's home directory and execute the insta
 * *git clone git@github.com:syd711/callete.git*
 * *cd callete*
 * *sudo chmod 777 install.sh*
-* *sudo ./install.sh*
+* *./install.sh*
+
+If the installation fails for some reasons, check the install script and check the separate steps.
+The install script installs maven into the home directory, the default configuration of callete
+expects it to be there.
 
 
-maven setup
-wget http://apache.openmirror.de/maven/maven-3/3.2.3/binaries/apache-maven-3.2.3-bin.tar.gz
-tar -xvf apache-maven-3.2.3-bin.tar.gz
+## Fix mpd Setup
 
-sudo /home/pi/apache-maven-3.2.3/bin/mvn install exec:java -Dexec.mainClass="callete.deployment.server.DeploymentService"
+To be able to connect to MPD from any host, it is necessary to configure the mpd conf:
 
+* *sudo vi /etc/mpd.conf*
+* Find and change the line: *bind_to_address        "any"*
+* *sudo service mpd restart*
 
-vi .bashrc
-export M2_HOME=/home/pi/apache-maven-3.2.3
-export M2=$M2_HOME/bin
-export PATH=$M2:$PATH
-bash
+## Starting the Deployment Server
 
-restart putty
+Before we can start the deployment server, we have to configure the IP address of the Raspberry Pi:
 
-build!
-
-mvn install -Pdeployment
+* edit *~/callete/conf/callete.properties*
+* *deployment.host = <YOUR_IP>*
 
 
-git clone https://github.com/jkiddo/gmusic.api.git
-cd gmusic.api\desk.gmusic.api
-mvn install -DskipTests
-
-sudo  /home/pi/apache-maven-3.2.3/bin/mvn install
-sudo  /home/pi/apache-maven-3.2.3/bin/mvn install -Pdeployment
 
 
-mpd:
-bind_to_address        "any"
