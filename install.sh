@@ -10,8 +10,7 @@ cd gmusic.api
 cd desk.gmusic.api
 sudo /home/pi/apache-maven-3.2.3/bin/mvn install -DskipTests
 cd ~
-cd calette
-sudo /home/pi/apache-maven-3.2.3/bin/mvn install
+cd callete
+sudo /home/pi/apache-maven-3.2.3/bin/mvn install -DskipTests
 cd callete-deployment
 sudo chmod 777 startServer.sh
-sudo ./startServer.sh

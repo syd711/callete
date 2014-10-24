@@ -54,7 +54,8 @@ Add key to github: https://github.com/settings/ssh
 
 ## Download and Install
 
-Clone the callete repository into your pi's home directory and execute the install script:
+Clone the callete repository into your pi's home directory and execute the install script.
+The installation may take a while, so drink a coffee or two:
 
 * *git clone git@github.com:syd711/callete.git*
 * *cd callete*
@@ -63,8 +64,7 @@ Clone the callete repository into your pi's home directory and execute the insta
 
 If the installation fails for some reasons, check the install script and check the separate steps.
 The install script installs maven into the home directory, the default configuration of callete
-expects it to be there.
-
+expects it to be there. This is a little bit dirty, I hope I'm gonna fix this in a future release.
 
 ## Fix mpd Setup
 
@@ -80,6 +80,12 @@ Before we can start the deployment server, we have to configure the IP address o
 
 * edit *~/callete/conf/callete.properties*
 * *deployment.host = <YOUR_IP>*
+
+Afterwards, start the server:
+
+* *cd callete*
+* *cd callete-deployment*
+* *sudo ./startServer.sh*
 
 
 

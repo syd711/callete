@@ -27,6 +27,9 @@ public class Config {
       if(!configFile.exists()) {
         configFile = getConfigFile(DEV_CONFIG_FOLDER, DEV_CONFIG_FILENAME);
       }
+      if(!configFile.exists()) {
+        configFile = getConfigFile(DEV_CONFIG_FOLDER, CONFIG_FILENAME);
+      }
       return new PropertiesConfiguration(configFile);
     } catch (Throwable e) {
       LOG.error("Error loading " + CONFIG_FILENAME + ": " + e.getMessage(), e);
