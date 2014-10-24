@@ -129,6 +129,7 @@ public class Deployment {
         cmds.add("mvn.bat");
       }
       else {
+        cmds.add("sudo");
         //retrieve shell for execution.
         mavenHome = Callete.getConfiguration().getString("deployment.linux.maven.home");
         String mavenCmd = mavenHome;
