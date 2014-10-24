@@ -34,11 +34,11 @@ public class GPIOServiceImpl implements GPIOService {
   }
 
   @Override
-  public DigitalOutputPin connectDigitalOutputPin(int pin, PinState pinState) {
+  public DigitalOutputPin connectDigitalOutputPin(int pin, String name, PinState pinState) {
     if (simulationMode) {
-      return getSimulator().connectDigitalOutputPin(pin, pinState);
+      return getSimulator().connectDigitalOutputPin(pin, pinState, name);
     }
-    return raspiGPIO.connectDigitalOutputPin(pin, pinState);
+    return raspiGPIO.connectDigitalOutputPin(pin, name, pinState);
   }
 
   @Override

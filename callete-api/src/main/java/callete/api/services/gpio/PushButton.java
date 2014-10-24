@@ -3,7 +3,7 @@ package callete.api.services.gpio;
 /**
  * Interface to be implemented by GPIO flavors.
  */
-public interface PushButton {
+public interface PushButton extends GPIOComponent {
 
   /**
    * Registers a listener that is fired if the button is pressed.
@@ -15,9 +15,4 @@ public interface PushButton {
    * Returns the pin number the button is connected to.
    */
   public int getPin();
-
-  /**
-   * The name that has been set for this button.
-   */
-  public String getName();
 }

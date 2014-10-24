@@ -4,9 +4,6 @@ import callete.api.services.gpio.DigitalOutputPin;
 import callete.api.services.gpio.PinState;
 import callete.api.services.gpio.PushButton;
 import callete.api.services.gpio.RotaryEncoder;
-import callete.api.services.impl.gpio.GPIOServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A simple service for simulating GPIO.
@@ -16,27 +13,22 @@ import org.slf4j.LoggerFactory;
  * visualizes the GPIO states and provides basic input features.
  */
 public class SimulatorGPIOServiceImpl {
-  private final static Logger LOG = LoggerFactory.getLogger(GPIOServiceImpl.class);
-
-  public SimulatorGPIOServiceImpl() {
-    Simulator.getInstance().show();
-  }
 
   public PushButton connectPushButton(int pin, String name) {
     SimulatorPushButton simulatorPushButton = new SimulatorPushButton(pin, name);
-    Simulator.getInstance().addPushButton(simulatorPushButton);
+    Simulator.getInstance().addComponent(name, simulatorPushButton);
     return simulatorPushButton;
   }
 
-  public DigitalOutputPin connectDigitalOutputPin(int pin, PinState pinState) {
-    SimulatorDigitalOutputPin simulatorDigitalOutputPin = new SimulatorDigitalOutputPin(pin, pinState);
-    Simulator.getInstance().addPin(simulatorDigitalOutputPin, pinState.equals(PinState.HIGH));
+  public DigitalOutputPin connectDigitalOutputPin(int pin, PinState pinState, String name) {
+    SimulatorDigitalOutputPin simulatorDigitalOutputPin = new SimulatorDigitalOutputPin(pin, name, pinState);
+    Simulator.getInstance().addComponent(name, simulatorDigitalOutputPin);
     return simulatorDigitalOutputPin;
   }
 
   public RotaryEncoder connectRotaryEncoder(int pinA, int pinB, String name) {
     SimulatorRotaryEncoder simulatorRotaryEncoder = new SimulatorRotaryEncoder(pinA, pinB, name);
-    Simulator.getInstance().addRotaryEncoder(simulatorRotaryEncoder);
+    Simulator.getInstance().addComponent(name, simulatorRotaryEncoder);
     return simulatorRotaryEncoder;
   }
 

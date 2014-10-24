@@ -22,13 +22,13 @@ public class RaspiGPIOServiceImpl {
     return new PiRotaryEndoder(pinA, pinB, name);
   }
 
-  public DigitalOutputPin connectDigitalOutputPin(int pin, PinState pinState) {
+  public DigitalOutputPin connectDigitalOutputPin(int pin, String name, PinState pinState) {
     LOG.info("Creating digital output pin " + pin);
-    return new PiDigitalOutputPin(pin, pinState);
+    return new PiDigitalOutputPin(pin, name, pinState);
   }
 
   public Object convertPinStateToApiInstance(PinState state) {
-    if(state.equals(PinState.HIGH)) {
+    if (state.equals(PinState.HIGH)) {
       return com.pi4j.io.gpio.PinState.HIGH;
     }
     return com.pi4j.io.gpio.PinState.LOW;

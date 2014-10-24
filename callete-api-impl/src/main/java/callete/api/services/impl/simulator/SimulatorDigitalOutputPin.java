@@ -14,11 +14,18 @@ import java.util.List;
 public class SimulatorDigitalOutputPin implements DigitalOutputPin {
   private int pin;
   private boolean high = false;
+  private String name;
   private List<PinStateChangeListener> stateEventListeners = new ArrayList<>();
 
-  public SimulatorDigitalOutputPin(int pin, PinState pinState) {
+  public SimulatorDigitalOutputPin(int pin, String name, PinState pinState) {
     this.pin = pin;
+    this.name = name;
     this.high = pinState.equals(PinState.HIGH);
+  }
+
+  @Override
+  public String getName() {
+    return name;
   }
 
   @Override

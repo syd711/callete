@@ -61,18 +61,17 @@ public interface GPIOService extends Service {
   /**
    * Connect a GPIO pin with the initial given state.
    * @param pin the numeric pin id of the board to use, will be converted by the #convertPinToApiInstance method.
+   * @param name the name the pin is identified with
    * @param pinState the initial state of the pin
    * @return A pin representation
    */
-  DigitalOutputPin connectDigitalOutputPin(int pin, PinState pinState);
+  DigitalOutputPin connectDigitalOutputPin(int pin, String name, PinState pinState);
 
   /**
    * Disabled by default.
    *
-   * If enabled, a swing window will show the state of the GPIO components.
-   * No real GPIO listeners are actually used, instead several Swing widgets will
-   * be used to simulate the input and show the output.
-   * @param enable If true, the simulator will be used instead of real GPIO.
+   * If enabled, simulator components will be build and stored in the Simulator singleton.
+   * @param enabled If true, the simulator will be used instead of real GPIO.
    */
-  void setSimulationMode(boolean enable);
+  void setSimulationMode(boolean enabled);
 }

@@ -3,7 +3,7 @@ package callete.api.services.gpio;
 /**
  * Interface to be implemented by a delegating implementation
  */
-public interface DigitalOutputPin {
+public interface DigitalOutputPin extends GPIOComponent {
 
   /**
    * Sets the pin to the PinState.LOW

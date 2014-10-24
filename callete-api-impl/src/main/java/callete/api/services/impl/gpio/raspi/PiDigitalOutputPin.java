@@ -16,16 +16,22 @@ import java.util.List;
  */
 public class PiDigitalOutputPin implements DigitalOutputPin {
   private int pin;
+  private String name;
   private GpioPinDigitalOutput gpioPinDigitalOutput;
   private List<PinStateChangeListener> pinStateListeners = new ArrayList<>();
 
-  public PiDigitalOutputPin(int pin, PinState pinState) {
+  public PiDigitalOutputPin(int pin, String name, PinState pinState) {
     this.pin = pin;
-
+    this.name = name;
     Pin raspiPin = (Pin) Callete.getGPIOService().convertPinToApiInstance(pin);
     com.pi4j.io.gpio.PinState state = (com.pi4j.io.gpio.PinState) Callete.getGPIOService().convertPinStateToApiInstance(pinState);
 
     gpioPinDigitalOutput = GpioFactory.getInstance().provisionDigitalOutputPin(raspiPin, this.toString(), state);
+  }
+
+  @Override
+  public String getName() {
+    return name;
   }
 
   @Override

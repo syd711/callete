@@ -20,7 +20,6 @@
         <module>callete-api</module>
         <module>callete-deployment</module>
         <module>callete-api-impl</module>
-        <module>callete-examples</module>
     </modules>
 
     <dependencyManagement>
