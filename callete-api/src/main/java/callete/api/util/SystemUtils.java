@@ -3,7 +3,6 @@ package callete.api.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -20,7 +19,6 @@ public class SystemUtils {
     return System.getProperty("os.name").toLowerCase().contains("windows");
   }
 
-  @Nullable
   public static String resolveHostAddress() {
     try {
       return InetAddress.getLocalHost().getHostAddress();
@@ -28,5 +26,13 @@ public class SystemUtils {
       LOG.error("Unable to resolve host address: " + e.getMessage(), e);
     }
     return null;
+  }
+
+  public static String humanReadableByteCount(long bytes) {
+    int unit = 1024;
+    if (bytes < unit) return bytes + " B";
+    int exp = (int) (Math.log(bytes) / Math.log(unit));
+    String pre = ("kMGTPE").charAt(exp-1) + ("");
+    return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
   }
 }

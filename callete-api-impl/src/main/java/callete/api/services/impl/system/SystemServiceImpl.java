@@ -11,15 +11,31 @@ import java.net.UnknownHostException;
  */
 @SuppressWarnings("unused")
 public class SystemServiceImpl implements SystemService {
+
   @Override
-  public String getUsedDiskSpace() {
-    long used = new File(".").getTotalSpace()-new File(".").getFreeSpace();
-    return String.valueOf(used/1024/1024);
+  public long getMaxMemory() {
+    return Runtime.getRuntime().maxMemory();
   }
 
   @Override
-  public String getAvailableDiskSpace() {
-    return String.valueOf(new File(".").getFreeSpace()/1024/1024);
+  public long getTotalMemory() {
+    return Runtime.getRuntime().totalMemory();
+  }
+
+  @Override
+  public long getFreeMemory() {
+    return Runtime.getRuntime().freeMemory();
+  }
+
+  @Override
+  public long getAvailableDiskSpace() {
+    return new File(".").getFreeSpace();
+  }
+
+  @Override
+  public long getUsedDiskSpace() {
+    final File file = new File(".");
+    return file.getTotalSpace()-file.getFreeSpace();
   }
 
   @Override
