@@ -44,7 +44,7 @@ public abstract class Playlist implements ServiceModel {
   }
 
   public void setArtUrl(String artUrl) {
-    this.artUrl = artUrl;
+    this.artUrl = artUrl.replaceAll("http:https:https", "http");
   }
 
   /**

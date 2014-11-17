@@ -29,6 +29,8 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
   private Map<String, Album> albums = new HashMap<>();
   private Map<String, List<Album>> artists = new HashMap<>();
   private Map<String, Playlist> playlists = new HashMap<>();
+  private Map<String, List<Album>> artistByLetter = new HashMap<>();
+  private Map<String, List<Album>> albumByLetter = new HashMap<>();
 
   /**
    * Logs into google to create the client.
@@ -80,6 +82,14 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
     ArrayList<Album> albumCopy = new ArrayList<>(albums.values());
     Collections.sort(albumCopy, new AlbumComparator());
     return albumCopy;
+  }
+
+  public Map<String, List<Album>> getArtistByLetter() {
+    return artistByLetter;
+  }
+
+  public Map<String, List<Album>> getAlbumByLetter() {
+    return albumByLetter;
   }
 
   public MusicSearchResult search(String term) {
@@ -137,15 +147,39 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
 
       for(Album album : albums.values()) {
         String artist = album.getArtist();
-        if(artist != null) {
+        if(!StringUtils.isEmpty(artist)) {
+          //fill albums by artist
           if(!artists.containsKey(artist)) {
             List<Album> artistAlbums = new ArrayList<>();
             artists.put(artist, artistAlbums);
           }
           List<Album> artAlbums = artists.get(artist);
           artAlbums.add(album);
+
+          //fill albums by artist letter
+          String startingLetter = artist.substring(0,1).toUpperCase();
+          if(!artistByLetter.containsKey(startingLetter)) {
+            List<Album> artistAlbums = new ArrayList<>();
+            artistByLetter.put(startingLetter, artistAlbums);
+          }
+          List<Album> albumsByLetter = artistByLetter.get(startingLetter);
+          albumsByLetter.add(album);
         }
+
+        //fill albums by album letter
+        String albumName = album.getName();
+        if(!StringUtils.isEmpty(albumName)) {
+          String startingLetter = album.getName().substring(0,1).toUpperCase();
+          if(!albumByLetter.containsKey(startingLetter)) {
+            List<Album> albums = new ArrayList<>();
+            albumByLetter.put(startingLetter, albums);
+          }
+          List<Album> albumsByLetter = albumByLetter.get(startingLetter);
+          albumsByLetter.add(album);
+        }
+
       }
+      LOG.info("Music dictionary creation finished: created " + albums.size() + " albums.");
     } catch (RuntimeException re) {
       LOG.error("Error initializing google music: " + re.getMessage(), re);
       throw re;

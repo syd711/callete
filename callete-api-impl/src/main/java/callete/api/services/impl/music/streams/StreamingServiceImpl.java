@@ -80,10 +80,14 @@ public class StreamingServiceImpl implements StreamingService {
       if (!key.contains("stream.") || key.equals(STREAMING_PLAYLIST_URL_PROPERTY)) {
         continue;
       }
+      //ignore naming properties
+      if (key.endsWith(".name")) {
+        continue;
+      }
 
-      String id = key.substring(0, key.indexOf("."));
       String url = properties.getString(key);
-      String nameKey = id + ".name";
+
+      String nameKey = key + ".name";
       String name = null;
       if (properties.containsKey(nameKey)) {
         name = properties.getString(nameKey);

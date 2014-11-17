@@ -9,6 +9,7 @@ import callete.api.services.music.model.Playlist;
 import callete.api.services.music.model.Song;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of the Google Music Service, using jkiddo's API which can be found here:
@@ -46,5 +47,15 @@ public class GoogleMusicServiceImpl extends MusicServiceImpl implements GoogleMu
   @Override
   public MusicSearchResult search(String term) {
     return api.search(term);
+  }
+
+  @Override
+  public Map<String, List<Album>> getAlbumByNameLetter() {
+    return api.getAlbumByLetter();
+  }
+
+  @Override
+  public Map<String, List<Album>> getAlbumsByArtistLetter() {
+    return api.getArtistByLetter();
   }
 }
