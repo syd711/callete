@@ -2,16 +2,23 @@ package callete.deployment.client;
 
 import callete.api.Callete;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * The descriptor holds all data required for a deployment such
  * as the source directory and the target where to deploy the project.
  */
 public class DeploymentDescriptor {
+  private static List<String> DEFAULT_EXCLUSIONS = Arrays.asList(".idea", "bin", "classes", "target", ".classpath", ".project", ".iml", ".md");
   private String targetDirectory;
 
   private String requestBasePath;
+  private List<String> ignoreFiles;
 
-  public DeploymentDescriptor() {
+  public DeploymentDescriptor(List<String> ignoreFiles) {
+    this.ignoreFiles = ignoreFiles;
+    this.ignoreFiles.addAll(DEFAULT_EXCLUSIONS);
     String host = Callete.getConfiguration().getString("deployment.host");
     String port = Callete.getConfiguration().getString("deployment.port", "8080");
 
@@ -25,5 +32,9 @@ public class DeploymentDescriptor {
 
   public String getRequestBasePath() {
     return requestBasePath;
+  }
+
+  public List<String> getIgnoreFiles() {
+    return ignoreFiles;
   }
 }

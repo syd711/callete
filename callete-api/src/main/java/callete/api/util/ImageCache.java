@@ -27,6 +27,8 @@ public class ImageCache {
   private static Map<String, File> imageCache = new HashMap<String, File>();
 
   static {
+    IMAGE_CACHE_DIR.mkdirs();
+
     final File[] files = IMAGE_CACHE_DIR.listFiles(new FilenameFilter() {
       @Override
       public boolean accept(File dir, String name) {

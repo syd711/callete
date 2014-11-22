@@ -15,11 +15,15 @@ public class DeploymentClient {
   private final static Logger LOG = LoggerFactory.getLogger(DeploymentClient.class);
 
   public static void main(String[] args) throws Exception {
-    new DeploymentClient().deploy();
+    String[] ignoreFiles = {};
+    if(args != null && args.length > 0) {
+      ignoreFiles = args[0].split(",");
+    }
+    new DeploymentClient().deploy(ignoreFiles);
   }
 
-  public void deploy() throws Exception {
-    DeploymentDescriptor descriptor = new DeploymentDescriptor();
+  public void deploy(String[] ignoreFiles) throws Exception {
+    DeploymentDescriptor descriptor = new DeploymentDescriptor(Arrays.asList(ignoreFiles));
     DeploymentHttpClient client = new DeploymentHttpClient(descriptor);
 
     List<String> cmds = Arrays.asList(Deployment.CMD_DESTROY, Deployment.CMD_CREATE,

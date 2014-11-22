@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The REST handler for deploying the archived maven module that should be deployed.
@@ -15,6 +17,8 @@ import java.io.File;
 public class DeploymentResource {
   private final static Logger LOG = LoggerFactory.getLogger(DeploymentResource.class);
   public final static String PARAM_TARGET_DIRECTORY = "target";
+  public final static String PARAM_IGNORE_DIRECTORIES = "ignoreDirectories";
+  public final static String PARAM_IGN = "target";
 
   //there can only be one deployment at a time, so a static instance is sufficient here.
   private static Deployment deployment;
@@ -38,10 +42,12 @@ public class DeploymentResource {
     return new DeploymentStatus();
   }
 
-  @GET
+  @POST
   @Path(Deployment.CMD_CLEAN)
-  public DeploymentStatus clean() {
-    deployment.clean();
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  public DeploymentStatus clean(@FormParam(PARAM_IGNORE_DIRECTORIES) String ignoreDirectories) {
+    List<String> ignoreList = Arrays.asList(ignoreDirectories.split(","));
+    deployment.clean(ignoreList);
     LOG.info("Clean up deployment located in directory '" + deployment.getStatus().getDeploymentDirectory() + "'");
     return deployment.getStatus();
   }

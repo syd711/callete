@@ -13,6 +13,7 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +30,6 @@ import java.util.Map;
  */
 public class DeploymentHttpClient {
   private final static Logger LOG = LoggerFactory.getLogger(DeploymentHttpClient.class);
-  private final static String[] EXCLUSIONS = {".idea", "bin", "classes", "target", ".classpath", ".project", ".iml", ".md"};
-
   private DeploymentDescriptor descriptor;
 
   public DeploymentHttpClient(DeploymentDescriptor descriptor) {
@@ -51,7 +50,10 @@ public class DeploymentHttpClient {
         return executeGetRequest(url);
       }
       case Deployment.CMD_CLEAN: {
-        return executeGetRequest(url);
+        String ignoreDirectories = StringUtils.join(descriptor.getIgnoreFiles(),',');
+        Map<String,String> params = new HashMap<>();
+        params.put(DeploymentResource.PARAM_IGNORE_DIRECTORIES, ignoreDirectories);
+        return executePostRequest(url, params);
       }
       case Deployment.CMD_CREATE: {
         String targetDirectory = descriptor.getTargetDirectory();
@@ -62,7 +64,7 @@ public class DeploymentHttpClient {
       case Deployment.CMD_COPY: {
         try {
           File projectZipFile = File.createTempFile("gaia_deployment", ".zip", new File(System.getProperty("java.io.tmpdir")));
-          FileUtils.zipFolder(new File("."), projectZipFile, EXCLUSIONS);
+          FileUtils.zipFolder(new File("."), projectZipFile, descriptor.getIgnoreFiles());
           return executeMultipartRequest(url, projectZipFile);
         } catch (Exception e) {
           LOG.error("Error creating project zip file ");

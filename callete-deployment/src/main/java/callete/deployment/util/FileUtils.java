@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -14,20 +15,24 @@ import java.util.zip.ZipOutputStream;
 public class FileUtils {
   private final static Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 
-  public static void deleteFolder(File folder) throws IOException{
+  public static void deleteFolder(File folder, List<String> ignoreList) throws IOException{
     File[] files = folder.listFiles();
     for(File entry : files) {
-      deleteSubFolder(entry);
+      deleteSubFolder(entry, ignoreList);
     }
     LOG.info("Finished deletion of " + folder.getAbsolutePath());
   }
 
-  private static void deleteSubFolder(File folder) throws IOException{
+  private static void deleteSubFolder(File folder, List<String> ignoreList) throws IOException{
     File[] files = folder.listFiles();
     if(files!=null) { //some JVMs return null for empty dirs
       for(File f: files) {
+        if(exclude(f, ignoreList)) {
+          LOG.info("Ignored directory " + f.getAbsolutePath() + " during deletion.");
+          continue;
+        }
         if(f.isDirectory()) {
-          deleteSubFolder(f);
+          deleteSubFolder(f, ignoreList);
         } else {
           if(!f.delete()) {
             throw new IOException("Failed to delete " + f.getAbsolutePath());
@@ -51,7 +56,7 @@ public class FileUtils {
         ZipEntry entry = (ZipEntry) files.nextElement();
         InputStream eis = zipFile.getInputStream(entry);
         byte[] buffer = new byte[1024];
-        int bytesRead = 0;
+        int bytesRead;
 
         f = new File(target.getAbsolutePath() + File.separator + entry.getName());
 
@@ -69,8 +74,7 @@ public class FileUtils {
           fos.write(buffer, 0, bytesRead);
         }
       } catch (IOException e) {
-        e.printStackTrace();
-        continue;
+        LOG.error("Error unzipping " + file.getAbsolutePath() + ": " + e.getMessage(), e);
       } finally {
         if (fos != null) {
           try {
@@ -83,26 +87,26 @@ public class FileUtils {
     }
   }
 
-  static public void zipFolder(File srcFolder, File destZipFile, String[] excludeDirectories) throws Exception {
+  static public void zipFolder(File srcFolder, File destZipFile, List<String> exclusions) throws Exception {
     FileOutputStream fileWriter = new FileOutputStream(destZipFile.getAbsolutePath());
     ZipOutputStream  zip = new ZipOutputStream(fileWriter);
 
     File[] files = srcFolder.listFiles();
     for(File file : files) {
-      addFileToZip("", file.getAbsolutePath(), zip, excludeDirectories);
+      addFileToZip("", file.getAbsolutePath(), zip, exclusions);
     }
 
     zip.flush();
     zip.close();
   }
 
-  static private void addFileToZip(String path, String srcFile, ZipOutputStream zip, String[] excludeDirectories)
+  static private void addFileToZip(String path, String srcFile, ZipOutputStream zip, List<String> exclusions)
           throws Exception {
 
     File folder = new File(srcFile);
     if (folder.isDirectory()) {
-      if(!exclude(folder, excludeDirectories)) {
-        addFolderToZip(path, srcFile, zip, excludeDirectories);
+      if(!exclude(folder, exclusions)) {
+        addFolderToZip(path, srcFile, zip, exclusions);
       }
     } else {
       byte[] buf = new byte[1024];
@@ -120,25 +124,25 @@ public class FileUtils {
     }
   }
 
-  static private void addFolderToZip(String path, String srcFolder, ZipOutputStream zip, String[] excludeDirectories)
+  static private void addFolderToZip(String path, String srcFolder, ZipOutputStream zip, List<String> exclusions)
           throws Exception {
     File folder = new File(srcFolder);
 
     for (File file : folder.listFiles()) {
-      if(exclude(file, excludeDirectories)) {
+      if(exclude(file, exclusions)) {
         continue;
       }
       if (path.equals("")) {
-        addFileToZip(folder.getName(), srcFolder + "/" + file.getName(), zip, excludeDirectories);
+        addFileToZip(folder.getName(), srcFolder + "/" + file.getName(), zip, exclusions);
       } else {
-        addFileToZip(path + "/" + folder.getName(), srcFolder + "/" + file.getName(), zip, excludeDirectories);
+        addFileToZip(path + "/" + folder.getName(), srcFolder + "/" + file.getName(), zip, exclusions);
       }
     }
   }
 
-  private static boolean exclude(File file, String[] excludeDirectories) {
+  private static boolean exclude(File file, List<String> exclusions) {
     String fileName = file.getName();
-    for (String exclude : excludeDirectories) {
+    for (String exclude : exclusions) {
       if(exclude.toLowerCase().equals(fileName.toLowerCase())) {
         return true;
       }

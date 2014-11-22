@@ -70,11 +70,12 @@ public class Deployment {
   /**
    * Cleans up the target folder that is stored in the DeploymentStatus.
    * A clean install is ensured for the next deployment this way.
+   * @param ignoreList The list of directories to ignore when cleaning the target directory.
    */
-  public DeploymentStatus clean() {
+  public DeploymentStatus clean(List<String> ignoreList) {
     try {
       File targetDirectory = new File(status.getDeploymentDirectory());
-      FileUtils.deleteFolder(targetDirectory);
+      FileUtils.deleteFolder(targetDirectory, ignoreList);
     } catch (IOException e) {
       LOG.error("Error during deployment cleanup: " + e.getMessage());
       status.setErrorMessage(e.getMessage());
