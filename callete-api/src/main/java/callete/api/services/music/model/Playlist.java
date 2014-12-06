@@ -71,6 +71,27 @@ public abstract class Playlist implements ServiceModel {
     return "";
   }
 
+  /**
+   * Applies a track id if not set already.
+   */
+  public void addSong(Song song) {
+    if(song.getTrack() == 0) {
+      song.setTrack(this.getSize()+1);
+    }
+    songs.add(song);
+  }
+
+  public String getDuration() {
+    long duration = 0;
+    for(Song song : songs) {
+      duration+=song.getDurationMillis();
+    }
+    if(duration > 0) {
+      return DateFormatUtils.format(duration, "mm:ss");
+    }
+    return "";
+  }
+
   @Override
   public String toString() {
     return "Playlist '" + getName() + "', tracks: " + getSize();

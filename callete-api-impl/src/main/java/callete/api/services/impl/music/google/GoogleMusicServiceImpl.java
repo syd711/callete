@@ -5,6 +5,7 @@ import callete.api.services.music.MusicServiceAuthenticationException;
 import callete.api.services.music.MusicServiceImpl;
 import callete.api.services.music.google.GoogleMusicService;
 import callete.api.services.music.model.Album;
+import callete.api.services.music.model.AlbumCollection;
 import callete.api.services.music.model.Playlist;
 import callete.api.services.music.model.Song;
 
@@ -50,12 +51,12 @@ public class GoogleMusicServiceImpl extends MusicServiceImpl implements GoogleMu
   }
 
   @Override
-  public Map<String, List<Album>> getAlbumByNameLetter() {
+  public List<AlbumCollection> getAlbumByNameLetter() {
     return api.getAlbumByLetter();
   }
 
   @Override
-  public Map<String, List<Album>> getAlbumsByArtistLetter() {
+  public List<AlbumCollection> getAlbumsByArtistLetter() {
     return api.getArtistByLetter();
   }
 }

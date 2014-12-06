@@ -12,7 +12,7 @@ public class Song implements PlaylistItem, Comparable<Song> {
   private int year;
   private String artist;
   private String genre;
-  private String album;
+  private String albumName;
   private String albumArtUrl;
   private long durationMillis;
   private float creationDate;
@@ -94,12 +94,12 @@ public class Song implements PlaylistItem, Comparable<Song> {
     this.durationMillis = durationMillis;
   }
 
-  public String getAlbum() {
-    return album;
+  public String getAlbumName() {
+    return albumName;
   }
 
-  public void setAlbum(String album) {
-    this.album = album;
+  public void setAlbumName(String albumName) {
+    this.albumName = albumName;
   }
 
   public Object getOriginalModel() {

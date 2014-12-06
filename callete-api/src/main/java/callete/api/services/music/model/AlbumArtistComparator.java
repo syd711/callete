@@ -5,10 +5,7 @@ import java.util.Comparator;
 /**
  * Supports different sort directions for Albums.
  */
-public class AlbumComparator implements Comparator<Album> {
-
-  public AlbumComparator() {
-  }
+public class AlbumArtistComparator implements Comparator<Album> {
 
   @Override
   public int compare(Album o1, Album o2) {

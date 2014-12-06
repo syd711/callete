@@ -4,9 +4,7 @@ import callete.api.Callete;
 import callete.api.services.music.MusicSearchResult;
 import callete.api.services.music.MusicServiceAuthenticationException;
 import callete.api.services.music.PlaybackUrlProvider;
-import callete.api.services.music.model.Album;
-import callete.api.services.music.model.AlbumComparator;
-import callete.api.services.music.model.Playlist;
+import callete.api.services.music.model.*;
 import gmusic.api.impl.GoogleMusicAPI;
 import gmusic.api.impl.InvalidCredentialsException;
 import gmusic.api.model.Song;
@@ -29,8 +27,8 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
   private Map<String, Album> albums = new HashMap<>();
   private Map<String, List<Album>> artists = new HashMap<>();
   private Map<String, Playlist> playlists = new HashMap<>();
-  private Map<String, List<Album>> artistByLetter = new HashMap<>();
-  private Map<String, List<Album>> albumByLetter = new HashMap<>();
+  private List<AlbumCollection> artistByLetter = new ArrayList<>();
+  private List<AlbumCollection> albumByLetter = new ArrayList<>();
 
   /**
    * Logs into google to create the client.
@@ -80,15 +78,15 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
 
   public List<Album> getAlbums() {
     ArrayList<Album> albumCopy = new ArrayList<>(albums.values());
-    Collections.sort(albumCopy, new AlbumComparator());
+    Collections.sort(albumCopy, new AlbumArtistComparator());
     return albumCopy;
   }
 
-  public Map<String, List<Album>> getArtistByLetter() {
+  public List<AlbumCollection> getArtistByLetter() {
     return artistByLetter;
   }
 
-  public Map<String, List<Album>> getAlbumByLetter() {
+  public List<AlbumCollection> getAlbumByLetter() {
     return albumByLetter;
   }
 
@@ -158,31 +156,39 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
 
           //fill albums by artist letter
           String startingLetter = artist.substring(0,1).toUpperCase();
-          if(!artistByLetter.containsKey(startingLetter)) {
-            List<Album> artistAlbums = new ArrayList<>();
-            artistByLetter.put(startingLetter, artistAlbums);
-          }
-          List<Album> albumsByLetter = artistByLetter.get(startingLetter);
-          albumsByLetter.add(album);
+          AlbumCollection collection = getCollection(startingLetter, artistByLetter);
+          collection.getAlbums().add(album);
         }
 
         //fill albums by album letter
         String albumName = album.getName();
         if(!StringUtils.isEmpty(albumName)) {
           String startingLetter = album.getName().substring(0,1).toUpperCase();
-          if(!albumByLetter.containsKey(startingLetter)) {
-            List<Album> albums = new ArrayList<>();
-            albumByLetter.put(startingLetter, albums);
-          }
-          List<Album> albumsByLetter = albumByLetter.get(startingLetter);
-          albumsByLetter.add(album);
+          AlbumCollection collection = getCollection(startingLetter, albumByLetter);
+          collection.getAlbums().add(album);
         }
-
       }
+      sortResults();
       LOG.info("Music dictionary creation finished: created " + albums.size() + " albums.");
     } catch (RuntimeException re) {
       LOG.error("Error initializing google music: " + re.getMessage(), re);
       throw re;
+    }
+  }
+
+  /**
+   * Sorts all collection and the end of the dictionary creation.
+   */
+  private void sortResults() {
+    Collections.sort(albumByLetter, new AlbumCollectionComparator());
+    Collections.sort(artistByLetter, new AlbumCollectionComparator());
+
+    for(AlbumCollection collection : albumByLetter) {
+      Collections.sort(collection.getAlbums(), new AlbumNameComparator());
+    }
+
+    for(AlbumCollection collection : artistByLetter) {
+      Collections.sort(collection.getAlbums(), new AlbumArtistComparator());
     }
   }
 
@@ -204,7 +210,7 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
       apiSong.setAlbumArtUrl("http:" + song.getAlbumArtUrl());
     }
 
-    apiSong.setAlbum(song.getAlbum());
+    apiSong.setAlbumName(song.getAlbum());
     apiSong.setArtist(song.getAlbumArtist());
     if (StringUtils.isEmpty(song.getAlbumArtist()) && !StringUtils.isEmpty(song.getArtist())) {
       apiSong.setArtist(song.getArtist());
@@ -233,11 +239,11 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
    * @param song The song to add to the album.
    */
   private void addToAlbum(callete.api.services.music.model.Song song) {
-    if (!StringUtils.isEmpty(song.getAlbum())) {
+    if (!StringUtils.isEmpty(song.getAlbumName())) {
       //create the regular dict entry and add song to album
       Album album = getAlbum(song);
       if (!album.containsSong(song)) {
-        album.getSongs().add(song);
+        album.addSong(song);
       }
     }
   }
@@ -251,11 +257,11 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
    */
   private Album getAlbum(callete.api.services.music.model.Song song) {
     Album album;
-    if (!albums.containsKey(song.getAlbum())) {
-      album = new Album(song.getArtist(), song.getAlbum());
-      albums.put(song.getAlbum(), album);
+    if (!albums.containsKey(song.getAlbumName().toLowerCase())) {
+      album = new Album(song.getArtist(), song.getAlbumName());
+      albums.put(song.getAlbumName().toLowerCase(), album);
     } else {
-      album = albums.get(song.getAlbum());
+      album = albums.get(song.getAlbumName().toLowerCase());
     }
 
     if (!StringUtils.isEmpty(song.getAlbumArtUrl()) && StringUtils.isEmpty(album.getArtUrl())) {
@@ -272,6 +278,18 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
       album.setYear(song.getYear());
     }
     return album;
+  }
+
+  private AlbumCollection getCollection(String letter, List<AlbumCollection> collections) {
+    for(AlbumCollection collection : collections) {
+      if(collection.getLetter().equals(letter)) {
+        return collection;
+      }
+    }
+
+    AlbumCollection collection = new AlbumCollection(letter);
+    collections.add(collection);
+    return collection;
   }
 
   @Override

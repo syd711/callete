@@ -1,10 +1,7 @@
 package callete.api.services.music;
 
 import callete.api.services.Service;
-import callete.api.services.music.model.Album;
-import callete.api.services.music.model.Playlist;
-import callete.api.services.music.model.PlaylistItem;
-import callete.api.services.music.model.Song;
+import callete.api.services.music.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -65,12 +62,12 @@ public interface MusicService extends Service {
    * The letter is stored upper case in the map as key.
    * @return all albums accessable by their starting letter
    */
-  Map<String,List<Album>> getAlbumByNameLetter();
+  List<AlbumCollection> getAlbumByNameLetter();
 
   /**
    * Returns all albums sort by the artist's starting letter.
    * The letter is stored upper case in the map as key.
    * @return all albums accessable by their artist's starting letter
    */
-  Map<String,List<Album>> getAlbumsByArtistLetter();
+  List<AlbumCollection> getAlbumsByArtistLetter();
 }
