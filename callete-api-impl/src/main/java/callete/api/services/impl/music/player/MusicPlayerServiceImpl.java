@@ -1,5 +1,6 @@
 package callete.api.services.impl.music.player;
 
+import callete.api.services.music.model.Song;
 import callete.api.services.music.player.MusicPlayerPlaylist;
 import callete.api.services.music.player.MusicPlayerService;
 import callete.api.services.music.player.PlaybackChangeEvent;
@@ -74,6 +75,11 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
   }
 
   @Override
+  public void removePlaybackChangeEventListener(PlaybackChangeEventListener listener) {
+    listeners.remove(listener);
+  }
+
+  @Override
   public MusicPlayerPlaylist getPlaylist() {
     return playlist;
   }
@@ -84,7 +90,7 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
   private void init() {
     playlist = new MusicPlayerPlaylistImpl();
 
-    mpdPlayer = new MPDPlayer(playlist);
+    mpdPlayer = new MPDPlayer(this, playlist);
     mpdPlayer.connect();
   }
 

@@ -2,7 +2,6 @@ package callete.api.services.impl.music.streams;
 
 import callete.api.Callete;
 import callete.api.services.music.model.Stream;
-import callete.api.services.music.streams.StreamMetaDataProvider;
 import callete.api.services.music.streams.StreamingService;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -93,13 +92,10 @@ public class StreamingServiceImpl implements StreamingService {
         name = properties.getString(nameKey);
       }
 
-      try {
-        StreamMetaDataProvider metaDataProvider = new StreamMetaDataProviderImpl(new URL(url), name);
-        Stream info = new Stream(metaDataProvider);
-        streams.add(info);
-      } catch (MalformedURLException e) {
-        LOG.error("Error creating meta data provider for '" + url + "': " + e.getMessage(), e);
-      }
+      Stream info = new Stream();
+      info.setUrl(url);
+      info.setName(name);
+      streams.add(info);
     }
     return streams;
   }

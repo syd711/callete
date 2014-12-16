@@ -14,5 +14,5 @@ public interface ArtistResourcesService extends Service {
    * @param artist The artist to search for.
    * @return An image resource.
    */
-  ImageResource getImageResourceFor(String artist);
+  ImageResource getImageResourcesFor(String artist);
 }

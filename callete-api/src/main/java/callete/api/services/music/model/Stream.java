@@ -1,33 +1,54 @@
 package callete.api.services.music.model;
 
-import callete.api.services.music.streams.StreamMetaDataProvider;
-
-import java.io.IOException;
-
+/**
+ * Model used to playback internet radio streams.
+ */
 public class Stream implements PlaylistItem {
-  private StreamMetaDataProvider metaDataProvider;
+  private String artist;
+  private String title;
+  private String name;
+  private String url;
 
-  public Stream(StreamMetaDataProvider metaDataProvider) {
-    this.metaDataProvider = metaDataProvider;
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public void setArtist(String artist) {
+    this.artist = artist;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   /**
    * Get artist using stream's title
    */
-  public String getArtist() throws IOException {
-    return metaDataProvider.getArtist();
+  public String getArtist() {
+    return artist;
   }
 
   /**
    * Get title using stream's title
    */
-  public String getTitle() throws IOException {
-    return metaDataProvider.getArtist();
+  public String getTitle() {
+    return title;
+  }
+
+  /**
+   * Returns the name of the stream.
+   */
+  public String getName() {
+    return name;
   }
 
   @Override
   public String getPlaybackUrl() {
-    return metaDataProvider.getStreamUrl();
+    return url;
   }
 
   @Override

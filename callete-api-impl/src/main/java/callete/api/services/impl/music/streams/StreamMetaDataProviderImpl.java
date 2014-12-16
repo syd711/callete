@@ -21,6 +21,9 @@ import java.util.regex.Pattern;
  */
 public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
   private final static Logger LOG = LoggerFactory.getLogger(StreamMetaDataProviderImpl.class);
+  public static final String STREAM_ARTIST = "StreamArtist";
+  public static final String STREAM_TITLE = "StreamTitle";
+  public static final String STREAM_NAME = "StreamName";
   private Map<String, String> metadata;
   private URL url;
   private boolean available = true;
@@ -35,31 +38,35 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
   public String getArtist() {
     Map<String, String> data = getMetadata();
 
-    if (data == null || !data.containsKey("StreamTitle"))
+    if (data == null || !data.containsKey(STREAM_ARTIST)) {
       return "";
-
-    String streamTitle = data.get("StreamTitle");
-    if(streamTitle != null && streamTitle.length() > 0 && streamTitle.contains("-")) {
-      String title = streamTitle.substring(0, streamTitle.indexOf("-"));
-      return title.trim();
     }
-    return "";
+
+    return data.get(STREAM_ARTIST);
   }
 
   @Override
   public String getName() {
-    if(!StringUtils.isEmpty(name)) {
+    if (!StringUtils.isEmpty(name)) {
       return name;
     }
+    Map<String, String> data = getMetadata();
+    if (data == null || !data.containsKey(STREAM_NAME)) {
+      return "";
+    }
 
+    return data.get(STREAM_NAME);
+  }
+
+  @Override
+  public String getTitle() {
     Map<String, String> data = getMetadata();
 
-    if (data == null || !data.containsKey("StreamTitle"))
+    if (data == null || !data.containsKey(STREAM_TITLE)) {
       return "";
+    }
 
-    String streamTitle = data.get("StreamTitle");
-    String artist = streamTitle.substring(streamTitle.indexOf("-")+1);
-    return artist.trim();
+    return data.get(STREAM_TITLE);
   }
 
   @Override
@@ -78,7 +85,7 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
    * Lazy loading of the the stream's meta data.
    */
   private Map<String, String> getMetadata() {
-    if (metadata == null) {
+    if (metadata == null && available) {
       retreiveMetadata();
     }
 
@@ -91,12 +98,30 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
   private Map<String, String> parseMetadata(String metaString) {
     Map<String, String> metadata = new HashMap<>();
     String[] metaParts = metaString.split(";");
-    Pattern p = Pattern.compile("^([a-zA-Z]+)=\\'([^\\']*)\\'$");
-    Matcher m;
-    for (String metaPart : metaParts) {
-      m = p.matcher(metaPart);
-      if (m.find()) {
-        metadata.put(m.group(1), m.group(2));
+    for(String part : metaParts) {
+      if(part.contains("=")) {
+        String[] items = part.split("=");
+        metadata.put(items[0], items[1]);
+      }
+    }
+
+    String streamTitle = metadata.get(STREAM_TITLE);
+    if(!StringUtils.isEmpty(streamTitle)) {
+      if(streamTitle.startsWith("'")) {
+        streamTitle = streamTitle.substring(1, streamTitle.length());
+      }
+      if(streamTitle.endsWith("'")) {
+        streamTitle = streamTitle.substring(0, streamTitle.length()-1);
+      }
+
+      if(streamTitle.contains("-")) {
+        String artist = streamTitle.substring(0, streamTitle.indexOf("-"));
+        metadata.put(STREAM_ARTIST, artist.trim());
+        String title = streamTitle.substring(streamTitle.indexOf("-")+1, streamTitle.length());
+        metadata.put(STREAM_TITLE, title.trim());
+      }
+      else {
+        metadata.put(STREAM_NAME, streamTitle);
       }
     }
 
@@ -181,7 +206,8 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
       // Close
       stream.close();
     } catch (IOException e) {
-      LOG.error("Error retrieving meta data for stream " + getStreamUrl() + ": " + e.getMessage(), e);
+      available = false;
+      LOG.error("Error retrieving meta data for stream " + getStreamUrl() + ": " + e.getMessage());
     }
   }
 }

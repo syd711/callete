@@ -16,6 +16,12 @@ public interface StreamMetaDataProvider {
    */
   String getName();
 
+
+  /**
+   * Returns the name of the stream.
+   */
+  String getTitle();
+
   /**
    * Returns the URL the stream is streamed from.
    */

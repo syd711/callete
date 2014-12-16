@@ -1,6 +1,7 @@
 package callete.api.services.music.player;
 
 import callete.api.services.Service;
+import callete.api.services.music.model.Song;
 
 /**
  * Service interface to be implemented for a player.
@@ -46,4 +47,10 @@ public interface MusicPlayerService extends Service {
    * @param listener the listener to register.
    */
   void addPlaybackChangeEventListener(PlaybackChangeEventListener listener);
+
+  /**
+   * Removes the listener from the player.
+   * @param listener the listener to remove.
+   */
+  void removePlaybackChangeEventListener(PlaybackChangeEventListener listener);
 }

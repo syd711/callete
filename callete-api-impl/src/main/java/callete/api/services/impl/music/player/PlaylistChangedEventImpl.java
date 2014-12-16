@@ -10,13 +10,22 @@ import java.util.List;
  * Implementation of the PlaylistChangeEvent interface.
  */
 public class PlaylistChangedEventImpl implements PlaylistChangeEvent {
+
+  private List<PlaylistItem> items;
+  private PlaylistItem activeItem;
+
+  public PlaylistChangedEventImpl(List<PlaylistItem> items, PlaylistItem activeItem) {
+    this.items = items;
+    this.activeItem = activeItem;
+  }
+
   @Override
   public List<PlaylistItem> getPlaylistItems() {
-    return Callete.getMusicPlayer().getPlaylist().getPlaylistItems();
+    return items;
   }
 
   @Override
   public PlaylistItem getActiveItem() {
-    return Callete.getMusicPlayer().getPlaylist().getActiveItem();
+    return activeItem;
   }
 }

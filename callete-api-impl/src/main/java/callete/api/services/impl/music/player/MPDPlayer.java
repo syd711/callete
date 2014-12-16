@@ -2,6 +2,7 @@ package callete.api.services.impl.music.player;
 
 import callete.api.Callete;
 import callete.api.services.music.model.PlaylistItem;
+import callete.api.services.music.model.Song;
 import callete.api.services.music.player.MusicPlayerPlaylist;
 import callete.api.util.SystemUtils;
 import org.apache.commons.configuration.Configuration;
@@ -9,6 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import org.bff.javampd.MPD;
 import org.bff.javampd.events.MPDErrorEvent;
 import org.bff.javampd.events.MPDErrorListener;
+import org.bff.javampd.events.OutputChangeEvent;
+import org.bff.javampd.events.OutputChangeListener;
 import org.bff.javampd.exception.MPDPlayerException;
 import org.bff.javampd.exception.MPDPlaylistException;
 import org.bff.javampd.exception.MPDResponseException;
@@ -19,7 +22,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Wraps all music player action which are delegated by the MusicPlayerServiceImpl.
  */
-public class MPDPlayer implements MPDErrorListener {
+public class MPDPlayer implements MPDErrorListener, OutputChangeListener {
   private final static Logger LOG = LoggerFactory.getLogger(MPDPlayer.class);
 
   public static final String MPD_STATE_PAUSED = "pause";
@@ -29,9 +32,9 @@ public class MPDPlayer implements MPDErrorListener {
   private MusicPlayerPlaylist playlist;
   private MPDPlaylistMonitor monitor;
 
-  public MPDPlayer(MusicPlayerPlaylist playlist) {
+  public MPDPlayer(MusicPlayerServiceImpl musicPlayerService, MusicPlayerPlaylist playlist) {
     this.playlist = playlist;
-    this.monitor = new MPDPlaylistMonitor(this);
+    this.monitor = new MPDPlaylistMonitor(musicPlayerService, this, playlist);
   }
 
   public boolean play() {
@@ -90,12 +93,15 @@ public class MPDPlayer implements MPDErrorListener {
       mpd.getPlaylist().clearPlaylist();
       mpd.getPlaylist().addSong(mpdSong);
       mpd.getPlayer().play();
-
     } catch (MPDPlaylistException e) {
       LOG.error("MPD playlist exception: " + e.getMessage(), e);
     } catch (MPDPlayerException e) {
       LOG.error("MPD player exception: " + e.getMessage(), e);
     }
+  }
+
+  public MPD getClient() {
+    return mpd;
   }
 
   /**
@@ -116,6 +122,7 @@ public class MPDPlayer implements MPDErrorListener {
 
       //register several listeners to be used for monitoring and playing.
       mpd.getMonitor().addMPDErrorListener(this);
+      mpd.getMonitor().addOutputChangeListener(this);
 
       LOG.info("MPD Version:" + mpd.getVersion());
       return true;
@@ -153,5 +160,10 @@ public class MPDPlayer implements MPDErrorListener {
   @Override
   public void errorEventReceived(MPDErrorEvent mpdErrorEvent) {
     LOG.error("MPD Error event: " + mpdErrorEvent.getMsg());
+  }
+
+  @Override
+  public void outputChanged(OutputChangeEvent event) {
+    System.out.println(event.getSource());
   }
 }

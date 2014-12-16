@@ -2,7 +2,6 @@ package callete.api.services.impl.music.google;
 
 import callete.api.services.music.MusicSearchResult;
 import callete.api.services.music.MusicServiceAuthenticationException;
-import callete.api.services.music.MusicServiceImpl;
 import callete.api.services.music.google.GoogleMusicService;
 import callete.api.services.music.model.Album;
 import callete.api.services.music.model.AlbumCollection;
@@ -10,14 +9,13 @@ import callete.api.services.music.model.Playlist;
 import callete.api.services.music.model.Song;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation of the Google Music Service, using jkiddo's API which can be found here:
  * https://github.com/jkiddo/gmusic.api
  */
 @SuppressWarnings("unused")
-public class GoogleMusicServiceImpl extends MusicServiceImpl implements GoogleMusicService {
+public class GoogleMusicServiceImpl implements GoogleMusicService {
   private JkiddoGoogleApi api = new JkiddoGoogleApi();
 
   @Override

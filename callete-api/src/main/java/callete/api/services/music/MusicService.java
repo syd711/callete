@@ -4,7 +4,6 @@ import callete.api.services.Service;
 import callete.api.services.music.model.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Interface to be implemented by all music services, like Google, Spotify or local file system support.
@@ -44,18 +43,6 @@ public interface MusicService extends Service {
    * @param term The search term used for the search.
    */
   MusicSearchResult search(String term);
-
-  /**
-   * Playback of a single song.
-   * @param item The item to play.
-   */
-  void play(PlaylistItem item);
-
-  /**
-   * Playback of a playlist which can be an album too.
-   * @param list playlist to play.
-   */
-  void playPlaylist(Playlist list);
 
   /**
    * Returns all albums sort by the starting letter.

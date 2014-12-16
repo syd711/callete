@@ -17,21 +17,15 @@ public interface MusicPlayerPlaylist {
   PlaylistItem getActiveItem();
 
   /**
-   * Adds a item to the add.
-   * @param item the item to add to the addItem.
+   * Sets the given item from the playlist as active item.
+   * @param item
    */
-  void addItem(PlaylistItem item);
-
-  /**
-   * Adds a list of items to the playlist.
-   * @param items the items to add
-   */
-  void addItems(List<? extends PlaylistItem> items);
+  void setActiveItem(PlaylistItem item);
 
   /**
    * Queues all songs of the given playlist to the addItem.
    */
-  void addPlaylist(Playlist playlist);
+  void setPlaylist(Playlist playlist);
 
   /**
    * Removes all songs from the playlist.
@@ -52,6 +46,24 @@ public interface MusicPlayerPlaylist {
    * Adds a change listener to the playlist to listen for playlist changes.
    */
   void addChangeListener(PlaylistChangeListener listener);
+
+  /**
+   * Removes the change listener from the playlist.
+   * @param listener
+   */
+  void removeChangeListener(PlaylistChangeListener listener);
+
+  /**
+   * Adds a meta data change listener to the playlist. The listener is notified
+   * when the meta data of the current playlist item is updated, e.g. the title of a radio stream.
+   * @param listener The listener to add.
+   */
+  void addMetaDataChangeListener(PlaylistMetaDataChangeListener listener);
+
+  /**
+   * Updates the meta data of the playlist, fired the changes listeners afterwards.
+   */
+  void updateMetaData(PlaylistMetaData metaData);
 
   /**
    * Returns all item on the getActiveItem playlist.

@@ -2,9 +2,7 @@ package callete.api.services.impl.music.player;
 
 import callete.api.services.music.model.Playlist;
 import callete.api.services.music.model.PlaylistItem;
-import callete.api.services.music.player.MusicPlayerPlaylist;
-import callete.api.services.music.player.PlaylistChangeEvent;
-import callete.api.services.music.player.PlaylistChangeListener;
+import callete.api.services.music.player.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +13,8 @@ import java.util.List;
  * This way it is ensured that always the complete model is returned when methods of the playlist are called.
  */
 public class MusicPlayerPlaylistImpl implements MusicPlayerPlaylist {
+  private List<PlaylistMetaDataChangeListener> metaDataChangeListeners = new ArrayList<>();
+
   //the model used to store the getActiveItem playlist in.
   private List<PlaylistItem> playlist = new ArrayList<>();
 
@@ -25,6 +25,13 @@ public class MusicPlayerPlaylistImpl implements MusicPlayerPlaylist {
   private int playbackIndex = 0;
 
   @Override
+  public void updateMetaData(PlaylistMetaData metaData) {
+    for(PlaylistMetaDataChangeListener listener : metaDataChangeListeners) {
+      listener.updateMetaData(metaData);
+    }
+  }
+
+  @Override
   public PlaylistItem getActiveItem() {
     if (!playlist.isEmpty()) {
       return playlist.get(playbackIndex);
@@ -33,26 +40,28 @@ public class MusicPlayerPlaylistImpl implements MusicPlayerPlaylist {
   }
 
   @Override
-  public void addItem(PlaylistItem item) {
-    firePlaylistChangedEvent();
-    this.playlist.add(item);
-  }
-
-  @Override
-  public void addPlaylist(Playlist playlist) {
-    firePlaylistChangedEvent();
+  public void setPlaylist(Playlist playlist) {
+    clear();
     this.playlist.addAll(playlist.getSongs());
+    firePlaylistChangedEvent();
   }
 
   @Override
-  public void addItems(List<? extends PlaylistItem> items) {
+  public void setActiveItem(PlaylistItem item) {
+    if(playlist.contains(item)) {
+      playbackIndex = playlist.indexOf(item);
+    }
+    else {
+      playbackIndex = 0;
+      playlist.clear();
+      playlist.add(item);
+    }
     firePlaylistChangedEvent();
-    this.playlist.addAll(items);
   }
 
   @Override
   public void clear() {
-    firePlaylistChangedEvent();
+    playbackIndex = 0;
     this.playlist.clear();
   }
 
@@ -60,10 +69,12 @@ public class MusicPlayerPlaylistImpl implements MusicPlayerPlaylist {
   public PlaylistItem next() {
     playbackIndex++;
     if(playlist.size() > playbackIndex) {
+      firePlaylistChangedEvent();
       return playlist.get(playbackIndex);
     }
     //reset index to the last position
     playbackIndex--;
+    firePlaylistChangedEvent();
     return null;
   }
 
@@ -71,15 +82,26 @@ public class MusicPlayerPlaylistImpl implements MusicPlayerPlaylist {
   public PlaylistItem previous() {
     playbackIndex--;
     if(playbackIndex >= 0 && playbackIndex < playlist.size()) {
+      firePlaylistChangedEvent();
       return playlist.get(playbackIndex);
     }
     playbackIndex++;
+    firePlaylistChangedEvent();
     return null;
   }
 
   @Override
   public void addChangeListener(PlaylistChangeListener listener) {
     changeListeners.add(listener);
+  }
+
+  @Override
+  public void removeChangeListener(PlaylistChangeListener listener) {
+    changeListeners.remove(listener);
+  }
+
+  public void addMetaDataChangeListener(PlaylistMetaDataChangeListener listener) {
+    this.metaDataChangeListeners.add(listener);
   }
 
   @Override
@@ -90,7 +112,7 @@ public class MusicPlayerPlaylistImpl implements MusicPlayerPlaylist {
   // ---------------------- Helper ----------------------------
 
   private void firePlaylistChangedEvent() {
-    PlaylistChangeEvent e = new PlaylistChangedEventImpl();
+    PlaylistChangeEvent e = new PlaylistChangedEventImpl(playlist, getActiveItem());
     for(PlaylistChangeListener l : changeListeners) {
       l.playlistChanged(e);
     }

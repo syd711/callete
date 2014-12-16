@@ -1,5 +1,9 @@
 package callete.api.services.impl.music.player;
 
+import callete.api.services.music.player.MusicPlayerPlaylist;
+import callete.api.services.music.player.MusicPlayerService;
+import callete.api.services.music.player.PlaylistMetaData;
+import org.bff.javampd.objects.MPDSong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,11 +19,15 @@ public class MPDPlaylistMonitor extends Thread {
 
   private boolean running = true;
   private boolean monitoring = false;
-  private MPDPlayer player;
+  private MusicPlayerService player;
+  private MPDPlayer mpdPlayer;
+  private MusicPlayerPlaylist playlist;
 
-  public MPDPlaylistMonitor(MPDPlayer player) {
+  public MPDPlaylistMonitor(MusicPlayerService player, MPDPlayer mpdPlayer, MusicPlayerPlaylist playlist) {
     super("MPD Playlist Monitoring Thread");
     this.player = player;
+    this.mpdPlayer = mpdPlayer;
+    this.playlist = playlist;
     this.start();
   }
 
@@ -27,14 +35,23 @@ public class MPDPlaylistMonitor extends Thread {
   public void run() {
     try {
       while (running) {
-        if(monitoring) {
-          if (!player.isPlaying() && !player.isPaused()) {
+        if (monitoring) {
+          if (!mpdPlayer.isPlaying() && !mpdPlayer.isPaused()) {
             player.next();
           }
         }
+        //sleep for the defined monitoring interval
         Thread.sleep(POLL_INTERVAL);
+
+        MPDSong currentSong = mpdPlayer.getClient().getPlayer().getCurrentSong();
+        if (currentSong != null) {
+          PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(playlist.getActiveItem(), currentSong);
+          if (metaData != null) {
+            playlist.updateMetaData(metaData);
+          }
+        }
       }
-    } catch (InterruptedException e) {
+    } catch (Exception e) {
       LOG.error("Error in MPD monitoring thread: " + e.getMessage(), e);
     }
   }
