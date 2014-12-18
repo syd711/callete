@@ -1,9 +1,9 @@
 package callete.api.services.impl.music.player;
 
+import callete.api.Callete;
 import callete.api.services.music.player.MusicPlayerPlaylist;
 import callete.api.services.music.player.MusicPlayerService;
 import callete.api.services.music.player.PlaylistMetaData;
-import org.bff.javampd.objects.MPDSong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,12 +22,20 @@ public class MPDPlaylistMonitor extends Thread {
   private MusicPlayerService player;
   private MPDPlayer mpdPlayer;
   private MusicPlayerPlaylist playlist;
+  private MPDTelnetClient telnetClient;
+  private PlaylistMetaData latestMetaData;
 
   public MPDPlaylistMonitor(MusicPlayerService player, MPDPlayer mpdPlayer, MusicPlayerPlaylist playlist) {
     super("MPD Playlist Monitoring Thread");
     this.player = player;
     this.mpdPlayer = mpdPlayer;
     this.playlist = playlist;
+
+    String host = Callete.getConfiguration().getString("mpd.host");
+    int port = Callete.getConfiguration().getInt("mpd.port");
+    telnetClient = new MPDTelnetClient(host, port);
+    telnetClient.connect();
+
     this.start();
   }
 
@@ -43,10 +51,11 @@ public class MPDPlaylistMonitor extends Thread {
         //sleep for the defined monitoring interval
         Thread.sleep(POLL_INTERVAL);
 
-        MPDSong currentSong = mpdPlayer.getClient().getPlayer().getCurrentSong();
-        if (currentSong != null) {
-          PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(playlist.getActiveItem(), currentSong);
-          if (metaData != null) {
+        String playlistInfo = telnetClient.playlistInfo();
+        if (playlistInfo != null) {
+          PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(playlist.getActiveItem(), playlistInfo);
+          if (metaData != null && (latestMetaData == null || !metaData.equals(latestMetaData))) {
+            latestMetaData = metaData;
             playlist.updateMetaData(metaData);
           }
         }

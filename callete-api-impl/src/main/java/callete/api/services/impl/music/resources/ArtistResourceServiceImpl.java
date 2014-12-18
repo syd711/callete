@@ -2,13 +2,14 @@ package callete.api.services.impl.music.resources;
 
 import callete.api.Callete;
 import callete.api.services.music.resources.ArtistResourcesService;
-import callete.api.services.music.resources.ImageResource;
+import callete.api.services.music.resources.ImageResources;
 import com.echonest.api.v4.*;
+import com.google.common.collect.EvictingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Random;
+import java.util.Queue;
 
 /**
  * Implementation of the ArtistResourceService interface.
@@ -20,6 +21,7 @@ public class ArtistResourceServiceImpl implements ArtistResourcesService {
   private final static Logger LOG = LoggerFactory.getLogger(ArtistResourceServiceImpl.class);
 
   private EchoNestAPI api;
+  private Queue<String> ignoreQueue = EvictingQueue.create(100);
 
   public ArtistResourceServiceImpl() {
     super();
@@ -35,7 +37,11 @@ public class ArtistResourceServiceImpl implements ArtistResourcesService {
   }
 
   @Override
-  public ImageResource getImageResourcesFor(String name) {
+  public ImageResources getImageResourcesFor(String name) {
+    if(ignoreQueue.contains(name)) {
+      return null;
+    }
+
     try {
       Params p = new Params();
       p.add("name", name);
@@ -46,9 +52,10 @@ public class ArtistResourceServiceImpl implements ArtistResourcesService {
       for (Artist artist : artists) {
         List<Image> images = artist.getImages();
         LOG.info("Created image resource with " + images.size() + " images for artist '" + name + "'");
-        return new ImageResourceImpl(name, images);
+        return new ImageResourcesImpl(name, images);
       }
       if(artists.isEmpty()) {
+        ignoreQueue.add(name);
         LOG.info("No images found for artist '" + name + "'");
       }
     } catch (EchoNestException e) {

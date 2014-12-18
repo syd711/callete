@@ -3,10 +3,14 @@ package callete.api.services.music.resources;
 import java.awt.image.BufferedImage;
 
 /**
- * Interface to be implemented by services that provide artist image data.
+ * Image wrapper to retrieve format metadata used
+ * during scaling and cropping.
  */
 public interface ImageResource {
-  BufferedImage getRandomImage(int width, int height);
+  public String getUrl();
 
-  javafx.scene.canvas.Canvas getRandomFXImageCanvas(int width, int height);
+  public String getImageFormat();
+
+  public BufferedImage getImage();
 }
+
