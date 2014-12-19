@@ -1,7 +1,10 @@
 package callete.api.services.music;
 
 import callete.api.services.Service;
-import callete.api.services.music.model.*;
+import callete.api.services.music.model.Album;
+import callete.api.services.music.model.AlbumCollection;
+import callete.api.services.music.model.Playlist;
+import callete.api.services.music.model.Song;
 
 import java.util.List;
 

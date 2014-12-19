@@ -53,8 +53,10 @@ public class MPDPlaylistMonitor extends Thread {
 
         String playlistInfo = telnetClient.playlistInfo();
         if (playlistInfo != null) {
-          PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(playlist.getActiveItem(), playlistInfo);
-          if (metaData != null && (latestMetaData == null || !metaData.equals(latestMetaData))) {
+          final PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(playlist.getActiveItem(), playlistInfo);
+          LOG.info("Created " + metaData);
+          if (metaData != null && metaData.isValid() && (latestMetaData == null || !metaData.equals(latestMetaData))) {
+            LOG.info("Updating " + metaData);
             latestMetaData = metaData;
             playlist.updateMetaData(metaData);
           }

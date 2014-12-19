@@ -49,7 +49,7 @@ public interface MusicPlayerPlaylist {
 
   /**
    * Removes the change listener from the playlist.
-   * @param listener
+   * @param listener the listener to remove
    */
   void removeChangeListener(PlaylistChangeListener listener);
 
@@ -59,6 +59,12 @@ public interface MusicPlayerPlaylist {
    * @param listener The listener to add.
    */
   void addMetaDataChangeListener(PlaylistMetaDataChangeListener listener);
+
+  /**
+   * Removes a meta data change listener to the playlist.
+   * @param listener The listener to remove.
+   */
+  void removeMetaDataChangeListener(PlaylistMetaDataChangeListener listener);
 
   /**
    * Updates the meta data of the playlist, fired the changes listeners afterwards.

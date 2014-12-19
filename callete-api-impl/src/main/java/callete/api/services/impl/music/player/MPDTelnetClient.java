@@ -81,7 +81,7 @@ public class MPDTelnetClient {
       synchronized (this) {
         executeTelnetCommand("playlistinfo");
         try {
-          Thread.sleep(100);
+          Thread.sleep(200);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
@@ -89,7 +89,8 @@ public class MPDTelnetClient {
       }
     }
     else {
-      LOG.error("Failed to retrieve mpc playlist info: " + this + " is not connected.");
+      LOG.error("Failed to retrieve mpc playlist info: " + this + " is not connected, trying to reconnect...");
+      connect();
     }
     return null;
   }

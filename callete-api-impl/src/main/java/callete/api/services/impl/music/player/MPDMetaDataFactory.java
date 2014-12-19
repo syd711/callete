@@ -1,10 +1,8 @@
 package callete.api.services.impl.music.player;
 
 import callete.api.services.music.model.PlaylistItem;
-import callete.api.services.music.model.Stream;
 import callete.api.services.music.player.PlaylistMetaData;
 import org.apache.commons.lang.StringUtils;
-import org.bff.javampd.objects.MPDSong;
 
 /**
  * Meta data factory to retrieve meta data from a MPD client.
@@ -56,6 +54,13 @@ public class MPDMetaDataFactory {
 
       if(title.contains("|")) {
         title = title.substring(0, title.indexOf("|"));
+      }
+
+      if (artist.startsWith("'") || artist.startsWith("\"")) {
+        artist = artist.substring(1, artist.length());
+      }
+      if (artist.endsWith("'") || artist.endsWith("\"")) {
+        artist = artist.substring(0, artist.length() - 1);
       }
     }
     return new PlaylistMetaData(item, name, artist, title);

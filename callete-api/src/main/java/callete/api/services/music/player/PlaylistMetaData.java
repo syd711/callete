@@ -18,6 +18,10 @@ public class PlaylistMetaData {
     this.name = name;
   }
 
+  public boolean isValid() {
+    return !String.valueOf(artist).equals("0") && !String.valueOf(title).equals("0") && !String.valueOf(title).equals(String.valueOf(artist));
+  }
+
   public String getArtist() {
     return artist;
   }
@@ -40,5 +44,10 @@ public class PlaylistMetaData {
     return item.getPlaybackUrl().equals(compare.getItem().getPlaybackUrl())
             && String.valueOf(title).equals(String.valueOf(compare.getTitle()))
             && String.valueOf(name).equals(String.valueOf(compare.getName()));
+  }
+
+  @Override
+  public String toString() {
+    return "Meta data for Stream '" + name + "': " + artist + " - " + title;
   }
 }

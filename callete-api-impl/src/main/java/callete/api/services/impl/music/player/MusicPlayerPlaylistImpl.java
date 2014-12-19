@@ -100,8 +100,14 @@ public class MusicPlayerPlaylistImpl implements MusicPlayerPlaylist {
     changeListeners.remove(listener);
   }
 
+  @Override
   public void addMetaDataChangeListener(PlaylistMetaDataChangeListener listener) {
     this.metaDataChangeListeners.add(listener);
+  }
+
+  @Override
+  public void removeMetaDataChangeListener(PlaylistMetaDataChangeListener listener) {
+    this.metaDataChangeListeners.remove(listener);
   }
 
   @Override

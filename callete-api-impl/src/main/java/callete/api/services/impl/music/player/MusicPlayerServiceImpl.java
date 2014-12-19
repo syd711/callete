@@ -1,6 +1,5 @@
 package callete.api.services.impl.music.player;
 
-import callete.api.services.music.model.Song;
 import callete.api.services.music.player.MusicPlayerPlaylist;
 import callete.api.services.music.player.MusicPlayerService;
 import callete.api.services.music.player.PlaybackChangeEvent;

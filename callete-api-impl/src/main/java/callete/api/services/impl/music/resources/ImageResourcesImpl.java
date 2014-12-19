@@ -9,9 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +32,10 @@ public class ImageResourcesImpl implements ImageResources {
   @Override
   public ImageResource getRandomImage(int width, int height) {
     ImageResource randomImage = getRandomImage();
+    if(randomImage == null) {
+      return null;
+    }
+
     BufferedImage image = randomImage.getImage();
     try {
       if (image != null) {
@@ -49,17 +50,23 @@ public class ImageResourcesImpl implements ImageResources {
             double heightRatio = height / imageHeight;
             double scaleWidth = imageWidth * heightRatio;
             double scaleHeight = imageHeight * heightRatio;
-            resize = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT, (int) scaleWidth, (int) scaleHeight, Scalr.OP_ANTIALIAS);
+            if(scaleWidth < width) {
+              double widthFactor = width/scaleWidth;
+              scaleWidth = scaleWidth*widthFactor;
+              scaleHeight = scaleHeight*widthFactor;
+            }
+            resize = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT, (int) scaleWidth+1, (int) scaleHeight+1, Scalr.OP_ANTIALIAS);
           }
           else {
             double widthRatio = width / imageWidth;
             double scaleWidth = imageWidth * widthRatio;
             double scaleHeight = imageHeight * widthRatio;
-            resize = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH, (int) scaleWidth, (int) scaleHeight, Scalr.OP_ANTIALIAS);
+            resize = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH, (int) scaleWidth+1, (int) scaleHeight+1, Scalr.OP_ANTIALIAS);
           }
 
           LOG.info("Scaled image to " + resize.getWidth() + "x" + resize.getHeight());
           resize = Scalr.crop(resize, width, height, Scalr.OP_ANTIALIAS, Scalr.OP_DARKER);
+          LOG.info("Cropped image to " + resize.getWidth() + "x" + resize.getHeight());
           return new ImageResourceImpl(randomImage.getUrl(), resize);
         }
       }

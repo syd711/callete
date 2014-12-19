@@ -1,7 +1,6 @@
 package callete.api.services.music.player;
 
 import callete.api.services.Service;
-import callete.api.services.music.model.Song;
 
 /**
  * Service interface to be implemented for a player.
