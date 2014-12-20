@@ -19,7 +19,10 @@ public class PlaylistMetaData {
   }
 
   public boolean isValid() {
-    return !String.valueOf(artist).equals("0") && !String.valueOf(title).equals("0") && !String.valueOf(title).equals(String.valueOf(artist));
+    return !String.valueOf(artist).equals("0")
+            && !String.valueOf(title).equals("0")
+            && !String.valueOf(name).equals("0")
+            && !String.valueOf(title).equals(String.valueOf(artist));
   }
 
   public String getArtist() {

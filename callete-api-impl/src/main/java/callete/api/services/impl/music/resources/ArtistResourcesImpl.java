@@ -51,7 +51,7 @@ public class ArtistResourcesImpl implements ArtistResources {
         double imageWidth = image.getWidth();
         double imageHeight = image.getHeight();
 
-        //e.g. 1280x1606
+        //e.g. 533x800
         if (width >= height) {
           if (imageWidth > imageHeight) {
             double heightRatio = height / imageHeight;
