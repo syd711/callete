@@ -42,8 +42,8 @@ public class MPDMetaDataFactory {
       }
 
       if (title.contains("-")) {
-        artist = title.substring(0, title.indexOf("-")).trim();
-        title = title.substring(title.indexOf("-") + 1, title.length()).trim();
+        artist = title.substring(0, title.lastIndexOf("-")).trim();
+        title = title.substring(title.lastIndexOf("-") + 1, title.length()).trim();
       }
 
       //some german stations using a word as separator

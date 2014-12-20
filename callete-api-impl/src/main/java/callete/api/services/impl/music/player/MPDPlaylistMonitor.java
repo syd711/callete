@@ -17,13 +17,11 @@ public class MPDPlaylistMonitor extends Thread {
 
   private final static int POLL_INTERVAL = 2000;
 
-  private boolean running = true;
   private boolean monitoring = false;
   private MusicPlayerService player;
   private MPDPlayer mpdPlayer;
   private MusicPlayerPlaylist playlist;
   private MPDTelnetClient telnetClient;
-  private PlaylistMetaData latestMetaData;
 
   public MPDPlaylistMonitor(MusicPlayerService player, MPDPlayer mpdPlayer, MusicPlayerPlaylist playlist) {
     super("MPD Playlist Monitoring Thread");
@@ -42,7 +40,7 @@ public class MPDPlaylistMonitor extends Thread {
   @Override
   public void run() {
     try {
-      while (running) {
+      while (isRunning()) {
         if (monitoring) {
           if (!mpdPlayer.isPlaying() && !mpdPlayer.isPaused()) {
             player.next();
@@ -54,10 +52,9 @@ public class MPDPlaylistMonitor extends Thread {
         String playlistInfo = telnetClient.playlistInfo();
         if (playlistInfo != null) {
           final PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(playlist.getActiveItem(), playlistInfo);
-          LOG.info("Created " + metaData);
-          if (metaData != null && metaData.isValid() && (latestMetaData == null || !metaData.equals(latestMetaData))) {
-            LOG.info("Updating " + metaData);
-            latestMetaData = metaData;
+//          LOG.info("Created " + metaData);
+          if (metaData != null && metaData.isValid()) {
+//            LOG.info("Updating " + metaData);
             playlist.updateMetaData(metaData);
           }
         }
@@ -75,4 +72,7 @@ public class MPDPlaylistMonitor extends Thread {
     this.monitoring = false;
   }
 
+  public boolean isRunning() {
+    return true;
+  }
 }

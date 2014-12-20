@@ -1,7 +1,7 @@
 package callete.api.services.impl.music.resources;
 
+import callete.api.services.music.resources.ArtistResources;
 import callete.api.services.music.resources.ImageResource;
-import callete.api.services.music.resources.ImageResources;
 import com.echonest.api.v4.Image;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
@@ -18,21 +18,30 @@ import java.util.Random;
 /**
  * Image resource implementation, used for caching, sizing and cropping.
  */
-public class ImageResourcesImpl implements ImageResources {
-  private final static int MIN_IMAGE_SIZE = 400;
-  private final static Logger LOG = LoggerFactory.getLogger(ImageResourcesImpl.class);
+public class ArtistResourcesImpl implements ArtistResources {
+  private final static Logger LOG = LoggerFactory.getLogger(ArtistResourcesImpl.class);
   private List<Image> images = new ArrayList<>();
   private String artist;
 
-  public ImageResourcesImpl(String artist, List<Image> images) {
+  public ArtistResourcesImpl(String artist, List<Image> images) {
     this.images = images;
     this.artist = artist;
   }
 
   @Override
-  public ImageResource getRandomImage(int width, int height) {
-    ImageResource randomImage = getRandomImage();
-    if(randomImage == null) {
+  public boolean isEmpty() {
+    return images.isEmpty();
+  }
+
+  @Override
+  public String getArtist() {
+    return artist;
+  }
+
+  @Override
+  public ImageResource getRandomImage(int width, int height, int minImageSize) {
+    ImageResource randomImage = getRandomImage(minImageSize);
+    if (randomImage == null) {
       return null;
     }
 
@@ -42,33 +51,32 @@ public class ImageResourcesImpl implements ImageResources {
         double imageWidth = image.getWidth();
         double imageHeight = image.getHeight();
 
-        BufferedImage resize;
-
-        //e.g. 457x300
+        //e.g. 1280x1606
         if (width >= height) {
-          if (imageWidth > imageHeight && imageHeight < height) {
+          if (imageWidth > imageHeight) {
             double heightRatio = height / imageHeight;
             double scaleWidth = imageWidth * heightRatio;
             double scaleHeight = imageHeight * heightRatio;
-            if(scaleWidth < width) {
-              double widthFactor = width/scaleWidth;
-              scaleWidth = scaleWidth*widthFactor;
-              scaleHeight = scaleHeight*widthFactor;
+            if (scaleWidth < width) {
+              double widthFactor = width / scaleWidth;
+              scaleWidth = scaleWidth * widthFactor;
+              scaleHeight = scaleHeight * widthFactor;
             }
-            resize = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT, (int) scaleWidth+1, (int) scaleHeight+1, Scalr.OP_ANTIALIAS);
+            image = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT, (int) scaleWidth + 1, (int) scaleHeight + 1, Scalr.OP_ANTIALIAS);
           }
           else {
             double widthRatio = width / imageWidth;
             double scaleWidth = imageWidth * widthRatio;
             double scaleHeight = imageHeight * widthRatio;
-            resize = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH, (int) scaleWidth+1, (int) scaleHeight+1, Scalr.OP_ANTIALIAS);
+            image = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH, (int) scaleWidth + 1, (int) scaleHeight + 1, Scalr.OP_ANTIALIAS);
           }
 
-          LOG.info("Scaled image to " + resize.getWidth() + "x" + resize.getHeight());
-          resize = Scalr.crop(resize, width, height, Scalr.OP_ANTIALIAS, Scalr.OP_DARKER);
-          LOG.info("Cropped image to " + resize.getWidth() + "x" + resize.getHeight());
-          return new ImageResourceImpl(randomImage.getUrl(), resize);
+          LOG.info("Scaled image to " + image.getWidth() + "x" + image.getHeight());
         }
+
+        image = Scalr.crop(image, width, height, Scalr.OP_ANTIALIAS, Scalr.OP_DARKER);
+        LOG.info("Cropped image to " + image.getWidth() + "x" + image.getHeight());
+        return new ImageResourceImpl(randomImage.getUrl(), image);
       }
     } catch (Exception e) {
       LOG.error("Error retrieving image for artist " + artist + ": " + e.getMessage(), e);
@@ -78,18 +86,27 @@ public class ImageResourcesImpl implements ImageResources {
   }
 
   @Override
-  public ImageResource getRandomImage() {
+  public ImageResource getRandomImage(int minImageSize) {
     try {
       //we return the first image that matches the size, so lets randomize them
       long seed = System.nanoTime();
       Collections.shuffle(images, new Random(seed));
+
+      //no image size given, so apply first randomized hit
+      if(minImageSize <= 0 && !images.isEmpty()) {
+        Image image = images.get(0);
+        URL imageURL = new URL(image.getURL());
+        BufferedImage bufferedImage = ImageIO.read(imageURL);
+        return new ImageResourceImpl(image.getURL(), bufferedImage);
+      }
 
       for (Image image : images) {
         URL imageURL = new URL(image.getURL());
         BufferedImage bufferedImage = ImageIO.read(imageURL);
         int imageWidth = bufferedImage.getWidth();
         int imageHeight = bufferedImage.getHeight();
-        if (imageHeight > MIN_IMAGE_SIZE || imageWidth > MIN_IMAGE_SIZE) {
+        if (imageHeight > minImageSize || imageWidth > minImageSize) {
+//        if (imageHeight == 1606) {
           LOG.info("Image size match found, resolved " + imageWidth + "x" + imageHeight + " for " + image.getURL());
           return new ImageResourceImpl(image.getURL(), bufferedImage);
         }

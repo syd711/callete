@@ -10,6 +10,7 @@ import callete.api.services.music.streams.StreamingService;
 import callete.api.services.system.SystemService;
 import callete.api.services.weather.WeatherService;
 import callete.api.util.Config;
+import callete.api.util.Settings;
 import org.apache.commons.configuration.Configuration;
 
 /**
@@ -85,5 +86,13 @@ public class Callete {
       systemService = (SystemService) ServiceFactory.createService(SystemService.class);
     }
     return systemService;
+  }
+
+  public static Configuration getSettings() {
+    return Settings.getSettings();
+  }
+
+  public static void saveSetting(String key, Object value) {
+    Settings.saveSetting(key, value);
   }
 }
