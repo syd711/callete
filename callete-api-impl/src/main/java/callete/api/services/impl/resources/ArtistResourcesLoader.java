@@ -1,7 +1,7 @@
-package callete.api.services.impl.music.resources;
+package callete.api.services.impl.resources;
 
 import callete.api.Callete;
-import callete.api.services.music.resources.ArtistResources;
+import callete.api.services.resources.ArtistResources;
 import com.echonest.api.v4.*;
 import com.google.common.cache.CacheLoader;
 import org.slf4j.Logger;

@@ -5,6 +5,7 @@ import callete.api.services.music.model.PlaylistItem;
 import callete.api.services.music.player.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,13 +14,13 @@ import java.util.List;
  * This way it is ensured that always the complete model is returned when methods of the playlist are called.
  */
 public class MusicPlayerPlaylistImpl implements MusicPlayerPlaylist {
-  private List<PlaylistMetaDataChangeListener> metaDataChangeListeners = new ArrayList<>();
+  private List<PlaylistMetaDataChangeListener> metaDataChangeListeners =  Collections.synchronizedList(new ArrayList<PlaylistMetaDataChangeListener>());
 
   //the model used to store the getActiveItem playlist in.
   private List<PlaylistItem> playlist = new ArrayList<>();
 
   //event listeners that listen on playlist changes
-  private List<PlaylistChangeListener> changeListeners = new ArrayList<>();
+  private List<PlaylistChangeListener> changeListeners = Collections.synchronizedList(new ArrayList<PlaylistChangeListener>());
 
   // the getActiveItem playback index, used to skip forward and backward.
   private int playbackIndex = 0;

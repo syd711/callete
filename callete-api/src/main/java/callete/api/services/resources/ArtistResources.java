@@ -1,4 +1,4 @@
-package callete.api.services.music.resources;
+package callete.api.services.resources;
 
 /**
  * Interface to be implemented by services that provide artist data.

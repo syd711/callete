@@ -1,12 +1,15 @@
-package callete.api.services.impl.music.resources;
+package callete.api.services.impl.resources;
 
-import callete.api.services.music.resources.ArtistResources;
-import callete.api.services.music.resources.ArtistResourcesService;
+import callete.api.services.resources.ArtistResources;
+import callete.api.services.resources.ResourcesService;
+import callete.api.services.resources.ResourcesService;
+import callete.api.services.resources.SlideShow;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -16,16 +19,21 @@ import java.util.concurrent.TimeUnit;
  * is provided in the configuration properties.
  */
 @SuppressWarnings("unused")
-public class ArtistResourceServiceImpl implements ArtistResourcesService {
-  private final static Logger LOG = LoggerFactory.getLogger(ArtistResourceServiceImpl.class);
+public class ResourceServiceImpl implements ResourcesService {
+  private final static Logger LOG = LoggerFactory.getLogger(ResourceServiceImpl.class);
 
   private ArtistResourcesLoader cacheLoader;
   private LoadingCache<String, ArtistResources> cache;
 
-  public ArtistResourceServiceImpl() {
+  public ResourceServiceImpl() {
     super();
     cacheLoader = new ArtistResourcesLoader();
     cache = CacheBuilder.newBuilder().maximumSize(10).expireAfterAccess(10, TimeUnit.MINUTES).build(cacheLoader);
+  }
+
+  @Override
+  public SlideShow getSlideShow(File folder) {
+    return new SlideShowImpl(folder);
   }
 
   @Override

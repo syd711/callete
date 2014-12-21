@@ -1,4 +1,4 @@
-package callete.api.services.music.resources;
+package callete.api.services.resources;
 
 import java.awt.image.BufferedImage;
 

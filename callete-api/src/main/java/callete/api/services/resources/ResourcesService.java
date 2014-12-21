@@ -1,11 +1,13 @@
-package callete.api.services.music.resources;
+package callete.api.services.resources;
 
 import callete.api.services.Service;
+
+import java.io.File;
 
 /**
  * Service for providing image and other resources for an artist.
  */
-public interface ArtistResourcesService extends Service {
+public interface ResourcesService extends Service {
 
   /**
    * Search for images of the artist with the given name.
@@ -15,4 +17,11 @@ public interface ArtistResourcesService extends Service {
    * @return An image resource.
    */
   ArtistResources getImageResourcesFor(String artist);
+
+  /**
+   * Returns a slide show object that contains the images located
+   * in the given folder
+   * @param folder the folder to read the images from, not recursively.
+   */
+  SlideShow getSlideShow(File folder);
 }

@@ -5,7 +5,8 @@ import callete.api.services.gpio.GPIOService;
 import callete.api.services.http.HttpService;
 import callete.api.services.music.google.GoogleMusicService;
 import callete.api.services.music.player.MusicPlayerService;
-import callete.api.services.music.resources.ArtistResourcesService;
+import callete.api.services.resources.ResourcesService;
+import callete.api.services.resources.ResourcesService;
 import callete.api.services.music.streams.StreamingService;
 import callete.api.services.system.SystemService;
 import callete.api.services.weather.WeatherService;
@@ -29,7 +30,7 @@ public class Callete {
   private static HttpService httpService;
   private static GoogleMusicService googleMusicService;
   private static StreamingService streamingService;
-  private static ArtistResourcesService artistResourcesService;
+  private static ResourcesService resourcesService;
   private static SystemService systemService;
 
   public static MusicPlayerService getMusicPlayer() {
@@ -74,11 +75,11 @@ public class Callete {
     return streamingService;
   }
 
-  public static ArtistResourcesService getArtistResourcesService() {
-    if (artistResourcesService == null) {
-      artistResourcesService = (ArtistResourcesService) ServiceFactory.createService(ArtistResourcesService.class);
+  public static ResourcesService getResourcesService() {
+    if (resourcesService == null) {
+      resourcesService = (ResourcesService) ServiceFactory.createService(ResourcesService.class);
     }
-    return artistResourcesService;
+    return resourcesService;
   }
 
   public static SystemService getSystemService() {
