@@ -3,7 +3,7 @@ package callete.api.services.music.player;
 /**
  * Listener to be implemented to listen on playback changes.
  */
-public interface PlaybackChangeEventListener {
+public interface PlaybackChangeListener {
 
   /**
    * Fired when a new item is played.

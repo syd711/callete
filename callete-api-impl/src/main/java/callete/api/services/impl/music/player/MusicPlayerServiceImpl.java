@@ -3,7 +3,7 @@ package callete.api.services.impl.music.player;
 import callete.api.services.music.player.MusicPlayerPlaylist;
 import callete.api.services.music.player.MusicPlayerService;
 import callete.api.services.music.player.PlaybackChangeEvent;
-import callete.api.services.music.player.PlaybackChangeEventListener;
+import callete.api.services.music.player.PlaybackChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
 
   private MPDPlayer mpdPlayer;
   private MusicPlayerPlaylist playlist;
-  private List<PlaybackChangeEventListener> listeners = new ArrayList<>();
+  private List<PlaybackChangeListener> listeners = new ArrayList<>();
 
   public MusicPlayerServiceImpl() {
     init();
@@ -69,12 +69,12 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
   }
 
   @Override
-  public void addPlaybackChangeEventListener(PlaybackChangeEventListener listener) {
+  public void addPlaybackChangeEventListener(PlaybackChangeListener listener) {
     listeners.add(listener);
   }
 
   @Override
-  public void removePlaybackChangeEventListener(PlaybackChangeEventListener listener) {
+  public void removePlaybackChangeEventListener(PlaybackChangeListener listener) {
     listeners.remove(listener);
   }
 
@@ -95,7 +95,7 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
 
   private void firePlaybackChangeEvent() {
     PlaybackChangeEvent e = new PlaybackChangeEventImpl();
-    for(PlaybackChangeEventListener l : listeners) {
+    for(PlaybackChangeListener l : listeners) {
       l.playbackChanged(e);
     }
   }

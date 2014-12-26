@@ -132,6 +132,6 @@ public class ArtistResourcesImpl implements ArtistResources {
    * @param images the images to filter.
    */
   private List<Image> filter(List<Image> images) {
-    return images.stream().filter(i -> i.getURL().endsWith(".gif")).collect(Collectors.toList());
+    return images.stream().filter(i -> !i.getURL().endsWith(".gif")).collect(Collectors.toList());
   }
 }

@@ -9,7 +9,7 @@ public class DateUtil {
     String minutes = String.valueOf(secs / 60);
     String seconds = String.valueOf(secs % 60);
     if(secs < 10) {
-      minutes = "0" + minutes;
+      seconds = "0" + seconds;
     }
     if(secs % 60 == 0) {
       seconds = "00";
