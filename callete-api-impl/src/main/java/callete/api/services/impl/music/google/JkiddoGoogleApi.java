@@ -26,7 +26,6 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
   private Map<String, callete.api.services.music.model.Song> songs = new HashMap<>();
   private Map<String, Album> albums = new HashMap<>();
   private Map<String, List<Album>> artists = new HashMap<>();
-  private Map<String, Playlist> playlists = new HashMap<>();
   private List<AlbumCollection> artistByLetter = new ArrayList<>();
   private List<AlbumCollection> albumByLetter = new ArrayList<>();
 
@@ -61,10 +60,6 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
       LOG.error("Error creating google music dictionary: " + e.getMessage(), e);
       throw new MusicServiceAuthenticationException("Error creating google music dictionary: " + e.getMessage(), e);
     }
-  }
-
-  public List<Playlist> getAllPlaylists() {
-    return new ArrayList<>(playlists.values());
   }
 
   public List<callete.api.services.music.model.Song> getAllSongs() {

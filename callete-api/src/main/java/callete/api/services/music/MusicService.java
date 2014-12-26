@@ -24,11 +24,6 @@ public interface MusicService extends Service {
   List<Album> getAlbums();
 
   /**
-   * Returns a list of all playlist the user has created.
-   */
-  List<Playlist> getAllPlayLists();
-
-  /**
    * Returns all songs of the providing service.
    */
   List<Song> getAllSongs();

@@ -16,6 +16,12 @@ public class Album extends Playlist {
     this.artist = artist;
   }
 
+  @Override
+  public void addSong(Song song) {
+    super.addSong(song);
+    song.setAlbum(this);
+  }
+
   public String getArtist() {
     return artist;
   }

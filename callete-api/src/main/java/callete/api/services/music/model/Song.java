@@ -17,12 +17,12 @@ public class Song implements PlaylistItem, Comparable<Song> {
   private long durationMillis;
   private float creationDate;
   private int track;
+  private Album album;
   private String composer;
 
   private Object originalModel;
 
   private byte[] artwork;
-
   private PlaybackUrlProvider urlProvider;
 
   public Song(PlaybackUrlProvider urlProvider) {
@@ -156,5 +156,13 @@ public class Song implements PlaylistItem, Comparable<Song> {
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public void setAlbum(Album album) {
+    this.album = album;
+  }
+
+  public Album getAlbum() {
+    return album;
   }
 }

@@ -39,8 +39,8 @@ public class MPDPlaylistMonitor extends Thread {
 
   @Override
   public void run() {
-    try {
-      while (isRunning()) {
+    while (isRunning()) {
+      try {
         if (monitoring) {
           if (!mpdPlayer.isPlaying() && !mpdPlayer.isPaused()) {
             player.next();
@@ -58,9 +58,9 @@ public class MPDPlaylistMonitor extends Thread {
             playlist.updateMetaData(metaData);
           }
         }
+      } catch (Exception e) {
+        LOG.error("Error in MPD monitoring thread: " + e.getMessage(), e);
       }
-    } catch (Exception e) {
-      LOG.error("Error in MPD monitoring thread: " + e.getMessage(), e);
     }
   }
 

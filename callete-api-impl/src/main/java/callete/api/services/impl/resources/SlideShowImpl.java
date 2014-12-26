@@ -1,5 +1,6 @@
 package callete.api.services.impl.resources;
 
+import callete.api.services.resources.ImageResource;
 import callete.api.services.resources.SlideShow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -17,40 +20,55 @@ import java.util.List;
 public class SlideShowImpl implements SlideShow {
   private final static Logger LOG = LoggerFactory.getLogger(SlideShowImpl.class);
 
-  private List<BufferedImage> images = new ArrayList<>();
+  private List<File> images = new ArrayList<>();
+  private Iterator<File> iterator;
 
   public SlideShowImpl(File directory) {
     loadSlideShowImages(directory);
   }
 
   @Override
-  public List<BufferedImage> getImages() {
-    return images;
+  public int size() {
+    return images.size();
+  }
+
+  @Override
+  public ImageResource nextImage() {
+    if (iterator == null || !iterator.hasNext()) {
+      iterator = images.iterator();
+    }
+
+    File image = iterator.next();
+    return createImageResource(image);
   }
 
   /**
    * Load buffered images
+   *
    * @param directory the directory to load the images from.
    */
   private void loadSlideShowImages(File directory) {
-    if(directory.exists()) {
+    if (directory.exists()) {
       File[] files = directory.listFiles(new FilenameFilter() {
         @Override
         public boolean accept(File dir, String name) {
           return name.endsWith("png") || name.endsWith("jpg") || name.endsWith("jpeg");
         }
       });
-      for(File file : files) {
-        try {
-          BufferedImage bufferedImage = ImageIO.read(file);
-          images.add(bufferedImage);
-        } catch (IOException e) {
-          LOG.error("Error reading slide show file " + file.getAbsolutePath() + ": " + e.getMessage(), e);
-        }
-      }
+      images = Arrays.asList(files);
     }
     else {
       LOG.error("Failed to create slide show, directory " + directory.getAbsolutePath() + " does not exist.");
     }
+  }
+
+  private ImageResource createImageResource(File file) {
+    try {
+      BufferedImage bufferedImage = ImageIO.read(file);
+      return new ImageResourceImpl(file.getAbsolutePath(), bufferedImage);
+    } catch (IOException e) {
+      LOG.error("Error reading slide show file " + file.getAbsolutePath() + ": " + e.getMessage(), e);
+    }
+    return null;
   }
 }

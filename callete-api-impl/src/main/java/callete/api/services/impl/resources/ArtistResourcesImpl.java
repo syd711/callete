@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Image resource implementation, used for caching, sizing and cropping.
@@ -24,7 +25,7 @@ public class ArtistResourcesImpl implements ArtistResources {
   private String artist;
 
   public ArtistResourcesImpl(String artist, List<Image> images) {
-    this.images = images;
+    this.images = filter(images);
     this.artist = artist;
   }
 
@@ -124,5 +125,13 @@ public class ArtistResourcesImpl implements ArtistResources {
   @Override
   public String toString() {
     return "Image Resources '" + artist + "'";
+  }
+
+  /**
+   * Filters the given images, removes gifs since they are not scalable.
+   * @param images the images to filter.
+   */
+  private List<Image> filter(List<Image> images) {
+    return images.stream().filter(i -> i.getURL().endsWith(".gif")).collect(Collectors.toList());
   }
 }

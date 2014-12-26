@@ -1,10 +1,6 @@
-package callete.api.util;
+package callete.api.services.music;
 
 import callete.api.services.music.model.Album;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +16,12 @@ import java.util.Map;
 /**
  * Caching of music cover images
  */
-public class ImageCache {
-  private final static Logger LOG = LoggerFactory.getLogger(ImageCache.class);
+public class AlbumCoverCache {
+  private final static Logger LOG = LoggerFactory.getLogger(AlbumCoverCache.class);
 
   private static final File IMAGE_CACHE_DIR = new File("./image_cache/");
-  private static Map<String, File> imageCache = new HashMap<String, File>();
+  public static final String PNG = "png";
+  private static Map<String, File> imageCache = new HashMap<>();
 
   static {
     IMAGE_CACHE_DIR.mkdirs();
@@ -43,12 +40,11 @@ public class ImageCache {
   }
 
 
-  public static Canvas loadCover(final Album album, final int width, final int height) {
-    return loadCached(album.getId(), album.getArtUrl(), width, height);
+  public static String loadCover(final Album album) {
+    return loadCached(album.getId(), album.getArtUrl());
   }
 
-  public static Canvas loadCached(String id, String imageUrl, int width, int height) {
-    final Canvas canvas = new Canvas(width, height);
+  public static String loadCached(String id, String imageUrl) {
     try {
       if (imageCache.containsKey(id)) {
         File image = imageCache.get(id);
@@ -60,8 +56,8 @@ public class ImageCache {
         LOG.info("Caching " + imageUrl);
         URL imgUrl = new URL(imageUrl);
         BufferedImage image = ImageIO.read(imgUrl);
-        File target = new File(IMAGE_CACHE_DIR, id + ".png");
-        ImageIO.write(image, "png", target);
+        File target = new File(IMAGE_CACHE_DIR, id + "." + PNG);
+        ImageIO.write(image, PNG, target);
         LOG.info("Written " + target.getAbsolutePath() + " to cache, URL: " + imageUrl);
         imageCache.put(id, target);
         imageUrl = target.toURI().toURL().toString();
@@ -70,11 +66,6 @@ public class ImageCache {
     } catch (IOException e) {
       LOG.error("Error storing image to cache: " + e.getMessage());
     }
-
-    ImageView img = new ImageView(new Image(imageUrl, width, height, false, true));
-    final GraphicsContext gc = canvas.getGraphicsContext2D();
-    gc.drawImage(img.getImage(), 1, 1);
-    gc.rect(0, 0, width, height);
-    return canvas;
+    return imageUrl;
   }
 }

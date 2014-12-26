@@ -29,11 +29,6 @@ public class GoogleMusicServiceImpl implements GoogleMusicService {
   }
 
   @Override
-  public List<Playlist> getAllPlayLists() {
-    return api.getAllPlaylists();
-  }
-
-  @Override
   public List<Song> getAllSongs() {
     return api.getAllSongs();
   }

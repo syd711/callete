@@ -6,7 +6,7 @@ package callete.api.services.gpio;
 public interface GPIOComponent {
 
   /**
-   * The name that has been set for this button.
+   * The name that has been set for this button, pin, etc.
    */
   public String getName();
 }

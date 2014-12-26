@@ -9,7 +9,12 @@ import java.util.List;
 public interface SlideShow {
 
   /**
-   * Returns the images to be used for the slideshow.
+   * Returns the next image for the slide show.
    */
-  List<BufferedImage> getImages();
+  public ImageResource nextImage();
+
+  /**
+   * Returns the size of images in the slide show.
+   */
+  public int size();
 }
