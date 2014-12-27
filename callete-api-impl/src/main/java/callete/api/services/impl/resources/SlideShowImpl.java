@@ -10,10 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  */
@@ -22,8 +19,10 @@ public class SlideShowImpl implements SlideShow {
 
   private List<File> images = new ArrayList<>();
   private Iterator<File> iterator;
+  private boolean randomized = false;
 
-  public SlideShowImpl(File directory) {
+  public SlideShowImpl(File directory, boolean randomized) {
+    this.randomized = randomized;
     loadSlideShowImages(directory);
   }
 
@@ -34,7 +33,15 @@ public class SlideShowImpl implements SlideShow {
 
   @Override
   public ImageResource nextImage() {
+    if(images.isEmpty()) {
+      return null;
+    }
+
     if (iterator == null || !iterator.hasNext()) {
+      if(randomized) {
+        long seed = System.nanoTime();
+        Collections.shuffle(images, new Random(seed));
+      }
       iterator = images.iterator();
     }
 

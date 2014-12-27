@@ -1,8 +1,5 @@
 package callete.api.services.resources;
 
-import java.awt.image.BufferedImage;
-import java.util.List;
-
 /**
  * Model for wrapping slide show images.
  */

@@ -5,7 +5,6 @@ import callete.api.services.music.MusicServiceAuthenticationException;
 import callete.api.services.music.google.GoogleMusicService;
 import callete.api.services.music.model.Album;
 import callete.api.services.music.model.AlbumCollection;
-import callete.api.services.music.model.Playlist;
 import callete.api.services.music.model.Song;
 
 import java.util.List;

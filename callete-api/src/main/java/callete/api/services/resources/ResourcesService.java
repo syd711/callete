@@ -23,5 +23,5 @@ public interface ResourcesService extends Service {
    * in the given folder
    * @param folder the folder to read the images from, not recursively.
    */
-  SlideShow getSlideShow(File folder);
+  SlideShow getSlideShow(File folder, boolean randomized);
 }

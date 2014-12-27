@@ -2,7 +2,6 @@ package callete.api.services.impl.resources;
 
 import callete.api.services.resources.ArtistResources;
 import callete.api.services.resources.ResourcesService;
-import callete.api.services.resources.ResourcesService;
 import callete.api.services.resources.SlideShow;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
@@ -32,8 +31,8 @@ public class ResourceServiceImpl implements ResourcesService {
   }
 
   @Override
-  public SlideShow getSlideShow(File folder) {
-    return new SlideShowImpl(folder);
+  public SlideShow getSlideShow(File folder, boolean randomized) {
+    return new SlideShowImpl(folder, randomized);
   }
 
   @Override
