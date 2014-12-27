@@ -65,6 +65,7 @@ public class DeploymentHttpClient {
         try {
           File projectZipFile = File.createTempFile("gaia_deployment", ".zip", new File(System.getProperty("java.io.tmpdir")));
           FileUtils.zipFolder(new File("."), projectZipFile, descriptor.getIgnoreFiles());
+          LOG.info("Copying " + projectZipFile.getAbsolutePath() + ", size: " + projectZipFile.length()/1024 + " kb");
           return executeMultipartRequest(url, projectZipFile);
         } catch (Exception e) {
           LOG.error("Error creating project zip file ");

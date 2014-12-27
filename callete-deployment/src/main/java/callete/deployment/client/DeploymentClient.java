@@ -5,6 +5,7 @@ import callete.deployment.server.DeploymentStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,7 +24,8 @@ public class DeploymentClient {
   }
 
   public void deploy(String[] ignoreFiles) throws Exception {
-    DeploymentDescriptor descriptor = new DeploymentDescriptor(Arrays.asList(ignoreFiles));
+    List<String> ignoreList = new ArrayList<>(Arrays.asList(ignoreFiles));
+    DeploymentDescriptor descriptor = new DeploymentDescriptor(ignoreList);
     DeploymentHttpClient client = new DeploymentHttpClient(descriptor);
 
     List<String> cmds = Arrays.asList(Deployment.CMD_DESTROY, Deployment.CMD_CREATE,
