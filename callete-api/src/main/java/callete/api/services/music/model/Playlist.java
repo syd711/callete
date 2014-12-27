@@ -30,12 +30,12 @@ public abstract class Playlist implements ServiceModel {
   }
 
   public List<Song> getSongs() {
-    Collections.sort(songs, new Comparator<Song>() {
-      @Override
-      public int compare(Song o1, Song o2) {
-        return o1.compareTo(o2);
-      }
-    });
+//    Collections.sort(songs, new Comparator<Song>() {
+//      @Override
+//      public int compare(Song o1, Song o2) {
+//        return o1.compareTo(o2);
+//      }
+//    });
     return songs;
   }
 

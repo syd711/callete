@@ -1,6 +1,7 @@
 package callete.api.services.impl.music.player;
 
 import callete.api.Callete;
+import callete.api.services.music.model.PlaylistItem;
 import callete.api.services.music.player.MusicPlayerPlaylist;
 import callete.api.services.music.player.MusicPlayerService;
 import callete.api.services.music.player.PlaylistMetaData;
@@ -18,6 +19,7 @@ public class MPDPlaylistMonitor extends Thread {
   private final static int POLL_INTERVAL = 2000;
 
   private boolean monitoring = false;
+  private boolean dirty = false;
   private MusicPlayerService player;
   private MPDPlayer mpdPlayer;
   private MusicPlayerPlaylist playlist;
@@ -41,6 +43,9 @@ public class MPDPlaylistMonitor extends Thread {
   public void run() {
     while (isRunning()) {
       try {
+        //dirty flag closes the gap between reading the stream data and applying a new stream
+        dirty = false;
+
         if (monitoring) {
           if (!mpdPlayer.isPlaying() && !mpdPlayer.isPaused()) {
             player.next();
@@ -49,11 +54,15 @@ public class MPDPlaylistMonitor extends Thread {
         //sleep for the defined monitoring interval
         Thread.sleep(POLL_INTERVAL);
 
+        //store the current selection
+        PlaylistItem activeItem = playlist.getActiveItem();
+
+        //this operation has a sleep, so it is important to keep the active item before since it may have changed.
         String playlistInfo = telnetClient.playlistInfo();
         if (playlistInfo != null) {
-          final PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(playlist.getActiveItem(), playlistInfo);
+          final PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(activeItem, playlistInfo);
 //          LOG.info("Created " + metaData);
-          if (metaData != null && metaData.isValid()) {
+          if (metaData != null && metaData.isValid() && !dirty) {
 //            LOG.info("Updating " + metaData);
             playlist.updateMetaData(metaData);
           }
@@ -65,6 +74,7 @@ public class MPDPlaylistMonitor extends Thread {
   }
 
   public void startMonitoring() {
+    this.dirty = true;
     this.monitoring = true;
   }
 

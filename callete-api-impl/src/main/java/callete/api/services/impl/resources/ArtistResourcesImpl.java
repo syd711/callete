@@ -107,7 +107,6 @@ public class ArtistResourcesImpl implements ArtistResources {
         int imageWidth = bufferedImage.getWidth();
         int imageHeight = bufferedImage.getHeight();
         if (imageHeight > minImageSize || imageWidth > minImageSize) {
-//        if (imageHeight == 1606) {
           LOG.info("Image size match found, resolved " + imageWidth + "x" + imageHeight + " for " + image.getURL());
           return new ImageResourceImpl(image.getURL(), bufferedImage);
         }

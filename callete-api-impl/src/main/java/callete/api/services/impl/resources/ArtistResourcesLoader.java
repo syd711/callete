@@ -4,6 +4,7 @@ import callete.api.Callete;
 import callete.api.services.resources.ArtistResources;
 import com.echonest.api.v4.*;
 import com.google.common.cache.CacheLoader;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,9 @@ public class ArtistResourcesLoader extends CacheLoader<String, ArtistResources> 
   public ArtistResourcesLoader() {
     try {
       String key = Callete.getConfiguration().getString("echo.nest.key");
+      if(StringUtils.isEmpty(key)) {
+        throw new EchoNestException(0, "Echo nest property 'echo.nest.key' has not been configured.");
+      }
       System.setProperty("ECHO_NEST_API_KEY", key);
       api = new EchoNestAPI();
       api.setTraceSends(false);
