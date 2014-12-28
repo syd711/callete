@@ -18,7 +18,6 @@ public class DeploymentResource {
   private final static Logger LOG = LoggerFactory.getLogger(DeploymentResource.class);
   public final static String PARAM_TARGET_DIRECTORY = "target";
   public final static String PARAM_IGNORE_DIRECTORIES = "ignoreDirectories";
-  public final static String PARAM_IGN = "target";
 
   //there can only be one deployment at a time, so a static instance is sufficient here.
   private static Deployment deployment;

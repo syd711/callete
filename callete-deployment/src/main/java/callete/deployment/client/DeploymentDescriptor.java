@@ -10,7 +10,7 @@ import java.util.List;
  * as the source directory and the target where to deploy the project.
  */
 public class DeploymentDescriptor {
-  private static List<String> DEFAULT_EXCLUSIONS = Arrays.asList(".idea", "bin", "classes", "target", ".classpath", ".project", ".iml", ".md");
+  private static List<String> DEFAULT_EXCLUSIONS = Arrays.asList(".idea", "bin", ".classpath", ".project", ".iml", ".md");
   private String targetDirectory;
 
   private String requestBasePath;
