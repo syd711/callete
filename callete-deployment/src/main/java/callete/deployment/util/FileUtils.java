@@ -15,15 +15,15 @@ import java.util.zip.ZipOutputStream;
 public class FileUtils {
   private final static Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 
-  public static void deleteFolder(File folder, List<String> ignoreList) throws IOException{
+  public static void deleteFolder(File folder, List<String> ignoreList, boolean silently) throws IOException{
     File[] files = folder.listFiles();
     for(File entry : files) {
-      deleteSubFolder(entry, ignoreList);
+      deleteSubFolder(entry, ignoreList, silently);
     }
     LOG.info("Finished deletion of " + folder.getAbsolutePath());
   }
 
-  private static void deleteSubFolder(File folder, List<String> ignoreList) throws IOException{
+  private static void deleteSubFolder(File folder, List<String> ignoreList, boolean silently) throws IOException{
     File[] files = folder.listFiles();
     if(files!=null) { //some JVMs return null for empty dirs
       for(File f: files) {
@@ -32,15 +32,15 @@ public class FileUtils {
           continue;
         }
         if(f.isDirectory()) {
-          deleteSubFolder(f, ignoreList);
+          deleteSubFolder(f, ignoreList, silently);
         } else {
-          if(!f.delete()) {
+          if(!f.delete() && !silently) {
             throw new IOException("Failed to delete " + f.getAbsolutePath());
           }
         }
       }
     }
-    if(!folder.delete()) {
+    if(!folder.delete() && !silently) {
       throw new IOException("Failed to delete " + folder.getAbsolutePath());
     }
   }

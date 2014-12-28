@@ -75,7 +75,7 @@ public class Deployment {
   public DeploymentStatus clean(List<String> ignoreList) {
     try {
       File targetDirectory = new File(status.getDeploymentDirectory());
-      FileUtils.deleteFolder(targetDirectory, ignoreList);
+      FileUtils.deleteFolder(targetDirectory, ignoreList, true);
     } catch (IOException e) {
       LOG.error("Error during deployment cleanup: " + e.getMessage());
       status.setErrorMessage(e.getMessage());
