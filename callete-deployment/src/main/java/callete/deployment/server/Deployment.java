@@ -119,7 +119,7 @@ public class Deployment {
    * we have to terminate for each deployment.
    *
    * @param profile The profile the build should be executed with, we use a profile to define the run configuration
-   *                inside the deployed project. Check the gaia-template's pom.xml for details.
+   *                inside the deployed project. Check the callete-template's pom.xml for details.
    * @return true if the maven execution was successful. The exit code of the command is checked for this too.
    */
   private boolean executeMaven(String profile) {

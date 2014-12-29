@@ -1,6 +1,9 @@
 package callete.deployment.client;
 
 import callete.api.Callete;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +13,8 @@ import java.util.List;
  * as the source directory and the target where to deploy the project.
  */
 public class DeploymentDescriptor {
+  private final static Logger LOG = LoggerFactory.getLogger(DeploymentDescriptor.class);
+
   private static List<String> DEFAULT_EXCLUSIONS = Arrays.asList(".idea", "bin", ".classpath", ".project", ".iml", ".md");
   private String targetDirectory;
 
@@ -24,6 +29,8 @@ public class DeploymentDescriptor {
 
     this.targetDirectory = Callete.getConfiguration().getString("deployment.targetDirectory");
     this.requestBasePath = "http://" + host + ":" + port + "/deployment/";
+
+    LOG.info("Created " + this);
   }
 
   public String getTargetDirectory() {
@@ -36,5 +43,11 @@ public class DeploymentDescriptor {
 
   public List<String> getIgnoreFiles() {
     return ignoreFiles;
+  }
+
+  @Override
+  public String toString() {
+    return "Deployment Descriptor [targetDirectory:" + targetDirectory + ", requestBasePath:" + requestBasePath + "]\n" +
+        "Ignore list: " + StringUtils.join(ignoreFiles, ", ");
   }
 }

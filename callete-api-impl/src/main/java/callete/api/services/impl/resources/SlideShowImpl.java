@@ -20,8 +20,10 @@ public class SlideShowImpl implements SlideShow {
   private List<File> images = new ArrayList<>();
   private Iterator<File> iterator;
   private boolean randomized = false;
+  private File directory;
 
   public SlideShowImpl(File directory, boolean randomized) {
+    this.directory = directory;
     this.randomized = randomized;
     loadSlideShowImages(directory);
   }
@@ -42,6 +44,7 @@ public class SlideShowImpl implements SlideShow {
         long seed = System.nanoTime();
         Collections.shuffle(images, new Random(seed));
       }
+      LOG.info("Rebuilding slide show iterator for " + this);
       iterator = images.iterator();
     }
 
@@ -71,11 +74,17 @@ public class SlideShowImpl implements SlideShow {
 
   private ImageResource createImageResource(File file) {
     try {
+      LOG.info("Loading image resource " + file.getAbsolutePath());
       BufferedImage bufferedImage = ImageIO.read(file);
       return new ImageResourceImpl(file.getAbsolutePath(), bufferedImage);
     } catch (IOException e) {
       LOG.error("Error reading slide show file " + file.getAbsolutePath() + ": " + e.getMessage(), e);
     }
     return null;
+  }
+
+  @Override
+  public String toString() {
+    return "Slide Show for " + directory.getAbsolutePath();
   }
 }

@@ -30,6 +30,9 @@ public class WeatherServiceImpl extends RefreshingService implements WeatherServ
     if(cachedWeather.isEmpty()) {
       forceRefresh();
     }
+    if(cachedWeather.isEmpty()) {
+      return null;
+    }
     return cachedWeather.get(pos);
   }
 

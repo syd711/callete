@@ -1,5 +1,6 @@
 package callete.deployment.client;
 
+import callete.api.util.SystemUtils;
 import callete.deployment.server.Deployment;
 import callete.deployment.server.DeploymentResource;
 import callete.deployment.server.DeploymentStatus;
@@ -63,9 +64,9 @@ public class DeploymentHttpClient {
       }
       case Deployment.CMD_COPY: {
         try {
-          File projectZipFile = File.createTempFile("gaia_deployment", ".zip", new File(System.getProperty("java.io.tmpdir")));
+          File projectZipFile = File.createTempFile("callete_deployment", ".zip", new File(System.getProperty("java.io.tmpdir")));
           FileUtils.zipFolder(new File("."), projectZipFile, descriptor.getIgnoreFiles());
-          LOG.info("Copying " + projectZipFile.getAbsolutePath() + ", size: " + projectZipFile.length()/1024 + " kb");
+          LOG.info("Copying " + projectZipFile.getAbsolutePath() + ", size: " + SystemUtils.humanReadableByteCount(projectZipFile.length()));
           return executeMultipartRequest(url, projectZipFile);
         } catch (Exception e) {
           LOG.error("Error creating project zip file ");

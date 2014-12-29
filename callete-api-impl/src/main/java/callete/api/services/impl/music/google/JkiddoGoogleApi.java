@@ -188,8 +188,7 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
   }
 
   /**
-   * Puts all music data from the google song api into the
-   * gaia song model.
+   * Puts all music data from the google song api into the callete song model.
    *
    * @param song The song to convert.
    * @return The converted song.

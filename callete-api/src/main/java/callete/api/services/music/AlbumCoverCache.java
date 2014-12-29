@@ -1,6 +1,7 @@
 package callete.api.services.music;
 
 import callete.api.services.music.model.Album;
+import callete.api.util.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +11,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,19 +27,34 @@ public class AlbumCoverCache {
   private static Map<String, File> imageCache = new HashMap<>();
 
   static {
-    IMAGE_CACHE_DIR.mkdirs();
-
-    final File[] files = IMAGE_CACHE_DIR.listFiles(new FilenameFilter() {
-      @Override
-      public boolean accept(File dir, String name) {
-        return name.endsWith(".png");
-      }
-    });
-    for (File file : files) {
-      String id = file.getName().substring(0, file.getName().length() - 4);
-      imageCache.put(id, file);
+    if(!IMAGE_CACHE_DIR.mkdirs()) {
+      LOG.warn("Failed to create image cache dir " + IMAGE_CACHE_DIR.getAbsolutePath());
     }
-    LOG.info("Cache initialization finished: found " + imageCache.size() + " cached images");
+
+    if(!IMAGE_CACHE_DIR.exists()) {
+      String path = new File("./").getAbsolutePath();
+      List<String> cmds = Arrays.asList("sudo", "mkdir", "image_cache");
+      SystemUtils.executeSystemCommand(path, cmds);
+      cmds = Arrays.asList("sudo", "chmod", "777", "image_cache");
+      SystemUtils.executeSystemCommand(path, cmds);
+    }
+
+    if(IMAGE_CACHE_DIR.exists()) {
+      final File[] files = IMAGE_CACHE_DIR.listFiles(new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+          return name.endsWith(".png");
+        }
+      });
+      for (File file : files) {
+        String id = file.getName().substring(0, file.getName().length() - 4);
+        imageCache.put(id, file);
+      }
+      LOG.info("Cache initialization finished: found " + imageCache.size() + " cached images");
+    }
+    else {
+      LOG.error("Failed to initialize image cache, caching directory "+  IMAGE_CACHE_DIR.getAbsolutePath() + " does not exist.");
+    }
   }
 
 

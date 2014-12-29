@@ -34,14 +34,24 @@ public class FileUtils {
         if(f.isDirectory()) {
           deleteSubFolder(f, ignoreList, silently);
         } else {
-          if(!f.delete() && !silently) {
-            throw new IOException("Failed to delete " + f.getAbsolutePath());
+          if(!f.delete()) {
+            if(!silently) {
+              throw new IOException("Failed to delete " + f.getAbsolutePath());
+            }
+            else {
+              LOG.error("Failed to delete " + f.getAbsolutePath() + ", ignored silently.");
+            }
           }
         }
       }
     }
-    if(!folder.delete() && !silently) {
-      throw new IOException("Failed to delete " + folder.getAbsolutePath());
+    if(!folder.delete()) {
+      if(!silently) {
+        throw new IOException("Failed to delete " + folder.getAbsolutePath());
+      }
+      else {
+        LOG.error("Failed to delete " + folder.getAbsolutePath() + ", ignored silently.");
+      }
     }
   }
 
