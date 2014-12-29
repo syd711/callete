@@ -19,7 +19,7 @@
     </appender>
 
     <logger name="org.reflections">
-        <level value="warn"/>
+        <level value="WARN"/>
     </logger>
 
     <root level="TRACE">
