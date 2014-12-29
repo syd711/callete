@@ -47,7 +47,7 @@ public class DeploymentDescriptor {
 
   @Override
   public String toString() {
-    return "Deployment Descriptor [targetDirectory:" + targetDirectory + ", requestBasePath:" + requestBasePath + "]\n" +
+    return "Deployment Descriptor [targetDirectory:" + targetDirectory + ", requestBasePath:" + requestBasePath + "], " +
         "Ignore list: " + StringUtils.join(ignoreFiles, ", ");
   }
 }

@@ -62,7 +62,7 @@ public class MPDPlaylistMonitor extends Thread {
         if (playlistInfo != null) {
           final PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(activeItem, playlistInfo);
 //          LOG.info("Created " + metaData);
-          if (metaData != null && metaData.isValid() && !dirty) {
+          if (activeItem != null && metaData != null && metaData.isValid() && !dirty) {
 //            LOG.info("Updating " + metaData);
             playlist.updateMetaData(metaData);
           }

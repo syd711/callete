@@ -47,7 +47,7 @@ public class DeploymentResource {
   public DeploymentStatus clean(@FormParam(PARAM_IGNORE_DIRECTORIES) String ignoreDirectories) {
     List<String> ignoreList = Arrays.asList(ignoreDirectories.split(","));
     deployment.clean(ignoreList);
-    LOG.info("Clean up deployment located in directory '" + deployment.getStatus().getDeploymentDirectory() + "'");
+    LOG.info("Clean up deployment located in directory '" + deployment.getStatus().getDeploymentDirectory() + "', waiting for archive to copy...");
     return deployment.getStatus();
   }
 

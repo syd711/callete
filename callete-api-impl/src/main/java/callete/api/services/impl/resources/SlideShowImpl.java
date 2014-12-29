@@ -17,8 +17,8 @@ import java.util.*;
 public class SlideShowImpl implements SlideShow {
   private final static Logger LOG = LoggerFactory.getLogger(SlideShowImpl.class);
 
-  private List<File> images = new ArrayList<>();
-  private Iterator<File> iterator;
+  private List<ImageResource> images = new ArrayList<>();
+  private Iterator<ImageResource> iterator;
   private boolean randomized = false;
   private File directory;
 
@@ -48,8 +48,7 @@ public class SlideShowImpl implements SlideShow {
       iterator = images.iterator();
     }
 
-    File image = iterator.next();
-    return createImageResource(image);
+    return iterator.next();
   }
 
   /**
@@ -65,7 +64,10 @@ public class SlideShowImpl implements SlideShow {
           return name.endsWith("png") || name.endsWith("jpg") || name.endsWith("jpeg");
         }
       });
-      images = Arrays.asList(files);
+      for(File file : files) {
+        ImageResource image = createImageResource(file);
+        images.add(image);
+      }
     }
     else {
       LOG.error("Failed to create slide show, directory " + directory.getAbsolutePath() + " does not exist.");

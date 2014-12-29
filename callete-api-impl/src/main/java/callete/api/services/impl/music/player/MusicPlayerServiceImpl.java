@@ -20,17 +20,13 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
   private final static Logger LOG = LoggerFactory.getLogger(MusicPlayerService.class);
 
   private MPDPlayer mpdPlayer;
-  private MusicPlayerPlaylist playlist;
+  private MusicPlayerPlaylist playlist = new MusicPlayerPlaylistImpl();
   private List<PlaybackChangeListener> listeners = new ArrayList<>();
-
-  public MusicPlayerServiceImpl() {
-    init();
-  }
 
   @Override
   public void play() {
     LOG.info("Invoked MPD play");
-    boolean play = mpdPlayer.play();
+    boolean play = getPlayer().play();
     if(play) {
       firePlaybackChangeEvent();
     }
@@ -39,7 +35,7 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
   @Override
   public void stop() {
     LOG.info("Invoked MPD stop");
-    mpdPlayer.stop();
+    getPlayer().stop();
   }
 
   @Override
@@ -51,7 +47,7 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
   @Override
   public boolean next() {
     LOG.info("Invoked MPD next");
-    boolean next = mpdPlayer.next();
+    boolean next = getPlayer().next();
     if(next) {
       firePlaybackChangeEvent();
     }
@@ -61,7 +57,7 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
   @Override
   public boolean previous() {
     LOG.info("Invoked MPD previous");
-    boolean previous = mpdPlayer.previous();
+    boolean previous = getPlayer().previous();
     if(previous) {
       firePlaybackChangeEvent();
     }
@@ -86,11 +82,12 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
 
   // -------------------------- Helper --------------------------------------
 
-  private void init() {
-    playlist = new MusicPlayerPlaylistImpl();
-
-    mpdPlayer = new MPDPlayer(this, playlist);
-    mpdPlayer.connect();
+  private MPDPlayer getPlayer() {
+    if(mpdPlayer == null) {
+      mpdPlayer = new MPDPlayer(this, playlist);
+      mpdPlayer.connect();
+    }
+    return mpdPlayer;
   }
 
   private void firePlaybackChangeEvent() {
