@@ -11,9 +11,9 @@ import java.util.List;
 public interface WeatherService extends Service {
 
   /**
-   * The default refresh interval, 5 min.
+   * The default refresh interval, 10 min.
    */
-  public final static long DEFAULT_REFRESH_INTERVAL = 1000*60*5;
+  public final static long DEFAULT_REFRESH_INTERVAL = 1000*60*10;
 
   /**
    * Returns a list of all weather information to retrieve data for.

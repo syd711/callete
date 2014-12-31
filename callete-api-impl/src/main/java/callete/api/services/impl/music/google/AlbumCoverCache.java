@@ -1,4 +1,4 @@
-package callete.api.services.music;
+package callete.api.services.impl.music.google;
 
 import callete.api.services.music.model.Album;
 import callete.api.util.SystemUtils;
@@ -22,12 +22,19 @@ import java.util.Map;
 public class AlbumCoverCache {
   private final static Logger LOG = LoggerFactory.getLogger(AlbumCoverCache.class);
 
-  private static final File IMAGE_CACHE_DIR = new File("./image_cache/");
+  private static File IMAGE_CACHE_DIR = new File("./image_cache/");
   public static final String PNG = "png";
-  private static Map<String, File> imageCache = new HashMap<>();
+  private static Map<String, File> imageCache;
 
-  static {
-    if(!IMAGE_CACHE_DIR.mkdirs()) {
+  public static void setCacheDir(File cacheDir) {
+    LOG.info("Setting album cover cache dir to " + cacheDir.getAbsolutePath());
+    IMAGE_CACHE_DIR = cacheDir;
+  }
+
+  private static void initializeCache() {
+    LOG.info("Initializing album cover cache, using lookup directory " + IMAGE_CACHE_DIR.getAbsolutePath());
+    imageCache = new HashMap<>();
+    if(!IMAGE_CACHE_DIR.exists() && !IMAGE_CACHE_DIR.mkdirs()) {
       LOG.warn("Failed to create image cache dir " + IMAGE_CACHE_DIR.getAbsolutePath());
     }
 
@@ -63,6 +70,10 @@ public class AlbumCoverCache {
   }
 
   public static String loadCached(String id, String imageUrl) {
+    if(imageCache == null) {
+      initializeCache();
+    }
+
     try {
       if (imageCache.containsKey(id)) {
         File image = imageCache.get(id);

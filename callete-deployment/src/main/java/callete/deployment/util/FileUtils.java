@@ -97,7 +97,7 @@ public class FileUtils {
     }
   }
 
-  static public void zipFolder(File srcFolder, File destZipFile, List<String> exclusions) throws Exception {
+  public static void zipFolder(File srcFolder, File destZipFile, List<String> exclusions) throws Exception {
     FileOutputStream fileWriter = new FileOutputStream(destZipFile.getAbsolutePath());
     ZipOutputStream  zip = new ZipOutputStream(fileWriter);
 
@@ -113,23 +113,25 @@ public class FileUtils {
   static private void addFileToZip(String path, String srcFile, ZipOutputStream zip, List<String> exclusions)
           throws Exception {
 
-    File folder = new File(srcFile);
-    if (folder.isDirectory()) {
-      if(!exclude(folder, exclusions)) {
+    File file = new File(srcFile);
+    if (file.isDirectory()) {
+      if(!exclude(file, exclusions)) {
         addFolderToZip(path, srcFile, zip, exclusions);
       }
     } else {
-      byte[] buf = new byte[1024];
-      int len;
-      FileInputStream in = new FileInputStream(srcFile);
-      String entryName = path + "/" + folder.getName();
-      if(path.equals("")) {
-        entryName = folder.getName();
-      }
-      ZipEntry entry = new ZipEntry(entryName);
-      zip.putNextEntry(entry);
-      while ((len = in.read(buf)) > 0) {
-        zip.write(buf, 0, len);
+      if(!exclude(file, exclusions)) {
+        byte[] buf = new byte[1024];
+        int len;
+        FileInputStream in = new FileInputStream(srcFile);
+        String entryName = path + "/" + file.getName();
+        if(path.equals("")) {
+          entryName = file.getName();
+        }
+        ZipEntry entry = new ZipEntry(entryName);
+        zip.putNextEntry(entry);
+        while ((len = in.read(buf)) > 0) {
+          zip.write(buf, 0, len);
+        }
       }
     }
   }
