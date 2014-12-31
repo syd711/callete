@@ -51,7 +51,7 @@ public class DeploymentHttpClient {
         return executeGetRequest(url);
       }
       case Deployment.CMD_CLEAN: {
-        String ignoreDirectories = StringUtils.join(descriptor.getIgnoreFiles(),',');
+        String ignoreDirectories = ""; //not used yet
         Map<String,String> params = new HashMap<>();
         params.put(DeploymentResource.PARAM_IGNORE_DIRECTORIES, ignoreDirectories);
         return executePostRequest(url, params);
@@ -64,12 +64,11 @@ public class DeploymentHttpClient {
       }
       case Deployment.CMD_COPY: {
         try {
-          File projectZipFile = File.createTempFile("callete_deployment", ".zip", new File(System.getProperty("java.io.tmpdir")));
-          FileUtils.zipFolder(new File("."), projectZipFile, descriptor.getIgnoreFiles());
+          File projectZipFile = descriptor.getSourceArchive();
           LOG.info("Copying " + projectZipFile.getAbsolutePath() + ", size: " + SystemUtils.humanReadableByteCount(projectZipFile.length()));
           return executeMultipartRequest(url, projectZipFile);
         } catch (Exception e) {
-          LOG.error("Error creating project zip file ");
+          LOG.error("Error copying project zip file ");
         }
         break;
       }

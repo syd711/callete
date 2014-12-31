@@ -2,6 +2,8 @@ package callete.deployment.util;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -12,7 +14,10 @@ import java.util.Arrays;
  * Generates an executable script to start project that was build via maven.
  */
 public class DeploymentArchiver {
+  private final static Logger LOG = LoggerFactory.getLogger(DeploymentArchiver.class);
+
   public static final String LIB_FOLDER = "libs";
+  public static final String RUN_SCRIPT_NAME = "run";
   private File deploymentDir;
   private File mainJar;
   private String mainClass;
@@ -45,7 +50,7 @@ public class DeploymentArchiver {
   private void copyResources() throws IOException {
     for(String resource : resourcesToCopy) {
       File resourceFile = new File("./", resource);
-      System.out.println("Copying " + resourceFile.getAbsolutePath() + " to " + deploymentDir.getAbsolutePath());
+      LOG.info("Copying " + resourceFile.getAbsolutePath() + " to " + deploymentDir.getAbsolutePath());
 
       if(resourceFile.isDirectory()) {
         org.apache.commons.io.FileUtils.copyDirectoryToDirectory(resourceFile, deploymentDir);
@@ -59,7 +64,7 @@ public class DeploymentArchiver {
 
   private void copyMainJar() throws IOException {
     File target = new File(deploymentDir, mainJar.getName());
-    System.out.println("Copying main jar " + target.getAbsolutePath());
+    LOG.info("Copying main jar " + target.getAbsolutePath());
     Files.copy(mainJar, new File(deploymentDir, mainJar.getName()));
   }
 
@@ -70,7 +75,7 @@ public class DeploymentArchiver {
       tempFile.delete();
     }
     FileUtils.zipFolder(deploymentDir, tempFile, Arrays.asList(".log", ".MF", "classes", "generated-sources", "maven-archiver"));
-    System.out.println("Created " + tempFile.getAbsolutePath());
+    LOG.info("Created " + tempFile.getAbsolutePath());
   }
 
   private void writeBatchFile() throws IOException {
@@ -96,6 +101,7 @@ public class DeploymentArchiver {
     for (File f : libs) {
       batchBuffer.append(LIB_FOLDER + "/" + f.getName());
       batchBuffer.append(getCPSeparator());
+      LOG.info("Add to classpath: " + f.getName());
     }
   }
 
@@ -130,9 +136,9 @@ public class DeploymentArchiver {
 
   public String getBatchFileName() {
     if(targetOS.toLowerCase().contains("windows")) {
-      return "run.bat";
+      return RUN_SCRIPT_NAME + ".bat";
     }
-    return "run.sh";
+    return RUN_SCRIPT_NAME + ".sh";
   }
 
   /**
@@ -144,6 +150,8 @@ public class DeploymentArchiver {
       System.err.println("Invalid number of arguments.");
     }
 
+    LOG.info("************** Creating new deployment ******************");
+
     File deploymentDir = new File(args[0]);
     String artifactId = args[1];
     String versionId = args[2];
@@ -154,5 +162,6 @@ public class DeploymentArchiver {
 
     DeploymentArchiver runScriptGenerator = new DeploymentArchiver(deploymentDir, mainJar, mainClass, targetOS, resourcesToCopy);
     runScriptGenerator.generateScript();
+    LOG.info("************** /Creating new deployment *****************");
   }
 }

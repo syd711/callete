@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,16 +15,14 @@ import java.util.List;
  */
 public class DeploymentDescriptor {
   private final static Logger LOG = LoggerFactory.getLogger(DeploymentDescriptor.class);
-
-  private static List<String> DEFAULT_EXCLUSIONS = Arrays.asList(".idea", "bin", ".classpath", ".project", ".iml", ".md");
   private String targetDirectory;
 
   private String requestBasePath;
-  private List<String> ignoreFiles;
 
-  public DeploymentDescriptor(List<String> ignoreFiles) {
-    this.ignoreFiles = ignoreFiles;
-    this.ignoreFiles.addAll(DEFAULT_EXCLUSIONS);
+  private File sourceArchive;
+
+  public DeploymentDescriptor(String artifactId, String version) {
+    sourceArchive = new File("./", artifactId + "-" + version + ".zip");
     String host = Callete.getConfiguration().getString("deployment.host");
     String port = Callete.getConfiguration().getString("deployment.port", "8080");
 
@@ -31,6 +30,10 @@ public class DeploymentDescriptor {
     this.requestBasePath = "http://" + host + ":" + port + "/deployment/";
 
     LOG.info("Created " + this);
+  }
+
+  public File getSourceArchive() {
+    return sourceArchive;
   }
 
   public String getTargetDirectory() {
@@ -41,13 +44,9 @@ public class DeploymentDescriptor {
     return requestBasePath;
   }
 
-  public List<String> getIgnoreFiles() {
-    return ignoreFiles;
-  }
-
   @Override
   public String toString() {
-    return "Deployment Descriptor [targetDirectory:" + targetDirectory + ", requestBasePath:" + requestBasePath + "], " +
-        "Ignore list: " + StringUtils.join(ignoreFiles, ", ");
+    return "Deployment Descriptor [targetDirectory:" + targetDirectory + ", requestBasePath:"
+        + requestBasePath + ", sourceArchive: " + sourceArchive.getAbsolutePath() + "]";
   }
 }

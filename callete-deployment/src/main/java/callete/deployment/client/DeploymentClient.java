@@ -16,16 +16,13 @@ public class DeploymentClient {
   private final static Logger LOG = LoggerFactory.getLogger(DeploymentClient.class);
 
   public static void main(String[] args) throws Exception {
-    String[] ignoreFiles = {};
-    if(args != null && args.length > 0) {
-      ignoreFiles = args[0].split(",");
-    }
-    new DeploymentClient().deploy(ignoreFiles);
+    String artifactId = args[0];
+    String version = args[1];
+    new DeploymentClient().deploy(artifactId, version);
   }
 
-  public void deploy(String[] ignoreFiles) throws Exception {
-    List<String> ignoreList = new ArrayList<>(Arrays.asList(ignoreFiles));
-    DeploymentDescriptor descriptor = new DeploymentDescriptor(ignoreList);
+  public void deploy(String artifactId, String version) throws Exception {
+    DeploymentDescriptor descriptor = new DeploymentDescriptor(artifactId, version);
     DeploymentHttpClient client = new DeploymentHttpClient(descriptor);
 
     List<String> cmds = Arrays.asList(Deployment.CMD_DESTROY, Deployment.CMD_CREATE,
