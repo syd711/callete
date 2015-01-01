@@ -118,14 +118,12 @@ public class Deployment {
    */
   private boolean executeDeployment() {
     try {
-      File batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".sh");
       List<String> cmds = new ArrayList<>();
 
+      //determine batch file
+      File batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".sh");
       if(SystemUtils.isWindows()) {
         batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".bat");
-      }
-      else {
-        cmds.add("sudo");
       }
 
       //mpf, well, just read the system command from the file, so no chmod required AND we can kill the process!
