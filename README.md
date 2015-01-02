@@ -2,6 +2,10 @@
 
 Callete is a framework for developing (Java) media clients for embedded systems (Raspberry Pi).
 
+# Latest Updates
+
+02.01.2015 - Adding documentation
+
 ## Prequisites
 
 This documentation is written for the following setup:
@@ -74,6 +78,23 @@ To be able to connect to MPD from any host, it is necessary to configure the mpd
 * Find and change the line: *bind_to_address        "any"*
 * *sudo service mpd restart*
 
+## Raspberry Pi Settings
+I recommend to overclock the Pi, you can do set in the setup menu by calling
+
+* *sudo raspi-config*
+
+Optional:
+Disable screensaver for console (used when a TFT with UI is connected): Disable text terminals from blanking
+change two settings in /etc/kbd/config
+
+* *BLANK_TIME=0*
+* *POWERDOWN_TIME=0*
+
+Adjust settings of your custom UI (e.g. a JavaFX or AWT GUI):
+Edit the /boot/config.txt file and customize the overscan properties, e.g.:
+
+* *overscan_bottom=16*
+
 ## Starting the Deployment Server
 
 Before we can start the deployment server, we have to configure the IP address of the Raspberry Pi:
@@ -87,6 +108,12 @@ Afterwards, start the server:
 * *cd callete-deployment*
 * *sudo ./startServer.sh*
 
+# Examples
 
+## Example Project with 
+
+callete comes with a project template. It can be cloned from here: https://github.com/syd711/callete-template
+
+The project comes with a setup for the callete deployment server and documentation how to use the framework.
 
 
