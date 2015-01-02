@@ -46,25 +46,26 @@ public class MPDPlaylistMonitor extends Thread {
         //dirty flag closes the gap between reading the stream data and applying a new stream
         dirty = false;
 
+        //sleep for the defined monitoring interval
+        Thread.sleep(POLL_INTERVAL);
+
         if (monitoring) {
           if (!mpdPlayer.isPlaying() && !mpdPlayer.isPaused()) {
             player.next();
           }
-        }
-        //sleep for the defined monitoring interval
-        Thread.sleep(POLL_INTERVAL);
 
-        //store the current selection
-        PlaylistItem activeItem = playlist.getActiveItem();
+          //store the current selection
+          PlaylistItem activeItem = playlist.getActiveItem();
 
-        //this operation has a sleep, so it is important to keep the active item before since it may have changed.
-        String playlistInfo = telnetClient.playlistInfo();
-        if (playlistInfo != null) {
-          final PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(activeItem, playlistInfo);
+          //this operation has a sleep, so it is important to keep the active item before since it may have changed.
+          String playlistInfo = telnetClient.playlistInfo();
+          if (playlistInfo != null) {
+            final PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(activeItem, playlistInfo);
 //          LOG.info("Created " + metaData);
-          if (activeItem != null && metaData != null && metaData.isValid() && !dirty) {
+            if (activeItem != null && metaData != null && metaData.isValid() && !dirty) {
 //            LOG.info("Updating " + metaData);
-            playlist.updateMetaData(metaData);
+              playlist.updateMetaData(metaData);
+            }
           }
         }
       } catch (Exception e) {
@@ -74,11 +75,13 @@ public class MPDPlaylistMonitor extends Thread {
   }
 
   public void startMonitoring() {
+    LOG.info("Enabling monitoring thread.");
     this.dirty = true;
     this.monitoring = true;
   }
 
   public void stopMonitoring() {
+    LOG.info("Disabling monitoring thread.");
     this.monitoring = false;
   }
 

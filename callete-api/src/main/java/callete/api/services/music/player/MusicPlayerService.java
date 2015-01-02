@@ -37,6 +37,12 @@ public interface MusicPlayerService extends Service {
   boolean previous();
 
   /**
+   * Can be used to temporary disable the player status monitoring.
+   * This can save some resources.
+   */
+  void enableMonitoring(boolean enable);
+
+  /**
    * Returns the playlist of the music player.
    */
   MusicPlayerPlaylist getPlaylist();

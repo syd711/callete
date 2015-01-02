@@ -65,6 +65,11 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
   }
 
   @Override
+  public void enableMonitoring(boolean enable) {
+    getPlayer().enableMonitoring(enable);
+  }
+
+  @Override
   public void addPlaybackChangeEventListener(PlaybackChangeListener listener) {
     listeners.add(listener);
   }

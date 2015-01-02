@@ -154,12 +154,22 @@ public class MPDPlayer implements MPDErrorListener, OutputChangeListener {
     return false;
   }
 
+  public void enableMonitoring(boolean enable) {
+    if(enable) {
+      monitor.startMonitoring();
+    }
+    else {
+      monitor.stopMonitoring();
+    }
+  }
+
   // --------------------- Event Handling --------------------------------------
 
   @Override
   public void errorEventReceived(MPDErrorEvent mpdErrorEvent) {
     LOG.error("MPD Error event: " + mpdErrorEvent.getMsg());
   }
+
 
   @Override
   public void outputChanged(OutputChangeEvent event) {
