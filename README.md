@@ -11,10 +11,8 @@ Callete is a framework for developing (Java) media clients for embedded systems 
 This documentation is written for the following setup:
 
 * Raspberry Pi Model B 512MB Ram with
-* 2014-06-20-wheezy-raspbian.zip, 4gb SD installed and
-* enabled ssh access
-* overclocked to 900Mhz (recommended)
-* shared graphic memory to 128MB
+* 2014-06-20-wheezy-raspbian.zip, 4gb SD installed and (http://www.raspberrypi.org/downloads/)
+* enabled ssh access (*sudo raspi-config*)
 * enabled internet access
 
 ## Raspberry Pi Setup
@@ -35,6 +33,26 @@ Set default java and javac to the new installed jdk8 (the command failed when I 
 * *sudo update-alternatives -–install /usr/bin/java java /opt/jdk1.8.0_06/bin/java 1*
 * *sudo update-alternatives –config javac*
 * *sudo update-alternatives –config java*
+
+I recommend to overclock the Pi, you can do set in the setup menu by calling
+
+* *sudo raspi-config*
+
+Apply the settings:
+* overclocked to 900Mhz (recommended)
+* shared graphic memory to 128MB
+
+Optional:
+Disable screensaver for console (used when a TFT with UI is connected): Disable text terminals from blanking
+change two settings in /etc/kbd/config
+
+* *BLANK_TIME=0*
+* *POWERDOWN_TIME=0*
+
+Adjust settings of your custom UI (e.g. a JavaFX or AWT GUI):
+Edit the /boot/config.txt file and customize the overscan properties, e.g.:
+
+* *overscan_bottom=16*
 
 ## Git Setup
 
@@ -77,23 +95,6 @@ To be able to connect to MPD from any host, it is necessary to configure the mpd
 * *sudo vi /etc/mpd.conf*
 * Find and change the line: *bind_to_address        "any"*
 * *sudo service mpd restart*
-
-## Raspberry Pi Settings
-I recommend to overclock the Pi, you can do set in the setup menu by calling
-
-* *sudo raspi-config*
-
-Optional:
-Disable screensaver for console (used when a TFT with UI is connected): Disable text terminals from blanking
-change two settings in /etc/kbd/config
-
-* *BLANK_TIME=0*
-* *POWERDOWN_TIME=0*
-
-Adjust settings of your custom UI (e.g. a JavaFX or AWT GUI):
-Edit the /boot/config.txt file and customize the overscan properties, e.g.:
-
-* *overscan_bottom=16*
 
 ## Starting the Deployment Server
 
