@@ -20,9 +20,9 @@ public class PlaylistMetaData {
 
   public boolean isValid() {
     return !String.valueOf(artist).equals("0")
-            && !String.valueOf(title).equals("0")
-            && !String.valueOf(name).equals("0")
-            && !String.valueOf(title).equals(String.valueOf(artist));
+        && !String.valueOf(title).equals("0")
+        && !String.valueOf(name).equals("0")
+        && !String.valueOf(title).equals(String.valueOf(artist));
   }
 
   public String getArtist() {
@@ -45,8 +45,8 @@ public class PlaylistMetaData {
   public boolean equals(Object obj) {
     PlaylistMetaData compare = (PlaylistMetaData) obj;
     return item.getPlaybackUrl().equals(compare.getItem().getPlaybackUrl())
-            && String.valueOf(title).equals(String.valueOf(compare.getTitle()))
-            && String.valueOf(name).equals(String.valueOf(compare.getName()));
+        && String.valueOf(title).equals(String.valueOf(compare.getTitle()))
+        && String.valueOf(name).equals(String.valueOf(compare.getName()));
   }
 
   @Override

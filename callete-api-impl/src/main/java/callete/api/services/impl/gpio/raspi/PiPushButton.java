@@ -58,21 +58,19 @@ public class PiPushButton implements PushButton {
     input.addListener(new GpioPinListenerDigital() {
       @Override
       public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-        if (input.getPin().getAddress() == event.getPin().getPin().getAddress()) {
+        if(input.getPin().getAddress() == event.getPin().getPin().getAddress()) {
           PinState state = event.getState();
-          if (state == PinState.LOW) {
+          if(state == PinState.LOW) {
             LOG.info("Push event detected for " + PiPushButton.this);
             long pushEnd = new Date().getTime();
             for(PushListener listener : pushListeners) {
-              if (pushStart > 0 && (pushEnd - pushStart) > listener.getLongPushDebounceMillis()) {
+              if(pushStart > 0 && (pushEnd - pushStart) > listener.getLongPushDebounceMillis()) {
                 listener.pushed(new PushEventImpl(this, pin, true));
-              }
-              else if (pushStart > 0 && (pushEnd - pushStart) > listener.getPushDebounceMillis()) {
+              } else if(pushStart > 0 && (pushEnd - pushStart) > listener.getPushDebounceMillis()) {
                 listener.pushed(new PushEventImpl(this, pin, false));
               }
             }
-          }
-          else {
+          } else {
             pushStart = new Date().getTime();
           }
         }

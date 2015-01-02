@@ -49,12 +49,14 @@ public interface MusicPlayerService extends Service {
 
   /**
    * Registers a new listener to detect playback changes.
+   *
    * @param listener the listener to register.
    */
   void addPlaybackChangeEventListener(PlaybackChangeListener listener);
 
   /**
    * Removes the listener from the player.
+   *
    * @param listener the listener to remove.
    */
   void removePlaybackChangeEventListener(PlaybackChangeListener listener);

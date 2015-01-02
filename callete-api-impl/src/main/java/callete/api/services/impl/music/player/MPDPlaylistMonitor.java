@@ -41,7 +41,7 @@ public class MPDPlaylistMonitor extends Thread {
 
   @Override
   public void run() {
-    while (isRunning()) {
+    while(isRunning()) {
       try {
         //dirty flag closes the gap between reading the stream data and applying a new stream
         dirty = false;
@@ -49,8 +49,8 @@ public class MPDPlaylistMonitor extends Thread {
         //sleep for the defined monitoring interval
         Thread.sleep(POLL_INTERVAL);
 
-        if (monitoring) {
-          if (!mpdPlayer.isPlaying() && !mpdPlayer.isPaused()) {
+        if(monitoring) {
+          if(!mpdPlayer.isPlaying() && !mpdPlayer.isPaused()) {
             player.next();
           }
 
@@ -59,10 +59,10 @@ public class MPDPlaylistMonitor extends Thread {
 
           //this operation has a sleep, so it is important to keep the active item before since it may have changed.
           String playlistInfo = telnetClient.playlistInfo();
-          if (playlistInfo != null) {
+          if(playlistInfo != null) {
             final PlaylistMetaData metaData = MPDMetaDataFactory.createMetaData(activeItem, playlistInfo);
 //          LOG.info("Created " + metaData);
-            if (activeItem != null && metaData != null && metaData.isValid() && !dirty) {
+            if(activeItem != null && metaData != null && metaData.isValid() && !dirty) {
 //            LOG.info("Updating " + metaData);
               playlist.updateMetaData(metaData);
             }

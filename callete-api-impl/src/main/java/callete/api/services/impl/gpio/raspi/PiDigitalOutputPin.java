@@ -71,10 +71,10 @@ public class PiDigitalOutputPin implements DigitalOutputPin {
 
   private void fireStateChangeEvent() {
     PinState state = PinState.HIGH;
-    if (gpioPinDigitalOutput.isLow()) {
+    if(gpioPinDigitalOutput.isLow()) {
       state = PinState.LOW;
     }
-    for (PinStateChangeListener l : this.pinStateListeners) {
+    for(PinStateChangeListener l : this.pinStateListeners) {
       l.pinStateChanged(new PinStateChangeEventImpl(this, pin, state) {
       });
     }

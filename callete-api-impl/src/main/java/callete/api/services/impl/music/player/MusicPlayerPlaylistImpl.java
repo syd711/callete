@@ -13,7 +13,7 @@ import java.util.List;
  * This way it is ensured that always the complete model is returned when methods of the playlist are called.
  */
 public class MusicPlayerPlaylistImpl implements MusicPlayerPlaylist {
-  private List<PlaylistMetaDataChangeListener> metaDataChangeListeners =  new ArrayList<>();
+  private List<PlaylistMetaDataChangeListener> metaDataChangeListeners = new ArrayList<>();
 
   //the model used to store the getActiveItem playlist in.
   private List<PlaylistItem> playlist = new ArrayList<>();
@@ -33,7 +33,7 @@ public class MusicPlayerPlaylistImpl implements MusicPlayerPlaylist {
 
   @Override
   public PlaylistItem getActiveItem() {
-    if (!playlist.isEmpty()) {
+    if(!playlist.isEmpty()) {
       return playlist.get(playbackIndex);
     }
     return null;
@@ -50,8 +50,7 @@ public class MusicPlayerPlaylistImpl implements MusicPlayerPlaylist {
   public void setActiveItem(PlaylistItem item) {
     if(playlist.contains(item)) {
       playbackIndex = playlist.indexOf(item);
-    }
-    else {
+    } else {
       playbackIndex = 0;
       playlist.clear();
       playlist.add(item);

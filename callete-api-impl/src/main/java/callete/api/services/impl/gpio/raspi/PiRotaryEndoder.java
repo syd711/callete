@@ -33,11 +33,11 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
   private boolean ignoreHalfSteps = false;
 
   // based on [lastEncoded][encoded] lookup
-  private static final int stateTable[][]= {
-          {0, 1, 1, -1},
-          {-1, 0, 1, -1},
-          {-1, 1, 0, -1},
-          {-1, 1, 1, 0}
+  private static final int stateTable[][] = {
+      {0, 1, 1, -1},
+      {-1, 0, 1, -1},
+      {-1, 1, 0, -1},
+      {-1, 1, 1, 0}
   };
 
 
@@ -72,7 +72,7 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
     // converting the 2 pin value to single number to end up with 00, 01, 10 or 11
     int encoded = (stateA << 1) | stateB;
 
-    if (firstPass) {
+    if(firstPass) {
       firstPass = false;
     } else {
       // going up states, 01, 11
@@ -86,13 +86,12 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
       }
 
       RotaryEncoderEventImpl e = new RotaryEncoderEventImpl(encoderValue, state == -1);
-      for (RotaryEncoderListener l : listeners) {
+      for(RotaryEncoderListener l : listeners) {
         l.rotated(e);
       }
     }
 
     lastEncoded = encoded;
-
 
 
   }

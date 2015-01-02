@@ -106,6 +106,7 @@ public class MPDPlayer implements MPDErrorListener, OutputChangeListener {
   /**
    * Connects to the MPD service and creates
    * the client.
+   *
    * @return true if the connection was successfully established.
    */
   public boolean connect() {
@@ -125,8 +126,7 @@ public class MPDPlayer implements MPDErrorListener, OutputChangeListener {
 
       LOG.info("MPD Version:" + mpd.getVersion());
       return true;
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       LOG.error("Failed to connect to MPD server: " + e.getMessage(), e);
     }
     return false;
@@ -157,8 +157,7 @@ public class MPDPlayer implements MPDErrorListener, OutputChangeListener {
   public void enableMonitoring(boolean enable) {
     if(enable) {
       monitor.startMonitoring();
-    }
-    else {
+    } else {
       monitor.stopMonitoring();
     }
   }

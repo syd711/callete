@@ -20,7 +20,7 @@ import java.io.InputStream;
  */
 public class ArtistResourceFXExample extends Application {
   public static final int WIDTH = 700;
-  public static final int HEIGHT= 345;
+  public static final int HEIGHT = 345;
 
   public static void main(String[] args) {
     launch(args);

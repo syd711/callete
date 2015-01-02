@@ -8,6 +8,7 @@ public interface RotaryEncoder extends GPIOComponent {
   /**
    * Add a listener to the rotary encoder that is fired when
    * the encoder is rotated left or right (not used for push buttons)
+   *
    * @param listener The listener to add to the rotary encoder.
    */
   void addChangeListener(RotaryEncoderListener listener);

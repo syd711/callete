@@ -18,6 +18,7 @@ public interface MusicPlayerPlaylist {
 
   /**
    * Sets the given item from the playlist as active item.
+   *
    * @param item
    */
   void setActiveItem(PlaylistItem item);
@@ -49,6 +50,7 @@ public interface MusicPlayerPlaylist {
 
   /**
    * Removes the change listener from the playlist.
+   *
    * @param listener the listener to remove
    */
   void removeChangeListener(PlaylistChangeListener listener);
@@ -56,12 +58,14 @@ public interface MusicPlayerPlaylist {
   /**
    * Adds a meta data change listener to the playlist. The listener is notified
    * when the meta data of the current playlist item is updated, e.g. the title of a radio stream.
+   *
    * @param listener The listener to add.
    */
   void addMetaDataChangeListener(PlaylistMetaDataChangeListener listener);
 
   /**
    * Removes a meta data change listener to the playlist.
+   *
    * @param listener The listener to remove.
    */
   void removeMetaDataChangeListener(PlaylistMetaDataChangeListener listener);

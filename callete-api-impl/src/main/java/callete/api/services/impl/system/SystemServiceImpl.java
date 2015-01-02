@@ -35,7 +35,7 @@ public class SystemServiceImpl implements SystemService {
   @Override
   public long getUsedDiskSpace() {
     final File file = new File(".");
-    return file.getTotalSpace()-file.getFreeSpace();
+    return file.getTotalSpace() - file.getFreeSpace();
   }
 
   @Override

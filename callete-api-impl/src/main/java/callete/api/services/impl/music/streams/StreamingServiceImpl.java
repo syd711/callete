@@ -74,13 +74,13 @@ public class StreamingServiceImpl implements StreamingService {
     List<Stream> streams = new ArrayList<>();
 
     Iterator<String> keys = properties.getKeys();
-    while (keys.hasNext()) {
+    while(keys.hasNext()) {
       String key = keys.next();
-      if (!key.contains("stream.") || key.equals(STREAMING_PLAYLIST_URL_PROPERTY)) {
+      if(!key.contains("stream.") || key.equals(STREAMING_PLAYLIST_URL_PROPERTY)) {
         continue;
       }
       //ignore naming properties
-      if (key.endsWith(".name")) {
+      if(key.endsWith(".name")) {
         continue;
       }
 
@@ -88,7 +88,7 @@ public class StreamingServiceImpl implements StreamingService {
 
       String nameKey = key + ".name";
       String name = null;
-      if (properties.containsKey(nameKey)) {
+      if(properties.containsKey(nameKey)) {
         name = properties.getString(nameKey);
       }
 

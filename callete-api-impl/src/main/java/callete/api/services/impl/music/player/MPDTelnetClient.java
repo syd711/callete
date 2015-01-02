@@ -29,10 +29,10 @@ public class MPDTelnetClient {
    */
   public void connect() {
     try {
-      if (in != null) {
+      if(in != null) {
         in.close();
       }
-      if (client != null) {
+      if(client != null) {
         client.disconnect();
       }
       client = new TelnetClient();
@@ -53,15 +53,14 @@ public class MPDTelnetClient {
   public void executeTelnetCommand(String cmd) {
     try {
       cmd += "\n";
-      if (client == null || client.getOutputStream() == null) {
+      if(client == null || client.getOutputStream() == null) {
         connect();
       }
 
-      if (client.getOutputStream() != null) {
+      if(client.getOutputStream() != null) {
         client.getOutputStream().write(cmd.getBytes());
         client.getOutputStream().flush();
-      }
-      else {
+      } else {
         LOG.error("Exception executing MPD telnet command: Could not acquire telnet output steam, please check the MPD server connection.");
       }
     } catch (IOException e) {
@@ -74,11 +73,12 @@ public class MPDTelnetClient {
   /**
    * Executes the playlistinfo command and applies
    * the result string to the current station.
+   *
    * @return the string result of the system command.
    */
   public String playlistInfo() {
     if(client != null && client.isConnected()) {
-      synchronized (this) {
+      synchronized(this) {
         executeTelnetCommand("playlistinfo");
         try {
           Thread.sleep(200);
@@ -87,8 +87,7 @@ public class MPDTelnetClient {
         }
         return outputStream.getLastCommand();
       }
-    }
-    else {
+    } else {
       LOG.error("Failed to retrieve mpc playlist info: " + this + " is not connected, trying to reconnect...");
       connect();
     }

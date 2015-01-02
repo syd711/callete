@@ -6,7 +6,6 @@ import callete.deployment.util.DeploymentArchiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,20 +16,25 @@ public class DeploymentClient {
   private final static Logger LOG = LoggerFactory.getLogger(DeploymentClient.class);
 
   public static void main(String[] args) throws Exception {
-    DeploymentArchiver.main(args);
-
     String artifactId = args[0];
     String version = args[1];
     boolean quickDeployment = Boolean.parseBoolean(args[2]);
-    new DeploymentClient().deploy(artifactId, version, quickDeployment);
+
+    DeploymentDescriptor descriptor = new DeploymentDescriptor(artifactId, version, quickDeployment);
+    DeploymentArchiver deploymentArchiver = DeploymentArchiver.create(args);
+    deploymentArchiver.setHost(descriptor.getHost());
+    deploymentArchiver.generateScript();
+
+
+    new DeploymentClient().deploy(descriptor);
   }
 
-  public void deploy(String artifactId, String version, boolean quickDeployment) throws Exception {
-    DeploymentDescriptor descriptor = new DeploymentDescriptor(artifactId, version, quickDeployment);
+  public void deploy(DeploymentDescriptor descriptor) throws Exception {
+
     DeploymentHttpClient client = new DeploymentHttpClient(descriptor);
 
     List<String> cmds = Arrays.asList(Deployment.CMD_DESTROY, Deployment.CMD_CREATE,
-            Deployment.CMD_CLEAN, Deployment.CMD_COPY, Deployment.CMD_RUN);
+        Deployment.CMD_CLEAN, Deployment.CMD_COPY, Deployment.CMD_RUN);
 
     for(String cmd : cmds) {
       DeploymentStatus status = client.executeCommand(cmd);

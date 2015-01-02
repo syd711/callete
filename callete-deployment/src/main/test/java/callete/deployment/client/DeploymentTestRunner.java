@@ -11,7 +11,7 @@ import java.util.Map;
 public class DeploymentTestRunner {
   public static void main(String[] args) throws Exception {
     DeploymentHttpClient c = new DeploymentHttpClient(null);
-    Map<String,String> params = new HashMap<>();
+    Map<String, String> params = new HashMap<>();
     params.put("target", "g:/temp/callete/");
     c.executeGetRequest("http://localhost:8099/deployment/destroy");
     c.executePostRequest("http://localhost:8099/deployment/create", params);

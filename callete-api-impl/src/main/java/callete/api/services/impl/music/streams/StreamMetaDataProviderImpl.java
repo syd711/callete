@@ -38,7 +38,7 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
   public String getArtist() {
     Map<String, String> data = getMetadata();
 
-    if (data == null || !data.containsKey(STREAM_ARTIST)) {
+    if(data == null || !data.containsKey(STREAM_ARTIST)) {
       return "";
     }
 
@@ -47,11 +47,11 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
 
   @Override
   public String getName() {
-    if (!StringUtils.isEmpty(name)) {
+    if(!StringUtils.isEmpty(name)) {
       return name;
     }
     Map<String, String> data = getMetadata();
-    if (data == null || !data.containsKey(STREAM_NAME)) {
+    if(data == null || !data.containsKey(STREAM_NAME)) {
       return "";
     }
 
@@ -62,7 +62,7 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
   public String getTitle() {
     Map<String, String> data = getMetadata();
 
-    if (data == null || !data.containsKey(STREAM_TITLE)) {
+    if(data == null || !data.containsKey(STREAM_TITLE)) {
       return "";
     }
 
@@ -85,7 +85,7 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
    * Lazy loading of the the stream's meta data.
    */
   private Map<String, String> getMetadata() {
-    if (metadata == null && available) {
+    if(metadata == null && available) {
       retreiveMetadata();
     }
 
@@ -111,16 +111,15 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
         streamTitle = streamTitle.substring(1, streamTitle.length());
       }
       if(streamTitle.endsWith("'")) {
-        streamTitle = streamTitle.substring(0, streamTitle.length()-1);
+        streamTitle = streamTitle.substring(0, streamTitle.length() - 1);
       }
 
       if(streamTitle.contains("-")) {
         String artist = streamTitle.substring(0, streamTitle.indexOf("-"));
         metadata.put(STREAM_ARTIST, artist.trim());
-        String title = streamTitle.substring(streamTitle.indexOf("-")+1, streamTitle.length());
+        String title = streamTitle.substring(streamTitle.indexOf("-") + 1, streamTitle.length());
         metadata.put(STREAM_TITLE, title.trim());
-      }
-      else {
+      } else {
         metadata.put(STREAM_NAME, streamTitle);
       }
     }
@@ -140,16 +139,16 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
       Map<String, List<String>> headers = con.getHeaderFields();
       InputStream stream = con.getInputStream();
 
-      if (headers.containsKey("icy-metaint")) {
+      if(headers.containsKey("icy-metaint")) {
         // Headers are sent via HTTP
         metaDataOffset = Integer.parseInt(headers.get("icy-metaint").get(0));
       } else {
         // Headers are sent within a stream
         StringBuilder strHeaders = new StringBuilder();
         char c;
-        while ((c = (char)stream.read()) != -1) {
+        while((c = (char) stream.read()) != -1) {
           strHeaders.append(c);
-          if (strHeaders.length() > 5 && (strHeaders.substring((strHeaders.length() - 4), strHeaders.length()).equals("\r\n\r\n"))) {
+          if(strHeaders.length() > 5 && (strHeaders.substring((strHeaders.length() - 4), strHeaders.length()).equals("\r\n\r\n"))) {
             // end of headers
             break;
           }
@@ -162,13 +161,13 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
         // Match headers to get metadata offset within a stream
         Pattern p = Pattern.compile("\\r\\n(icy-metaint):\\s*(.*)\\r\\n");
         Matcher m = p.matcher(strHeaders.toString());
-        if (m.find()) {
+        if(m.find()) {
           metaDataOffset = Integer.parseInt(m.group(2));
         }
       }
 
       // In case no data was sent
-      if (metaDataOffset == 0) {
+      if(metaDataOffset == 0) {
         available = false;
         return;
       }
@@ -180,21 +179,21 @@ public class StreamMetaDataProviderImpl implements StreamMetaDataProvider {
       boolean inData;
       StringBuilder metaData = new StringBuilder();
       // Stream position should be either at the beginning or right after headers
-      while ((b = stream.read()) != -1) {
+      while((b = stream.read()) != -1) {
         count++;
 
         // Length of the metadata
-        if (count == metaDataOffset + 1) {
+        if(count == metaDataOffset + 1) {
           metaDataLength = b * 16;
         }
 
         inData = count > metaDataOffset + 1 && count < (metaDataOffset + metaDataLength);
-        if (inData) {
-          if (b != 0) {
-            metaData.append((char)b);
+        if(inData) {
+          if(b != 0) {
+            metaData.append((char) b);
           }
         }
-        if (count > (metaDataOffset + metaDataLength)) {
+        if(count > (metaDataOffset + metaDataLength)) {
           break;
         }
 

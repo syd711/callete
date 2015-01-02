@@ -40,14 +40,14 @@ public class Deployment {
    * @return The current deployment status
    */
   public DeploymentStatus create() {
-    if (status.getDeploymentDirectory() == null) {
+    if(status.getDeploymentDirectory() == null) {
       status.setErrorMessage("Deployment directory has not been set, check log for details.");
       return status;
     }
 
     File target = new File(status.getDeploymentDirectory());
     target.mkdirs();
-    if (!target.exists()) {
+    if(!target.exists()) {
       status.setErrorMessage("Could not create deployment directory '" + status.getDeploymentDirectory() + ", " +
           "please create it manually.");
     }
@@ -62,7 +62,7 @@ public class Deployment {
    * Destroys the forked process this deployment is running.
    */
   public DeploymentStatus destroy() {
-    if (deployedProcess != null) {
+    if(deployedProcess != null) {
       deployedProcess.destroyForcibly();
     }
     return status;
@@ -79,7 +79,7 @@ public class Deployment {
     try {
       File targetDirectory = new File(status.getDeploymentDirectory());
       //delete all if this is no quick deployment
-      if (!quickDeployment) {
+      if(!quickDeployment) {
         FileUtils.deleteFolder(targetDirectory, ignoreList, true);
       } else {
         //delete only main jar
@@ -89,8 +89,8 @@ public class Deployment {
             return name.endsWith(".jar");
           }
         });
-        for (File file : list) {
-          if (file.delete()) {
+        for(File file : list) {
+          if(file.delete()) {
             LOG.info("Quick-Deployment deleted " + file.getAbsolutePath());
           }
         }
@@ -144,7 +144,7 @@ public class Deployment {
       //determine batch file
       File batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".bat");
 
-      if (!SystemUtils.isWindows()) {
+      if(!SystemUtils.isWindows()) {
         batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".sh");
         List<String> chmodCmds = Arrays.asList("sudo", "chmod", "777", batchFile.getAbsolutePath());
         LOG.info("Executing chmod: " + StringUtils.join(chmodCmds, " "));
@@ -176,7 +176,7 @@ public class Deployment {
   }
 
   private String buildCommandString(File batchFile) throws IOException {
-    if (SystemUtils.isWindows()) {
+    if(SystemUtils.isWindows()) {
       //mpf, well, just read the system command from the file, so no chmod required AND we can kill the process!
       List<String> lines = org.apache.commons.io.FileUtils.readLines(batchFile, "UTF-8");
       return lines.get(0);

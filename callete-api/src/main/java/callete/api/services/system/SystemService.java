@@ -31,8 +31,8 @@ public interface SystemService extends Service {
    * attempt to use.  If there is no inherent limit then the value {@link
    * java.lang.Long#MAX_VALUE} will be returned.
    *
-   * @return  the maximum amount of memory that the virtual machine will
-   *          attempt to use, measured in bytes
+   * @return the maximum amount of memory that the virtual machine will
+   * attempt to use, measured in bytes
    */
   long getMaxMemory();
 
@@ -40,12 +40,12 @@ public interface SystemService extends Service {
    * Returns the total amount of memory in the Java virtual machine.
    * The value returned by this method may vary over time, depending on
    * the host environment.
-   * <p>
+   * <p/>
    * Note that the amount of memory required to hold an object of any
    * given type may be implementation-dependent.
    *
-   * @return  the total amount of memory currently available for current
-   *          and future objects, measured in bytes.
+   * @return the total amount of memory currently available for current
+   * and future objects, measured in bytes.
    */
   long getTotalMemory();
 
@@ -57,8 +57,8 @@ public interface SystemService extends Service {
    * <code>gc</code> method may result in increasing the value returned
    * by <code>freeMemory.</code>
    *
-   * @return  an approximation to the total amount of memory currently
-   *          available for future allocated objects, measured in bytes.
+   * @return an approximation to the total amount of memory currently
+   * available for future allocated objects, measured in bytes.
    */
   long getFreeMemory();
 

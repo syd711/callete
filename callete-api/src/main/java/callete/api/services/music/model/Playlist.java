@@ -62,10 +62,10 @@ public abstract class Playlist implements ServiceModel {
   public String getFormattedDuration(String format) {
     long durationMillis = 0;
     for(Song songs : getSongs()) {
-      durationMillis+= songs.getDurationMillis();
+      durationMillis += songs.getDurationMillis();
     }
     if(durationMillis > 0) {
-      durationMillis-=3600000;
+      durationMillis -= 3600000;
       return DateFormatUtils.format(durationMillis, format);
     }
     return "";
@@ -76,7 +76,7 @@ public abstract class Playlist implements ServiceModel {
    */
   public void addSong(Song song) {
     if(song.getTrack() == 0) {
-      song.setTrack(this.getSize()+1);
+      song.setTrack(this.getSize() + 1);
     }
     songs.add(song);
   }
@@ -84,7 +84,7 @@ public abstract class Playlist implements ServiceModel {
   public String getDuration() {
     long duration = 0;
     for(Song song : songs) {
-      duration+=song.getDurationMillis();
+      duration += song.getDurationMillis();
     }
     if(duration > 0) {
       return DateFormatUtils.format(duration, "mm:ss");

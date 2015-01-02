@@ -4,7 +4,6 @@ import callete.api.util.SystemUtils;
 import callete.deployment.server.Deployment;
 import callete.deployment.server.DeploymentResource;
 import callete.deployment.server.DeploymentStatus;
-import callete.deployment.util.FileUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -14,7 +13,6 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,20 +44,20 @@ public class DeploymentHttpClient {
     String url = descriptor.getRequestBasePath() + cmd;
     LOG.info("Deployment client executing command '" + url + "'");
 
-    switch (cmd) {
+    switch(cmd) {
       case Deployment.CMD_DESTROY: {
         return executeGetRequest(url);
       }
       case Deployment.CMD_CLEAN: {
         String ignoreDirectories = ""; //not used yet
-        Map<String,String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put(DeploymentResource.PARAM_QUICK_DEPLOYMENT, String.valueOf(descriptor.isQuickDeployment()));
         params.put(DeploymentResource.PARAM_IGNORE_DIRECTORIES, ignoreDirectories);
         return executePostRequest(url, params);
       }
       case Deployment.CMD_CREATE: {
         String targetDirectory = descriptor.getTargetDirectory();
-        Map<String,String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put(DeploymentResource.PARAM_TARGET_DIRECTORY, targetDirectory);
         return executePostRequest(url, params);
       }
@@ -84,7 +82,8 @@ public class DeploymentHttpClient {
    * Executes a POST request with multipart request data.
    * We assume that the REST method called has a single request parameter called "file"
    * that accepts the given file that should be transferred.
-   * @param url The REST method that accepts the request.
+   *
+   * @param url  The REST method that accepts the request.
    * @param file The file that should be transferred.
    */
   protected DeploymentStatus executeMultipartRequest(String url, File file) {
@@ -95,7 +94,7 @@ public class DeploymentHttpClient {
       multiPart.bodyPart(new FileDataBodyPart("file", file, MediaType.valueOf("application/zip")));
 
       final ClientResponse clientResp = webResource.type(MediaType.MULTIPART_FORM_DATA_TYPE).post(
-              ClientResponse.class, multiPart);
+          ClientResponse.class, multiPart);
 
       LOG.info(url + ": MultiPart Response: " + clientResp.getClientResponseStatus());
       DeploymentStatus entity = clientResp.getEntity(DeploymentStatus.class);
@@ -111,6 +110,7 @@ public class DeploymentHttpClient {
 
   /**
    * Executes a regular GET request without params required.
+   *
    * @param url the REST command to execute, see DeploymentResource.
    */
   protected DeploymentStatus executeGetRequest(String url) {
@@ -132,15 +132,16 @@ public class DeploymentHttpClient {
 
   /**
    * Executes a regular POST request with parameters.
+   *
    * @param url the REST command to execute, see DeploymentResource.
    */
   @SuppressWarnings("unchecked")
-  protected DeploymentStatus executePostRequest(@Nonnull String url, @Nonnull Map<String,String> params) {
+  protected DeploymentStatus executePostRequest(@Nonnull String url, @Nonnull Map<String, String> params) {
     Client client = createClient();
     try {
       WebResource webResource = client.resource(url);
       MultivaluedMap formData = new MultivaluedMapImpl();
-      for (Map.Entry<String, String> next : params.entrySet()) {
+      for(Map.Entry<String, String> next : params.entrySet()) {
         formData.put(next.getKey(), Arrays.asList(next.getValue()));
       }
       final ClientResponse clientResp = webResource.type(MediaType.APPLICATION_FORM_URLENCODED).post(ClientResponse.class, formData);

@@ -33,56 +33,56 @@ public class Callete {
   private static SystemService systemService;
 
   public static MusicPlayerService getMusicPlayer() {
-    if (musicPlayer == null) {
+    if(musicPlayer == null) {
       musicPlayer = (MusicPlayerService) ServiceFactory.createService(MusicPlayerService.class);
     }
     return musicPlayer;
   }
 
   public static WeatherService getWeatherService() {
-    if (weatherService == null) {
+    if(weatherService == null) {
       weatherService = (WeatherService) ServiceFactory.createService(WeatherService.class);
     }
     return weatherService;
   }
 
   public static GPIOService getGPIOService() {
-    if (gpioService == null) {
+    if(gpioService == null) {
       gpioService = (GPIOService) ServiceFactory.createService(GPIOService.class);
     }
     return gpioService;
   }
 
   public static HttpService getHttpService() {
-    if (httpService == null) {
+    if(httpService == null) {
       httpService = (HttpService) ServiceFactory.createService(HttpService.class);
     }
     return httpService;
   }
 
   public static GoogleMusicService getGoogleMusicService() {
-    if (googleMusicService == null) {
+    if(googleMusicService == null) {
       googleMusicService = (GoogleMusicService) ServiceFactory.createService(GoogleMusicService.class);
     }
     return googleMusicService;
   }
 
   public static StreamingService getStreamingService() {
-    if (streamingService == null) {
+    if(streamingService == null) {
       streamingService = (StreamingService) ServiceFactory.createService(StreamingService.class);
     }
     return streamingService;
   }
 
   public static ResourcesService getResourcesService() {
-    if (resourcesService == null) {
+    if(resourcesService == null) {
       resourcesService = (ResourcesService) ServiceFactory.createService(ResourcesService.class);
     }
     return resourcesService;
   }
 
   public static SystemService getSystemService() {
-    if (systemService == null) {
+    if(systemService == null) {
       systemService = (SystemService) ServiceFactory.createService(SystemService.class);
     }
     return systemService;

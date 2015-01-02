@@ -4,12 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Utility method for system depending operations.
@@ -35,9 +32,9 @@ public class SystemUtils {
 
   public static String humanReadableByteCount(long bytes) {
     int unit = 1024;
-    if (bytes < unit) return bytes + " B";
+    if(bytes < unit) return bytes + " B";
     int exp = (int) (Math.log(bytes) / Math.log(unit));
-    String pre = ("kMGTPE").charAt(exp-1) + ("");
+    String pre = ("kMGTPE").charAt(exp - 1) + ("");
     return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
   }
 

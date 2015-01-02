@@ -43,17 +43,17 @@ public class ArtistResourcesLoader extends CacheLoader<String, ArtistResources> 
 
       LOG.info("Requesting image resources for artist '" + name + "'");
       List<Artist> artists = api.searchArtists(p);
-      for (Artist artist : artists) {
+      for(Artist artist : artists) {
         List<Image> images = artist.getImages();
         LOG.info("Created image resource with " + images.size() + " images for artist '" + name + "'");
         return new ArtistResourcesImpl(name, images);
       }
-      if (artists.isEmpty()) {
+      if(artists.isEmpty()) {
         LOG.info("No images found for artist '" + name + "'");
       }
     } catch (EchoNestException e) {
       LOG.error("Error searching for artists resources: " + e.getMessage()
-              + " (seems that happens sometimes, but the next request is successful afterwards.");
+          + " (seems that happens sometimes, but the next request is successful afterwards.");
     }
     return new ArtistResourcesImpl(name, Collections.<Image>emptyList());
   }

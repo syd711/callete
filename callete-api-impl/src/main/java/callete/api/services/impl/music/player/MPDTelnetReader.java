@@ -34,15 +34,15 @@ public class MPDTelnetReader extends Thread {
 
       do {
         ret_read = instr.read(buff);
-        if (ret_read > 0) {
+        if(ret_read > 0) {
           b.append(new String(buff, 0, ret_read));
         }
-        if (b.toString().contains("OK")) {
+        if(b.toString().contains("OK")) {
           lastCommand = b.toString();
           b = new StringBuilder();
         }
       }
-      while (ret_read >= 0);
+      while(ret_read >= 0);
     } catch (Exception e) {
       LOG.error("Exception while reading socket:" + e.getMessage(), e);
     }

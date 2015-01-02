@@ -138,7 +138,7 @@ public class Song implements PlaylistItem, Comparable<Song> {
     if(o.getTrack() == 0 || this.getTrack() == 0) {
       return getName().compareTo(o.getName());
     }
-    return track-o.getTrack();
+    return track - o.getTrack();
   }
 
   public byte[] getArtwork() {

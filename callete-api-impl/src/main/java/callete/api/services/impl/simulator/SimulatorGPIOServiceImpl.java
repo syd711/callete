@@ -7,7 +7,7 @@ import callete.api.services.gpio.RotaryEncoder;
 
 /**
  * A simple service for simulating GPIO.
- *
+ * <p/>
  * If you are developing a new application, you may not want to deploy the application
  * every time you want to test other features than GPIO. This is why this simulator
  * visualizes the GPIO states and provides basic input features.

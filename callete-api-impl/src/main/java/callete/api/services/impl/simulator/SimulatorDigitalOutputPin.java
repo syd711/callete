@@ -65,10 +65,10 @@ public class SimulatorDigitalOutputPin implements DigitalOutputPin {
 
   private void fireStateChangeEvent() {
     PinState state = PinState.HIGH;
-    if (!high) {
+    if(!high) {
       state = PinState.LOW;
     }
-    for (PinStateChangeListener l : this.stateEventListeners) {
+    for(PinStateChangeListener l : this.stateEventListeners) {
       l.pinStateChanged(new PinStateChangeEventImpl(this, pin, state) {
       });
     }

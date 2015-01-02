@@ -26,10 +26,15 @@ public class DeploymentArchiver {
   private String[] resourcesToCopy;
   private boolean quickDeployment;
   private String javaExecuteable;
+  private String host;
+  private boolean remoteJMX;
 
   private StringBuilder batchBuffer = new StringBuilder();
 
-  public DeploymentArchiver(File deploymentDir, File mainJar, String mainClasss, String targetOS, String[] resourcesToCopy, boolean quickDeployment, String javaExecuteable) {
+  public DeploymentArchiver(File deploymentDir, File mainJar, String mainClasss, String targetOS,
+                            String[] resourcesToCopy, boolean quickDeployment, String javaExecuteable,
+                            boolean remoteJMX) {
+    this.remoteJMX = remoteJMX;
     this.deploymentDir = deploymentDir;
     this.mainJar = mainJar;
     this.mainClass = mainClasss;
@@ -39,9 +44,14 @@ public class DeploymentArchiver {
     this.javaExecuteable = javaExecuteable;
   }
 
-  private void generateScript() throws Exception {
+  public void setHost(String host) {
+    this.host = host;
+  }
+
+  public void generateScript() throws Exception {
     addPrefix();
     addJava();
+    addVMParams();
     addClassPath(getLibs());
     addMainJar();
     addMainClass();
@@ -52,6 +62,16 @@ public class DeploymentArchiver {
     writeArchive();
   }
 
+  private void addVMParams() {
+    if(remoteJMX) {
+      batchBuffer.append("-Dcom.sun.management.jmxremote ");
+      batchBuffer.append("-Dcom.sun.management.jmxremote.authenticate=false ");
+      batchBuffer.append("-Dcom.sun.management.jmxremote.ssl=false ");
+      batchBuffer.append("-Dcom.sun.management.jmxremote.port=1100 ");
+      batchBuffer.append("-Djava.rmi.server.hostname=" + host + " ");
+    }
+  }
+
   private void copyResources() throws IOException {
     for(String resource : resourcesToCopy) {
       File resourceFile = new File("./", resource);
@@ -59,8 +79,7 @@ public class DeploymentArchiver {
 
       if(resourceFile.isDirectory()) {
         org.apache.commons.io.FileUtils.copyDirectoryToDirectory(resourceFile, deploymentDir);
-      }
-      else {
+      } else {
         File target = new File(deploymentDir, resourceFile.getName());
         Files.copy(resourceFile, target);
       }
@@ -75,15 +94,14 @@ public class DeploymentArchiver {
 
   private void writeArchive() throws Exception {
     String archiveName = mainJar.getName().substring(0, mainJar.getName().lastIndexOf(".")) + ".zip";
-    File tempFile = new File("./",  archiveName);
+    File tempFile = new File("./", archiveName);
     if(tempFile.exists()) {
       tempFile.delete();
     }
     if(quickDeployment) {
       LOG.info("Archiving main jar for quick deployment.");
       FileUtils.zipFile(mainJar, tempFile);
-    }
-    else {
+    } else {
       FileUtils.zipFolder(deploymentDir, tempFile, Arrays.asList(".log", ".MF", "classes", "generated-sources", "maven-archiver"));
       LOG.info("Created " + tempFile.getAbsolutePath());
     }
@@ -109,7 +127,7 @@ public class DeploymentArchiver {
 
   private void addClassPath(File[] libs) {
     batchBuffer.append("-cp \"");
-    for (File f : libs) {
+    for(File f : libs) {
       batchBuffer.append(LIB_FOLDER + "/" + f.getName());
       batchBuffer.append(getCPSeparator());
       LOG.info("Add to classpath: " + f.getName());
@@ -119,8 +137,7 @@ public class DeploymentArchiver {
   private void addJava() {
     if(StringUtils.isEmpty(javaExecuteable)) {
       batchBuffer.append("java ");
-    }
-    else {
+    } else {
       batchBuffer.append(javaExecuteable + " ");
     }
   }
@@ -128,8 +145,7 @@ public class DeploymentArchiver {
   private void addPrefix() {
     if(targetOS.toLowerCase().contains("windows")) {
       //ignore
-    }
-    else {
+    } else {
       batchBuffer.append("sudo ");
     }
   }
@@ -159,10 +175,11 @@ public class DeploymentArchiver {
 
   /**
    * Called by the maven executor plugin.
+   *
    * @param args params to create the batch script
    */
-  public static void main(String[] args) throws Exception {
-    if(args.length != 8) {
+  public static DeploymentArchiver create(String[] args) throws Exception {
+    if(args.length != 9) {
       System.err.println("Invalid number of arguments.");
     }
 
@@ -177,9 +194,10 @@ public class DeploymentArchiver {
     String targetOS = args[5];
     String[] resourcesToCopy = args[6].split(",");
     String javaExecuteable = args[7];
+    boolean remoteJMX = Boolean.parseBoolean(args[8]);
 
-    DeploymentArchiver runScriptGenerator = new DeploymentArchiver(deploymentDir, mainJar, mainClass, targetOS, resourcesToCopy, quickDeployment, javaExecuteable);
-    runScriptGenerator.generateScript();
+    DeploymentArchiver runScriptGenerator = new DeploymentArchiver(deploymentDir, mainJar, mainClass, targetOS, resourcesToCopy, quickDeployment, javaExecuteable, remoteJMX);
     LOG.info("************** /Creating new deployment *****************");
+    return runScriptGenerator;
   }
 }

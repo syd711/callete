@@ -22,7 +22,7 @@ public class ImageResourceImpl implements ImageResource {
 
   @Override
   public String getImageFormat() {
-    if (url.endsWith(".png")) {
+    if(url.endsWith(".png")) {
       return "png";
     }
     return "jpg";

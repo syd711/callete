@@ -53,7 +53,7 @@ public class GrizzlyHttpServer {
     httpServer.getServerConfiguration().addHttpHandler(new StaticHttpHandler(resourceDirectory.getAbsolutePath()), "/resources");
 
     //TODO disabled cache since the wrong mime type is returned otherwise
-    for (NetworkListener l : httpServer.getListeners()) {
+    for(NetworkListener l : httpServer.getListeners()) {
       l.getFileCache().setEnabled(false);
     }
     httpServer.start();

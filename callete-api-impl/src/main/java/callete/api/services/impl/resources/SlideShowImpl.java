@@ -39,7 +39,7 @@ public class SlideShowImpl implements SlideShow {
       return null;
     }
 
-    if (iterator == null || !iterator.hasNext()) {
+    if(iterator == null || !iterator.hasNext()) {
       if(randomized) {
         long seed = System.nanoTime();
         Collections.shuffle(images, new Random(seed));
@@ -57,7 +57,7 @@ public class SlideShowImpl implements SlideShow {
    * @param directory the directory to load the images from.
    */
   private void loadSlideShowImages(File directory) {
-    if (directory.exists()) {
+    if(directory.exists()) {
       File[] files = directory.listFiles(new FilenameFilter() {
         @Override
         public boolean accept(File dir, String name) {
@@ -68,8 +68,7 @@ public class SlideShowImpl implements SlideShow {
         ImageResource image = createImageResource(file);
         images.add(image);
       }
-    }
-    else {
+    } else {
       LOG.error("Failed to create slide show, directory " + directory.getAbsolutePath() + " does not exist.");
     }
   }

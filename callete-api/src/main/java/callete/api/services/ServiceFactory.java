@@ -29,13 +29,13 @@ public class ServiceFactory {
 
   public static Service createService(@Nonnull Class clazz) {
     try {
-      if (embeddedPackages == null) {
+      if(embeddedPackages == null) {
         embeddedPackages = findAllPackagesStartingWith(SCANNER_PACKAGE);
       }
-      for (String packageName : embeddedPackages) {
+      for(String packageName : embeddedPackages) {
         Reflections reflections = new Reflections(packageName);
         Set subTypesOf = reflections.getSubTypesOf(clazz);
-        if (!subTypesOf.isEmpty()) {
+        if(!subTypesOf.isEmpty()) {
           Class next = (Class) subTypesOf.iterator().next();
           LOG.info("Created services class " + clazz.getName());
           return (Service) next.newInstance();
@@ -50,6 +50,7 @@ public class ServiceFactory {
 
   /**
    * Initially filters the package look list only to those starting with the given prefix.
+   *
    * @param prefix the package prefix to look for.
    * @return a set of package names that match the filter criteria.
    */
@@ -58,15 +59,15 @@ public class ServiceFactory {
     classLoadersList.add(ClasspathHelper.contextClassLoader());
     classLoadersList.add(ClasspathHelper.staticClassLoader());
     Reflections reflections = new Reflections(new ConfigurationBuilder()
-            .setScanners(new SubTypesScanner(false), new ResourcesScanner())
-            .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[classLoadersList.size()])))
-            .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(prefix))));
+        .setScanners(new SubTypesScanner(false), new ResourcesScanner())
+        .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[classLoadersList.size()])))
+        .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(prefix))));
     Set<Class<?>> classes = reflections.getSubTypesOf(Object.class);
 
     Set<String> packageNameSet = new TreeSet<>();
-    for (Class classInstance : classes) {
+    for(Class classInstance : classes) {
       String packageName = classInstance.getPackage().getName();
-      if (packageName.startsWith(prefix)) {
+      if(packageName.startsWith(prefix)) {
         packageNameSet.add(packageName);
       }
     }

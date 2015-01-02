@@ -75,12 +75,12 @@ public class YahooWeather {
   private Configuration configuration = Callete.getConfiguration();
 
   public Map<Integer, Weather> getWeather() {
-    Map<Integer,Weather> weatherList = new HashMap<>();
+    Map<Integer, Weather> weatherList = new HashMap<>();
     int count = 0;
-    while (true) {
+    while(true) {
       count++;
       Weather info = getWeatherAt(count);
-      if (info != null) {
+      if(info != null) {
         weatherList.put(count, info);
       } else {
         break;
@@ -91,7 +91,7 @@ public class YahooWeather {
 
   public Weather getWeatherAt(int pos) {
     String url = configuration.getString("weather." + String.valueOf(pos));
-    if (!StringUtils.isEmpty(url)) {
+    if(!StringUtils.isEmpty(url)) {
       return getWeather(url);
     }
     return null;
@@ -104,7 +104,7 @@ public class YahooWeather {
    */
   private Weather getWeather(String url) {
     SyndFeed feed = getFeed(url);
-    if (feed != null) {
+    if(feed != null) {
       return getWeather(feed);
     }
     return null;
@@ -133,9 +133,9 @@ public class YahooWeather {
   private Weather getWeather(SyndFeed feed) {
     Weather info = new WeatherImpl();
     final List<Element> currentInfo = (List<Element>) feed.getForeignMarkup();
-    for (Element element : currentInfo) {
+    for(Element element : currentInfo) {
       String name = element.getName();
-      if (name.equalsIgnoreCase("location")) {
+      if(name.equalsIgnoreCase("location")) {
         info.setCity(element.getAttribute("city").getValue());
         info.setCountry(element.getAttribute("country").getValue());
         break;
@@ -144,13 +144,13 @@ public class YahooWeather {
 
     //root elements
     final List<Element> channelElements = (List<Element>) feed.getForeignMarkup();
-    for (Element element : channelElements) {
+    for(Element element : channelElements) {
       //wind
-      if (element.getName().equalsIgnoreCase("wind")) {
+      if(element.getName().equalsIgnoreCase("wind")) {
         info.setWind(Double.parseDouble(element.getAttributeValue("speed")));
       }
       //sunrise and sunset
-      else if (element.getName().equalsIgnoreCase("astronomy")) {
+      else if(element.getName().equalsIgnoreCase("astronomy")) {
         try {
           SimpleDateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
           info.setSunrise(format.parse(element.getAttributeValue("sunrise")));
@@ -158,19 +158,18 @@ public class YahooWeather {
         } catch (ParseException e) {
           LOG.error("Error retrieving sunrise time for " + element.getAttributeValue("sunrise") + ": " + e.getMessage());
         }
-      }
-      else if (element.getName().equalsIgnoreCase("atmosphere")) {
+      } else if(element.getName().equalsIgnoreCase("atmosphere")) {
         info.setHumidity(Integer.parseInt(element.getAttributeValue("humidity")));
       }
     }
 
 
     final List<SyndEntry> items = (List<SyndEntry>) feed.getEntries();
-    for (SyndEntry entry : items) {
+    for(SyndEntry entry : items) {
       final List<Element> forecastInfo = (List) entry.getForeignMarkup();
-      for (Element element : forecastInfo) {
+      for(Element element : forecastInfo) {
         //get forecast
-        if (element.getName().equalsIgnoreCase("forecast")) {
+        if(element.getName().equalsIgnoreCase("forecast")) {
           Weather forecast = new WeatherImpl();
           String high = element.getAttributeValue("high");
           String low = element.getAttributeValue("low");
@@ -196,13 +195,13 @@ public class YahooWeather {
           info.getForecast().add(forecast);
         }
         //get location
-        else if (element.getName().equalsIgnoreCase("lat")) {
+        else if(element.getName().equalsIgnoreCase("lat")) {
           info.setLatitude(element.getText());
-        } else if (element.getName().equalsIgnoreCase("long")) {
+        } else if(element.getName().equalsIgnoreCase("long")) {
           info.setLatitude(element.getText());
         }
         //get local time
-        else if (element.getName().equalsIgnoreCase("condition")) {
+        else if(element.getName().equalsIgnoreCase("condition")) {
           String date = element.getAttributeValue("date");
           try {
             Date formatted = new SimpleDateFormat("EEE, dd MMM yyyy hh:mm a", Locale.US).parse(date);
@@ -230,23 +229,23 @@ public class YahooWeather {
 
   private WeatherState convertTypeCodeWeatherState(Integer code) {
     WeatherState state = WeatherState.SUNNY_CLOUDY;
-    if (code < 5 || code == 45) {
+    if(code < 5 || code == 45) {
       state = WeatherState.STORMY;
-    } else if ((code >= 5 && code < 9) || code == 17 || code == 18 || code == 13 || code == 14 || code == 46 || code == 47) {
+    } else if((code >= 5 && code < 9) || code == 17 || code == 18 || code == 13 || code == 14 || code == 46 || code == 47) {
       state = WeatherState.SNOW_RAINY;
-    } else if ((code >= 15 && code <= 16) || (code >= 40 && code <= 43)) {
+    } else if((code >= 15 && code <= 16) || (code >= 40 && code <= 43)) {
       state = WeatherState.SNOW;
-    } else if ((code >= 9 && code < 13) || (code >= 35 && code <= 39)) {
+    } else if((code >= 9 && code < 13) || (code >= 35 && code <= 39)) {
       state = WeatherState.RAINY;
-    } else if (code == 36 || (code >= 32 && code <= 34) || code == 31) {
+    } else if(code == 36 || (code >= 32 && code <= 34) || code == 31) {
       state = WeatherState.SUNNY;
-    } else if ((code >= 20 && code <= 25) || code == 19) {
+    } else if((code >= 20 && code <= 25) || code == 19) {
       state = WeatherState.CLOUDY;
-    } else if ((code >= 9 && code < 13)) {
+    } else if((code >= 9 && code < 13)) {
       state = WeatherState.SUNNY_RAINY;
-    } else if ((code >= 29 && code <= 30)) {
+    } else if((code >= 29 && code <= 30)) {
       state = WeatherState.SUNNY_CLOUDY;
-    } else if ((code >= 26 && code <= 28) || code == 44) {
+    } else if((code >= 26 && code <= 28) || code == 44) {
       state = WeatherState.SUNNY_CLOUDS;
     } else {
       LOG.warn("Unmapped weather code: " + code);

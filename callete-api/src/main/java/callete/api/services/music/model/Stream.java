@@ -14,6 +14,7 @@ public class Stream implements PlaylistItem {
   public void setUrl(String url) {
     this.url = url;
   }
+
   /**
    * Returns the name of the stream.
    */

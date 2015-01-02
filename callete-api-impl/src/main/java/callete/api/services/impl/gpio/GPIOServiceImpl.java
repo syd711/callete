@@ -19,7 +19,7 @@ public class GPIOServiceImpl implements GPIOService {
 
   @Override
   public PushButton connectPushButton(int pin, String name) {
-    if (simulationMode) {
+    if(simulationMode) {
       return getSimulator().connectPushButton(pin, name);
     }
     return raspiGPIO.connectPushButton(pin, name);
@@ -27,7 +27,7 @@ public class GPIOServiceImpl implements GPIOService {
 
   @Override
   public RotaryEncoder connectRotaryEncoder(int pinA, int pinB, String name) {
-    if (simulationMode) {
+    if(simulationMode) {
       return getSimulator().connectRotaryEncoder(pinA, pinB, name);
     }
     return raspiGPIO.connectRotaryEncoder(pinA, pinB, name);
@@ -35,7 +35,7 @@ public class GPIOServiceImpl implements GPIOService {
 
   @Override
   public DigitalOutputPin connectDigitalOutputPin(int pin, String name, PinState pinState) {
-    if (simulationMode) {
+    if(simulationMode) {
       return getSimulator().connectDigitalOutputPin(pin, pinState, name);
     }
     return raspiGPIO.connectDigitalOutputPin(pin, name, pinState);
@@ -43,7 +43,7 @@ public class GPIOServiceImpl implements GPIOService {
 
   @Override
   public Object convertPinStateToApiInstance(PinState state) {
-    if (simulationMode) {
+    if(simulationMode) {
       return null;
     }
     return raspiGPIO.convertPinStateToApiInstance(state);
@@ -51,7 +51,7 @@ public class GPIOServiceImpl implements GPIOService {
 
   @Override
   public Object convertPinToApiInstance(int pin) {
-    if (simulationMode) {
+    if(simulationMode) {
       return null;
     }
     return raspiGPIO.convertPinToApiInstance(pin);
@@ -68,7 +68,7 @@ public class GPIOServiceImpl implements GPIOService {
    * Lazy creation of the GPIO simulator.
    */
   private SimulatorGPIOServiceImpl getSimulator() {
-    if (simGPIO == null) {
+    if(simGPIO == null) {
       LOG.info("Creating GPIO simulator");
       simGPIO = new SimulatorGPIOServiceImpl();
     }

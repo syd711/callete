@@ -28,14 +28,14 @@ public class RaspiGPIOServiceImpl {
   }
 
   public Object convertPinStateToApiInstance(PinState state) {
-    if (state.equals(PinState.HIGH)) {
+    if(state.equals(PinState.HIGH)) {
       return com.pi4j.io.gpio.PinState.HIGH;
     }
     return com.pi4j.io.gpio.PinState.LOW;
   }
 
   public Object convertPinToApiInstance(int pin) {
-    switch (pin) {
+    switch(pin) {
       case 3:
         return RaspiPin.GPIO_08;
       case 5:

@@ -36,7 +36,7 @@ public class HttpServiceImpl implements HttpService {
 
   @Override
   public void stopServer(int port) {
-    if (servers.containsKey(port)) {
+    if(servers.containsKey(port)) {
       GrizzlyHttpServer server = servers.get(port);
       server.stop();
     } else {

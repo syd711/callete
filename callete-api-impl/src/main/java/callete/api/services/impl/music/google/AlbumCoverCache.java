@@ -53,14 +53,13 @@ public class AlbumCoverCache {
           return name.endsWith(".png");
         }
       });
-      for (File file : files) {
+      for(File file : files) {
         String id = file.getName().substring(0, file.getName().length() - 4);
         imageCache.put(id, file);
       }
       LOG.info("Cache initialization finished: found " + imageCache.size() + " cached images");
-    }
-    else {
-      LOG.error("Failed to initialize image cache, caching directory "+  IMAGE_CACHE_DIR.getAbsolutePath() + " does not exist.");
+    } else {
+      LOG.error("Failed to initialize image cache, caching directory " + IMAGE_CACHE_DIR.getAbsolutePath() + " does not exist.");
     }
   }
 
@@ -75,12 +74,10 @@ public class AlbumCoverCache {
     }
 
     try {
-      if (imageCache.containsKey(id)) {
+      if(imageCache.containsKey(id)) {
         File image = imageCache.get(id);
         imageUrl = image.toURI().toURL().toString();
-      }
-      else
-      {
+      } else {
         imageUrl = imageUrl.replaceAll("http:https", "http"); //scale to used size
         LOG.info("Caching " + imageUrl);
         URL imgUrl = new URL(imageUrl);

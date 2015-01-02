@@ -29,6 +29,7 @@ public interface MusicService extends Service {
 
   /**
    * Returns the album for the given id.
+   *
    * @param albumId The id that identifies the album, differs for each service.
    * @return The album to look for.
    */
@@ -37,6 +38,7 @@ public interface MusicService extends Service {
   /**
    * Executes a search for the given search term The search result may contain
    * songs and albums.
+   *
    * @param term The search term used for the search.
    */
   MusicSearchResult search(String term);
@@ -44,6 +46,7 @@ public interface MusicService extends Service {
   /**
    * Returns all albums sort by the starting letter.
    * The letter is stored upper case in the map as key.
+   *
    * @return all albums accessable by their starting letter
    */
   List<AlbumCollection> getAlbumByNameLetter();
@@ -51,6 +54,7 @@ public interface MusicService extends Service {
   /**
    * Returns all albums sort by the artist's starting letter.
    * The letter is stored upper case in the map as key.
+   *
    * @return all albums accessable by their artist's starting letter
    */
   List<AlbumCollection> getAlbumsByArtistLetter();

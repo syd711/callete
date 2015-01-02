@@ -1,13 +1,10 @@
 package callete.deployment.client;
 
 import callete.api.Callete;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * The descriptor holds all data required for a deployment such
@@ -19,16 +16,17 @@ public class DeploymentDescriptor {
 
   private String requestBasePath;
   private boolean quickDeployment;
+  private String host;
 
   private File sourceArchive;
 
   public DeploymentDescriptor(String artifactId, String version, boolean quickDeployment) {
     sourceArchive = new File("./", artifactId + "-" + version + ".zip");
-    String host = Callete.getConfiguration().getString("deployment.host");
-    String port = Callete.getConfiguration().getString("deployment.port", "8080");
-
+    host = Callete.getConfiguration().getString("deployment.host");
     this.quickDeployment = quickDeployment;
     this.targetDirectory = Callete.getConfiguration().getString("deployment.targetDirectory");
+
+    String port = Callete.getConfiguration().getString("deployment.port", "8080");
     this.requestBasePath = "http://" + host + ":" + port + "/deployment/";
 
     LOG.info("Created " + this);
@@ -36,6 +34,10 @@ public class DeploymentDescriptor {
 
   public File getSourceArchive() {
     return sourceArchive;
+  }
+
+  public String getHost() {
+    return host;
   }
 
   public boolean isQuickDeployment() {

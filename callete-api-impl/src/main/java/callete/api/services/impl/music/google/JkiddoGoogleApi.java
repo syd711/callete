@@ -39,7 +39,7 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
     String email = Callete.getConfiguration().getString("google.music.email");
     String password = Callete.getConfiguration().getString("google.music.password");
 
-    if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
+    if(StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
       throw new MusicServiceAuthenticationException("Could not login to google music, no email/password provided.");
     }
 
@@ -89,22 +89,22 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
     MusicSearchResult result = new MusicSearchResult();
     try {
       //the actual API search doesn't seem to work, so we search manually.
-      for (callete.api.services.music.model.Song next : songs.values()) {
-        if (next.getName().toLowerCase().contains(term.toLowerCase())) {
+      for(callete.api.services.music.model.Song next : songs.values()) {
+        if(next.getName().toLowerCase().contains(term.toLowerCase())) {
           result.getSongs().add(next);
         }
       }
 
       Set<Map.Entry<String, Album>> albumSet = albums.entrySet();
-      for (Map.Entry<String, Album> entry : albumSet) {
-        if (entry.getKey().contains(term.toLowerCase())) {
+      for(Map.Entry<String, Album> entry : albumSet) {
+        if(entry.getKey().contains(term.toLowerCase())) {
           result.getAlbums().add(entry.getValue());
         }
       }
 
       Set<Map.Entry<String, List<Album>>> entries = artists.entrySet();
-      for (Map.Entry<String, List<Album>> entry : entries) {
-        if (entry.getKey().toLowerCase().contains(term.toLowerCase())) {
+      for(Map.Entry<String, List<Album>> entry : entries) {
+        if(entry.getKey().toLowerCase().contains(term.toLowerCase())) {
           result.getArtists().addAll(entry.getValue());
         }
       }
@@ -133,7 +133,7 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
     try {
       Collection<Song> songs = api.getAllSongs();
       LOG.info(this + " finished loading songs: " + songs.size() + " total");
-      for (gmusic.api.model.Song song : songs) {
+      for(gmusic.api.model.Song song : songs) {
         callete.api.services.music.model.Song fxSong = songFor(song);
         addSong(fxSong);
       }
@@ -150,7 +150,7 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
           artAlbums.add(album);
 
           //fill albums by artist letter
-          String startingLetter = artist.substring(0,1).toUpperCase();
+          String startingLetter = artist.substring(0, 1).toUpperCase();
           AlbumCollection collection = getCollection(startingLetter, artistByLetter);
           collection.getAlbums().add(album);
         }
@@ -158,7 +158,7 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
         //fill albums by album letter
         String albumName = album.getName();
         if(!StringUtils.isEmpty(albumName)) {
-          String startingLetter = album.getName().substring(0,1).toUpperCase();
+          String startingLetter = album.getName().substring(0, 1).toUpperCase();
           AlbumCollection collection = getCollection(startingLetter, albumByLetter);
           collection.getAlbums().add(album);
         }
@@ -200,13 +200,13 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
 
     apiSong.setName(song.getName());
 
-    if (!StringUtils.isEmpty(song.getAlbumArtUrl())) {
+    if(!StringUtils.isEmpty(song.getAlbumArtUrl())) {
       apiSong.setAlbumArtUrl("http:" + song.getAlbumArtUrl());
     }
 
     apiSong.setAlbumName(song.getAlbum());
     apiSong.setArtist(song.getAlbumArtist());
-    if (StringUtils.isEmpty(song.getAlbumArtist()) && !StringUtils.isEmpty(song.getArtist())) {
+    if(StringUtils.isEmpty(song.getAlbumArtist()) && !StringUtils.isEmpty(song.getArtist())) {
       apiSong.setArtist(song.getArtist());
     }
     apiSong.setComposer(song.getComposer());
@@ -233,10 +233,10 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
    * @param song The song to add to the album.
    */
   private void addToAlbum(callete.api.services.music.model.Song song) {
-    if (!StringUtils.isEmpty(song.getAlbumName())) {
+    if(!StringUtils.isEmpty(song.getAlbumName())) {
       //create the regular dict entry and add song to album
       Album album = getAlbum(song);
-      if (!album.containsSong(song)) {
+      if(!album.containsSong(song)) {
         album.addSong(song);
       }
     }
@@ -251,24 +251,24 @@ public class JkiddoGoogleApi implements PlaybackUrlProvider {
    */
   private Album getAlbum(callete.api.services.music.model.Song song) {
     Album album;
-    if (!albums.containsKey(song.getAlbumName().toLowerCase())) {
+    if(!albums.containsKey(song.getAlbumName().toLowerCase())) {
       album = new Album(song.getArtist(), song.getAlbumName());
       albums.put(song.getAlbumName().toLowerCase(), album);
     } else {
       album = albums.get(song.getAlbumName().toLowerCase());
     }
 
-    if (!StringUtils.isEmpty(song.getAlbumArtUrl()) && StringUtils.isEmpty(album.getArtUrl())) {
+    if(!StringUtils.isEmpty(song.getAlbumArtUrl()) && StringUtils.isEmpty(album.getArtUrl())) {
       album.setArtUrl(song.getAlbumArtUrl());
     }
-    if (StringUtils.isEmpty(album.getArtist()) && !StringUtils.isEmpty(song.getArtist())) {
+    if(StringUtils.isEmpty(album.getArtist()) && !StringUtils.isEmpty(song.getArtist())) {
       album.setArtist(song.getArtist());
     }
-    if (StringUtils.isEmpty(album.getGenre()) && !StringUtils.isEmpty(song.getGenre())) {
+    if(StringUtils.isEmpty(album.getGenre()) && !StringUtils.isEmpty(song.getGenre())) {
       album.setGenre(song.getGenre());
     }
 
-    if (song.getYear() > 0) {
+    if(song.getYear() > 0) {
       album.setYear(song.getYear());
     }
     return album;

@@ -13,7 +13,7 @@ public interface WeatherService extends Service {
   /**
    * The default refresh interval, 10 min.
    */
-  public final static long DEFAULT_REFRESH_INTERVAL = 1000*60*10;
+  public final static long DEFAULT_REFRESH_INTERVAL = 1000 * 60 * 10;
 
   /**
    * Returns a list of all weather information to retrieve data for.
@@ -22,12 +22,14 @@ public interface WeatherService extends Service {
 
   /**
    * Returns the weather information for the given position in the properties file.
+   *
    * @param pos the weather id to return, e.g. "2" for value "weather.2"
    */
   Weather getWeatherAt(int pos);
 
   /**
    * Sets the update interval for the weather retrieval
+   *
    * @param millis the millis to wait until the service data is refreshed.
    */
   void setRefreshInterval(long millis);

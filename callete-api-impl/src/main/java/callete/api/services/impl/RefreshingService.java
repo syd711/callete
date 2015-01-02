@@ -34,7 +34,7 @@ public abstract class RefreshingService {
 
     @Override
     public void run() {
-      while (running) {
+      while(running) {
         try {
           Thread.sleep(refreshInterval);
           refreshServiceData();

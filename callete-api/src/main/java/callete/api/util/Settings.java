@@ -20,7 +20,7 @@ public class Settings {
   private static PropertiesConfiguration settings;
 
   public static Configuration getSettings() {
-    if (settings == null) {
+    if(settings == null) {
       try {
         File configFile = getConfigFile(CONFIG_FOLDER, CONFIG_FILENAME);
         settings = new PropertiesConfiguration(configFile);

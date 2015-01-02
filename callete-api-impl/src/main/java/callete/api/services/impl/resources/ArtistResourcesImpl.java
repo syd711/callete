@@ -42,30 +42,29 @@ public class ArtistResourcesImpl implements ArtistResources {
   @Override
   public ImageResource getRandomImage(int width, int height, int minImageSize) {
     ImageResource randomImage = getRandomImage(minImageSize);
-    if (randomImage == null) {
+    if(randomImage == null) {
       return null;
     }
 
     BufferedImage image = randomImage.getImage();
     try {
-      if (image != null) {
+      if(image != null) {
         double imageWidth = image.getWidth();
         double imageHeight = image.getHeight();
 
         //e.g. 533x800
-        if (width >= height) {
-          if (imageWidth > imageHeight) {
+        if(width >= height) {
+          if(imageWidth > imageHeight) {
             double heightRatio = height / imageHeight;
             double scaleWidth = imageWidth * heightRatio;
             double scaleHeight = imageHeight * heightRatio;
-            if (scaleWidth < width) {
+            if(scaleWidth < width) {
               double widthFactor = width / scaleWidth;
               scaleWidth = scaleWidth * widthFactor;
               scaleHeight = scaleHeight * widthFactor;
             }
             image = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT, (int) scaleWidth + 1, (int) scaleHeight + 1, Scalr.OP_ANTIALIAS);
-          }
-          else {
+          } else {
             double widthRatio = width / imageWidth;
             double scaleWidth = imageWidth * widthRatio;
             double scaleHeight = imageHeight * widthRatio;
@@ -101,16 +100,15 @@ public class ArtistResourcesImpl implements ArtistResources {
         return new ImageResourceImpl(image.getURL(), bufferedImage);
       }
 
-      for (Image image : images) {
+      for(Image image : images) {
         URL imageURL = new URL(image.getURL());
         BufferedImage bufferedImage = ImageIO.read(imageURL);
         int imageWidth = bufferedImage.getWidth();
         int imageHeight = bufferedImage.getHeight();
-        if (imageHeight > minImageSize || imageWidth > minImageSize) {
+        if(imageHeight > minImageSize || imageWidth > minImageSize) {
           LOG.info("Image size match found, resolved " + imageWidth + "x" + imageHeight + " for " + image.getURL());
           return new ImageResourceImpl(image.getURL(), bufferedImage);
-        }
-        else {
+        } else {
           LOG.info("Ignoring image resource " + image.getURL() + ", cause ratio is only " + imageWidth + "x" + imageHeight);
         }
       }
@@ -128,6 +126,7 @@ public class ArtistResourcesImpl implements ArtistResources {
 
   /**
    * Filters the given images, removes gifs since they are not scalable.
+   *
    * @param images the images to filter.
    */
   private List<Image> filter(List<Image> images) {
