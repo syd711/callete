@@ -149,6 +149,9 @@ public class Deployment {
       //mpf, well, just read the system command from the file, so no chmod required AND we can kill the process!
       List<String> lines = org.apache.commons.io.FileUtils.readLines(batchFile, "UTF-8");
       String cmdString = lines.get(0);
+      LOG.info("***************** Executing system command: ***********************************");
+      LOG.info(cmdString);
+      LOG.info("***************** /Executing system command ***********************************");
       String[] batchCmds = cmdString.split(" ");
       cmds.addAll(Arrays.asList(batchCmds));
 
