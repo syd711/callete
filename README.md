@@ -108,9 +108,7 @@ Afterwards, start the server:
 * *cd callete-deployment*
 * *sudo ./startServer.sh*
 
-# Examples
-
-## Example Project with 
+# Examples Project
 
 callete comes with a project template. It can be cloned from here: https://github.com/syd711/callete-template
 
