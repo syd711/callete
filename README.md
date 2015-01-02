@@ -10,7 +10,7 @@ Callete is a framework for developing (Java) media clients for embedded systems 
 
 This documentation is written for the following setup:
 
-* Raspberry Pi Model B 512MB Ram with
+* Raspberry Pi Model B 512MB Ram
 * 2014-06-20-wheezy-raspbian.zip, 4gb SD installed and (http://www.raspberrypi.org/downloads/)
 * enabled ssh access (*sudo raspi-config*)
 * enabled internet access
