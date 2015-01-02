@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,11 +71,30 @@ public class Deployment {
    * Cleans up the target folder that is stored in the DeploymentStatus.
    * A clean install is ensured for the next deployment this way.
    * @param ignoreList The list of directories to ignore when cleaning the target directory.
+   * @param quickDeployment
    */
-  public DeploymentStatus clean(List<String> ignoreList) {
+  public DeploymentStatus clean(List<String> ignoreList, boolean quickDeployment) {
     try {
       File targetDirectory = new File(status.getDeploymentDirectory());
-      FileUtils.deleteFolder(targetDirectory, ignoreList, true);
+      //delete all if this is no quick deployment
+      if(!quickDeployment) {
+        FileUtils.deleteFolder(targetDirectory, ignoreList, true);
+      }
+      else {
+        //delete only main jar
+        File[] list = targetDirectory.listFiles(new FilenameFilter() {
+          @Override
+          public boolean accept(File dir, String name) {
+            return name.endsWith(".jar");
+          }
+        });
+        for(File file : list) {
+          if(file.delete()) {
+            LOG.info("Quick-Deployment deleted " + file.getAbsolutePath());
+          }
+        }
+      }
+
     } catch (IOException e) {
       LOG.error("Error during deployment cleanup: " + e.getMessage());
       status.setErrorMessage(e.getMessage());

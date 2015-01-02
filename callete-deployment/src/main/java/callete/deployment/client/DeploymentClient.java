@@ -2,6 +2,7 @@ package callete.deployment.client;
 
 import callete.deployment.server.Deployment;
 import callete.deployment.server.DeploymentStatus;
+import callete.deployment.util.DeploymentArchiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,13 +17,16 @@ public class DeploymentClient {
   private final static Logger LOG = LoggerFactory.getLogger(DeploymentClient.class);
 
   public static void main(String[] args) throws Exception {
+    DeploymentArchiver.main(args);
+
     String artifactId = args[0];
     String version = args[1];
-    new DeploymentClient().deploy(artifactId, version);
+    boolean quickDeployment = Boolean.parseBoolean(args[2]);
+    new DeploymentClient().deploy(artifactId, version, quickDeployment);
   }
 
-  public void deploy(String artifactId, String version) throws Exception {
-    DeploymentDescriptor descriptor = new DeploymentDescriptor(artifactId, version);
+  public void deploy(String artifactId, String version, boolean quickDeployment) throws Exception {
+    DeploymentDescriptor descriptor = new DeploymentDescriptor(artifactId, version, quickDeployment);
     DeploymentHttpClient client = new DeploymentHttpClient(descriptor);
 
     List<String> cmds = Arrays.asList(Deployment.CMD_DESTROY, Deployment.CMD_CREATE,

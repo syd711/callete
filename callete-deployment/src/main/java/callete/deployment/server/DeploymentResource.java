@@ -17,6 +17,7 @@ import java.util.List;
 public class DeploymentResource {
   private final static Logger LOG = LoggerFactory.getLogger(DeploymentResource.class);
   public final static String PARAM_TARGET_DIRECTORY = "target";
+  public final static String PARAM_QUICK_DEPLOYMENT = "quickDeployment";
   public final static String PARAM_IGNORE_DIRECTORIES = "ignoreDirectories";
 
   //there can only be one deployment at a time, so a static instance is sufficient here.
@@ -44,9 +45,9 @@ public class DeploymentResource {
   @POST
   @Path(Deployment.CMD_CLEAN)
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public DeploymentStatus clean(@FormParam(PARAM_IGNORE_DIRECTORIES) String ignoreDirectories) {
+  public DeploymentStatus clean(@FormParam(PARAM_IGNORE_DIRECTORIES) String ignoreDirectories, @FormParam(PARAM_QUICK_DEPLOYMENT) String quickDeployment) {
     List<String> ignoreList = Arrays.asList(ignoreDirectories.split(","));
-    deployment.clean(ignoreList);
+    deployment.clean(ignoreList, Boolean.parseBoolean(quickDeployment));
     LOG.info("Clean up deployment located in directory '" + deployment.getStatus().getDeploymentDirectory() + "', waiting for archive to copy...");
     return deployment.getStatus();
   }

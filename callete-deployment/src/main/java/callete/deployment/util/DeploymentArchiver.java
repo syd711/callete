@@ -2,6 +2,7 @@ package callete.deployment.util;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,15 +24,19 @@ public class DeploymentArchiver {
   private String mainClass;
   private String targetOS;
   private String[] resourcesToCopy;
+  private boolean quickDeployment;
+  private String javaExecuteable;
 
   private StringBuilder batchBuffer = new StringBuilder();
 
-  public DeploymentArchiver(File deploymentDir, File mainJar, String mainClasss, String targetOS, String[] resourcesToCopy) {
+  public DeploymentArchiver(File deploymentDir, File mainJar, String mainClasss, String targetOS, String[] resourcesToCopy, boolean quickDeployment, String javaExecuteable) {
     this.deploymentDir = deploymentDir;
     this.mainJar = mainJar;
     this.mainClass = mainClasss;
     this.targetOS = targetOS;
     this.resourcesToCopy = resourcesToCopy;
+    this.quickDeployment = quickDeployment;
+    this.javaExecuteable = javaExecuteable;
   }
 
   private void generateScript() throws Exception {
@@ -74,8 +79,14 @@ public class DeploymentArchiver {
     if(tempFile.exists()) {
       tempFile.delete();
     }
-    FileUtils.zipFolder(deploymentDir, tempFile, Arrays.asList(".log", ".MF", "classes", "generated-sources", "maven-archiver"));
-    LOG.info("Created " + tempFile.getAbsolutePath());
+    if(quickDeployment) {
+      LOG.info("Archiving main jar for quick deployment.");
+      FileUtils.zipFile(mainJar, tempFile);
+    }
+    else {
+      FileUtils.zipFolder(deploymentDir, tempFile, Arrays.asList(".log", ".MF", "classes", "generated-sources", "maven-archiver"));
+      LOG.info("Created " + tempFile.getAbsolutePath());
+    }
   }
 
   private void writeBatchFile() throws IOException {
@@ -84,7 +95,7 @@ public class DeploymentArchiver {
       batchFile.delete();
     }
     Files.write(batchBuffer.toString(), batchFile, Charsets.UTF_8);
-    System.out.println("Written " + batchFile.getAbsolutePath());
+    LOG.info("Written " + batchFile.getAbsolutePath());
   }
 
   private void addMainClass() {
@@ -106,7 +117,12 @@ public class DeploymentArchiver {
   }
 
   private void addJava() {
-    batchBuffer.append("java -Xmx128M ");
+    if(StringUtils.isEmpty(javaExecuteable)) {
+      batchBuffer.append("java ");
+    }
+    else {
+      batchBuffer.append(javaExecuteable + " ");
+    }
   }
 
   private void addPrefix() {
@@ -146,21 +162,23 @@ public class DeploymentArchiver {
    * @param args params to create the batch script
    */
   public static void main(String[] args) throws Exception {
-    if(args.length != 6) {
+    if(args.length != 8) {
       System.err.println("Invalid number of arguments.");
     }
 
     LOG.info("************** Creating new deployment ******************");
 
-    File deploymentDir = new File(args[0]);
-    String artifactId = args[1];
-    String versionId = args[2];
+    String artifactId = args[0];
+    String versionId = args[1];
+    boolean quickDeployment = Boolean.parseBoolean(args[2]);
+    File deploymentDir = new File(args[3]);
     File mainJar = new File(deploymentDir.getParent(), artifactId + "-" + versionId + ".jar");
-    String mainClass = args[3];
-    String targetOS = args[4];
-    String[] resourcesToCopy = args[5].split(",");
+    String mainClass = args[4];
+    String targetOS = args[5];
+    String[] resourcesToCopy = args[6].split(",");
+    String javaExecuteable = args[7];
 
-    DeploymentArchiver runScriptGenerator = new DeploymentArchiver(deploymentDir, mainJar, mainClass, targetOS, resourcesToCopy);
+    DeploymentArchiver runScriptGenerator = new DeploymentArchiver(deploymentDir, mainJar, mainClass, targetOS, resourcesToCopy, quickDeployment, javaExecuteable);
     runScriptGenerator.generateScript();
     LOG.info("************** /Creating new deployment *****************");
   }

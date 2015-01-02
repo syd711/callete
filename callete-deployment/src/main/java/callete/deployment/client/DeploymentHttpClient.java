@@ -53,6 +53,7 @@ public class DeploymentHttpClient {
       case Deployment.CMD_CLEAN: {
         String ignoreDirectories = ""; //not used yet
         Map<String,String> params = new HashMap<>();
+        params.put(DeploymentResource.PARAM_QUICK_DEPLOYMENT, String.valueOf(descriptor.isQuickDeployment()));
         params.put(DeploymentResource.PARAM_IGNORE_DIRECTORIES, ignoreDirectories);
         return executePostRequest(url, params);
       }

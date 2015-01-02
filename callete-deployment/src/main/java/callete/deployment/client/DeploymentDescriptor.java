@@ -18,14 +18,16 @@ public class DeploymentDescriptor {
   private String targetDirectory;
 
   private String requestBasePath;
+  private boolean quickDeployment;
 
   private File sourceArchive;
 
-  public DeploymentDescriptor(String artifactId, String version) {
+  public DeploymentDescriptor(String artifactId, String version, boolean quickDeployment) {
     sourceArchive = new File("./", artifactId + "-" + version + ".zip");
     String host = Callete.getConfiguration().getString("deployment.host");
     String port = Callete.getConfiguration().getString("deployment.port", "8080");
 
+    this.quickDeployment = quickDeployment;
     this.targetDirectory = Callete.getConfiguration().getString("deployment.targetDirectory");
     this.requestBasePath = "http://" + host + ":" + port + "/deployment/";
 
@@ -34,6 +36,10 @@ public class DeploymentDescriptor {
 
   public File getSourceArchive() {
     return sourceArchive;
+  }
+
+  public boolean isQuickDeployment() {
+    return quickDeployment;
   }
 
   public String getTargetDirectory() {

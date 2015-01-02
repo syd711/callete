@@ -3,6 +3,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -95,6 +96,15 @@ public class FileUtils {
         }
       }
     }
+  }
+
+  public static void zipFile(File srcFile, File destZipFile) throws Exception {
+    FileOutputStream fileWriter = new FileOutputStream(destZipFile.getAbsolutePath());
+    ZipOutputStream  zip = new ZipOutputStream(fileWriter);
+
+    addFileToZip("", srcFile.getAbsolutePath(), zip, Collections.emptyList());
+    zip.flush();
+    zip.close();
   }
 
   public static void zipFolder(File srcFolder, File destZipFile, List<String> exclusions) throws Exception {
