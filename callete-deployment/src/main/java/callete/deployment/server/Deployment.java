@@ -3,6 +3,7 @@ package callete.deployment.server;
 import callete.api.util.SystemUtils;
 import callete.deployment.util.DeploymentArchiver;
 import callete.deployment.util.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,6 +147,7 @@ public class Deployment {
       if(!SystemUtils.isWindows()) {
         batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".sh");
         List<String> chmodCmds= Arrays.asList("sudo", "chmod", "777", batchFile.getAbsolutePath());
+        LOG.info("Executing chmod: " + StringUtils.join(chmodCmds, " "));
         SystemUtils.executeSystemCommand(batchFile.getParent(), chmodCmds);
       }
 
