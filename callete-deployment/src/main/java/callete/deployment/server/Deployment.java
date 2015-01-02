@@ -49,7 +49,7 @@ public class Deployment {
     target.mkdirs();
     if (!target.exists()) {
       status.setErrorMessage("Could not create deployment directory '" + status.getDeploymentDirectory() + ", " +
-              "please create it manually.");
+          "please create it manually.");
     }
     return status;
   }
@@ -62,7 +62,7 @@ public class Deployment {
    * Destroys the forked process this deployment is running.
    */
   public DeploymentStatus destroy() {
-    if(deployedProcess != null) {
+    if (deployedProcess != null) {
       deployedProcess.destroyForcibly();
     }
     return status;
@@ -71,17 +71,17 @@ public class Deployment {
   /**
    * Cleans up the target folder that is stored in the DeploymentStatus.
    * A clean install is ensured for the next deployment this way.
-   * @param ignoreList The list of directories to ignore when cleaning the target directory.
+   *
+   * @param ignoreList      The list of directories to ignore when cleaning the target directory.
    * @param quickDeployment
    */
   public DeploymentStatus clean(List<String> ignoreList, boolean quickDeployment) {
     try {
       File targetDirectory = new File(status.getDeploymentDirectory());
       //delete all if this is no quick deployment
-      if(!quickDeployment) {
+      if (!quickDeployment) {
         FileUtils.deleteFolder(targetDirectory, ignoreList, true);
-      }
-      else {
+      } else {
         //delete only main jar
         File[] list = targetDirectory.listFiles(new FilenameFilter() {
           @Override
@@ -89,8 +89,8 @@ public class Deployment {
             return name.endsWith(".jar");
           }
         });
-        for(File file : list) {
-          if(file.delete()) {
+        for (File file : list) {
+          if (file.delete()) {
             LOG.info("Quick-Deployment deleted " + file.getAbsolutePath());
           }
         }
@@ -144,16 +144,14 @@ public class Deployment {
       //determine batch file
       File batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".bat");
 
-      if(!SystemUtils.isWindows()) {
+      if (!SystemUtils.isWindows()) {
         batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".sh");
-        List<String> chmodCmds= Arrays.asList("sudo", "chmod", "777", batchFile.getAbsolutePath());
+        List<String> chmodCmds = Arrays.asList("sudo", "chmod", "777", batchFile.getAbsolutePath());
         LOG.info("Executing chmod: " + StringUtils.join(chmodCmds, " "));
         SystemUtils.executeSystemCommand(batchFile.getParent(), chmodCmds);
       }
 
-      //mpf, well, just read the system command from the file, so no chmod required AND we can kill the process!
-      List<String> lines = org.apache.commons.io.FileUtils.readLines(batchFile, "UTF-8");
-      String cmdString = lines.get(0);
+      String cmdString = buildCommandString(batchFile);
       LOG.info("***************** Executing system command: ***********************************");
       LOG.info(cmdString);
       LOG.info("***************** /Executing system command ***********************************");
@@ -175,5 +173,17 @@ public class Deployment {
       return false;
     }
     return true;
+  }
+
+  private String buildCommandString(File batchFile) throws IOException {
+    if (SystemUtils.isWindows()) {
+      //mpf, well, just read the system command from the file, so no chmod required AND we can kill the process!
+      List<String> lines = org.apache.commons.io.FileUtils.readLines(batchFile, "UTF-8");
+      return lines.get(0);
+    }
+
+    StringBuilder cmdBuilder = new StringBuilder();
+    cmdBuilder.append("sudo ./run.sh");
+    return cmdBuilder.toString();
   }
 }
