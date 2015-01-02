@@ -141,9 +141,12 @@ public class Deployment {
       List<String> cmds = new ArrayList<>();
 
       //determine batch file
-      File batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".sh");
-      if(SystemUtils.isWindows()) {
-        batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".bat");
+      File batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".bat");
+
+      if(!SystemUtils.isWindows()) {
+        batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".sh");
+        List<String> chmodCmds= Arrays.asList("sudo", "chmod", "777", batchFile.getAbsolutePath());
+        SystemUtils.executeSystemCommand(batchFile.getParent(), chmodCmds);
       }
 
       //mpf, well, just read the system command from the file, so no chmod required AND we can kill the process!
