@@ -29,6 +29,7 @@ public class DeploymentArchiver {
   private String javaExecuteable;
   private String host;
   private boolean remoteJMX;
+  private String targetDeploymentDir;
 
   private StringBuilder batchBuffer = new StringBuilder();
 
@@ -47,6 +48,13 @@ public class DeploymentArchiver {
 
   public void setHost(String host) {
     this.host = host;
+  }
+  
+  public void setTargetDeploymentDir(String targetDeploymentDir) {
+    this.targetDeploymentDir = targetDeploymentDir;
+    if(!targetDeploymentDir.endsWith("/") && !targetDeploymentDir.endsWith("\\")) {
+      this.targetDeploymentDir+="/";
+    }
   }
 
   public void generateScript() throws Exception {
@@ -126,7 +134,7 @@ public class DeploymentArchiver {
       batchBuffer.append(mainJar.getName());
     }
     else {
-      batchBuffer.append(mainJar.getAbsolutePath());
+      batchBuffer.append(targetDeploymentDir + mainJar.getName());
     }
     batchBuffer.append("\" ");
   }
@@ -138,7 +146,7 @@ public class DeploymentArchiver {
         batchBuffer.append(LIB_FOLDER + "/" + f.getName());
       }
       else {
-        batchBuffer.append(f.getAbsolutePath());
+        batchBuffer.append(targetDeploymentDir + LIB_FOLDER + "/" + f.getName());
       }
       
       batchBuffer.append(getCPSeparator());

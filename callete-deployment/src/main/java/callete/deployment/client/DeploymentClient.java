@@ -23,6 +23,7 @@ public class DeploymentClient {
     DeploymentDescriptor descriptor = new DeploymentDescriptor(artifactId, version, quickDeployment);
     DeploymentArchiver deploymentArchiver = DeploymentArchiver.create(args);
     deploymentArchiver.setHost(descriptor.getHost());
+    deploymentArchiver.setTargetDeploymentDir(descriptor.getTargetDirectory());
     deploymentArchiver.generateScript();
 
 
