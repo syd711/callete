@@ -1,8 +1,15 @@
 package callete.api.services.impl.system;
 
 import callete.api.services.system.SystemService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.management.Attribute;
+import javax.management.AttributeList;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -11,6 +18,9 @@ import java.net.UnknownHostException;
  */
 @SuppressWarnings("unused")
 public class SystemServiceImpl implements SystemService {
+  private final static Logger LOG = LoggerFactory.getLogger(SystemServiceImpl.class);
+  
+  private MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
   @Override
   public long getMaxMemory() {
@@ -25,6 +35,27 @@ public class SystemServiceImpl implements SystemService {
   @Override
   public long getFreeMemory() {
     return Runtime.getRuntime().freeMemory();
+  }
+
+  @Override
+  public double getCpuUsage() {
+    try {
+      ObjectName name = ObjectName.getInstance("java.lang:type=OperatingSystem");
+      AttributeList list = mbs.getAttributes(name, new String[]{"ProcessCpuLoad"});
+
+      if(list.isEmpty()) return Double.NaN;
+
+      Attribute att = (Attribute) list.get(0);
+      Double value = (Double) att.getValue();
+
+      if(value == -1.0) {
+        return Double.NaN;  // usually takes a couple of seconds before we get real values
+      }
+      return ((int) (value * 1000) / 10.0);        // returns a percentage value with 1 decimal point precision
+    } catch (Exception e) {
+      LOG.error("Failed to determine CPU usage: " + e.getMessage(), e);
+    }
+    return Double.NaN;
   }
 
   @Override

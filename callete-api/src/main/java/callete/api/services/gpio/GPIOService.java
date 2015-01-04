@@ -77,4 +77,9 @@ public interface GPIOService extends Service {
    * @param enabled If true, the simulator will be used instead of real GPIO.
    */
   void setSimulationMode(boolean enabled);
+
+  /**
+   * Returns the emulating component for the component with the given name.
+   */
+  GPIOComponent getSimulatedGPIOComponent(String name); 
 }

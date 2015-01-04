@@ -71,4 +71,10 @@ public interface SystemService extends Service {
    * Returns the IP address assigned to eth0 of this host.
    */
   String getHostAddress();
+
+  /**
+   * Returns the CPU usage in percentage.
+   * @return
+   */
+  double getCpuUsage();
 }
