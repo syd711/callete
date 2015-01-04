@@ -65,8 +65,10 @@ public class PiPushButton implements PushButton {
             long pushEnd = new Date().getTime();
             for(PushListener listener : pushListeners) {
               if(pushStart > 0 && (pushEnd - pushStart) > listener.getLongPushDebounceMillis()) {
+                LOG.info(this + " fires long push event.");
                 listener.pushed(new PushEventImpl(this, pin, true));
               } else if(pushStart > 0 && (pushEnd - pushStart) > listener.getPushDebounceMillis()) {
+                LOG.info(this + " fires push event.");
                 listener.pushed(new PushEventImpl(this, pin, false));
               }
             }

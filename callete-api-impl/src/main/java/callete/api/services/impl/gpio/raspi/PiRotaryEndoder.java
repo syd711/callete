@@ -10,6 +10,8 @@ import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +21,7 @@ import java.util.List;
  * Rotary encoder implementation for the Raspberry Pi.
  */
 public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
+  private final static Logger LOG = LoggerFactory.getLogger(PiRotaryEndoder.class);
 
   private int pinA;
   private int pinB;
@@ -99,9 +102,10 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
       public void run() {
         synchronized(eventQueue) {
           if(!eventQueue.isEmpty()) {
-            RotaryEncoderEvent rotaryEncoderEvent = eventQueue.get(0);
+            RotaryEncoderEvent e = eventQueue.get(0);
+            LOG.info(this + " fires event: toLeft=" + e.rotatedLeft() + ", steps=" + e.getSteps());
             for(RotaryEncoderListener l : listeners) {
-              l.rotated(rotaryEncoderEvent);
+              l.rotated(e);
             }
             eventQueue.clear();
           }
