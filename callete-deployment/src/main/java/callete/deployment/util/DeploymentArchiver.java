@@ -130,25 +130,14 @@ public class DeploymentArchiver {
   }
 
   private void addMainJar() {
-    if(targetOSWindows) {
-      batchBuffer.append(mainJar.getName());
-    }
-    else {
-      batchBuffer.append(targetDeploymentDir + mainJar.getName());
-    }
+    batchBuffer.append(mainJar.getName());
     batchBuffer.append("\" ");
   }
 
   private void addClassPath(File[] libs) {
     batchBuffer.append("-cp \"");
     for(File f : libs) {
-      if(targetOSWindows) {
-        batchBuffer.append(LIB_FOLDER + "/" + f.getName());
-      }
-      else {
-        batchBuffer.append(targetDeploymentDir + LIB_FOLDER + "/" + f.getName());
-      }
-      
+      batchBuffer.append(LIB_FOLDER + "/" + f.getName());
       batchBuffer.append(getCPSeparator());
       LOG.info("Add to classpath: " + f.getName());
     }
