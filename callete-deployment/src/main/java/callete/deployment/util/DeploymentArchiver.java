@@ -1,5 +1,6 @@
 package callete.deployment.util;
 
+import callete.api.util.SystemUtils;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import org.apache.commons.lang.StringUtils;
@@ -22,7 +23,7 @@ public class DeploymentArchiver {
   private File deploymentDir;
   private File mainJar;
   private String mainClass;
-  private String targetOS;
+  private boolean targetOSWindows;
   private String[] resourcesToCopy;
   private boolean quickDeployment;
   private String javaExecuteable;
@@ -38,7 +39,7 @@ public class DeploymentArchiver {
     this.deploymentDir = deploymentDir;
     this.mainJar = mainJar;
     this.mainClass = mainClasss;
-    this.targetOS = targetOS;
+    this.targetOSWindows = SystemUtils.isWindows(targetOS);
     this.resourcesToCopy = resourcesToCopy;
     this.quickDeployment = quickDeployment;
     this.javaExecuteable = javaExecuteable;
@@ -121,14 +122,25 @@ public class DeploymentArchiver {
   }
 
   private void addMainJar() {
-    batchBuffer.append(mainJar.getName());
+    if(targetOSWindows) {
+      batchBuffer.append(mainJar.getName());
+    }
+    else {
+      batchBuffer.append(mainJar.getAbsolutePath());
+    }
     batchBuffer.append("\" ");
   }
 
   private void addClassPath(File[] libs) {
     batchBuffer.append("-cp \"");
     for(File f : libs) {
-      batchBuffer.append(LIB_FOLDER + "/" + f.getName());
+      if(targetOSWindows) {
+        batchBuffer.append(LIB_FOLDER + "/" + f.getName());
+      }
+      else {
+        batchBuffer.append(f.getAbsolutePath());
+      }
+      
       batchBuffer.append(getCPSeparator());
       LOG.info("Add to classpath: " + f.getName());
     }
@@ -143,7 +155,7 @@ public class DeploymentArchiver {
   }
 
   private void addPrefix() {
-    if(targetOS.toLowerCase().contains("windows")) {
+    if(targetOSWindows) {
       //ignore
     } else {
       batchBuffer.append("sudo ");
@@ -160,14 +172,14 @@ public class DeploymentArchiver {
   }
 
   public String getCPSeparator() {
-    if(targetOS.contains("windows")) {
+    if(targetOSWindows) {
       return ";";
     }
     return ":";
   }
 
   public String getBatchFileName() {
-    if(targetOS.toLowerCase().contains("windows")) {
+    if(targetOSWindows) {
       return RUN_SCRIPT_NAME + ".bat";
     }
     return RUN_SCRIPT_NAME + ".sh";

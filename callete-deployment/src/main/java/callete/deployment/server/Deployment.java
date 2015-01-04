@@ -176,14 +176,8 @@ public class Deployment {
   }
 
   private String buildCommandString(File batchFile) throws IOException {
-    if(SystemUtils.isWindows()) {
-      //mpf, well, just read the system command from the file, so no chmod required AND we can kill the process!
-      List<String> lines = org.apache.commons.io.FileUtils.readLines(batchFile, "UTF-8");
-      return lines.get(0);
-    }
-
-    StringBuilder cmdBuilder = new StringBuilder();
-    cmdBuilder.append("sudo ./run.sh");
-    return cmdBuilder.toString();
+    //mpf, well, just read the system command from the file, so no chmod required AND we can kill the process!
+    List<String> lines = org.apache.commons.io.FileUtils.readLines(batchFile, "UTF-8");
+    return lines.get(0);
   }
 }
