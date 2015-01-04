@@ -18,13 +18,13 @@ import java.util.concurrent.TimeUnit;
  * is provided in the configuration properties.
  */
 @SuppressWarnings("unused")
-public class ResourceServiceImpl implements ResourcesService {
-  private final static Logger LOG = LoggerFactory.getLogger(ResourceServiceImpl.class);
+public class ResourcesServiceImpl implements ResourcesService {
+  private final static Logger LOG = LoggerFactory.getLogger(ResourcesServiceImpl.class);
 
   private ArtistResourcesLoader cacheLoader;
   private LoadingCache<String, ArtistResources> cache;
 
-  public ResourceServiceImpl() {
+  public ResourcesServiceImpl() {
     super();
     cacheLoader = new ArtistResourcesLoader();
     cache = CacheBuilder.newBuilder().maximumSize(10).expireAfterAccess(10, TimeUnit.MINUTES).build(cacheLoader);
