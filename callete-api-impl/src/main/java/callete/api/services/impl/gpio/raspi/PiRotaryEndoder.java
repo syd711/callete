@@ -2,6 +2,7 @@ package callete.api.services.impl.gpio.raspi;
 
 import callete.api.Callete;
 import callete.api.services.gpio.RotaryEncoder;
+import callete.api.services.gpio.RotaryEncoderEvent;
 import callete.api.services.gpio.RotaryEncoderListener;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
@@ -11,6 +12,7 @@ import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,23 +25,15 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
   private String name;
 
   private List<RotaryEncoderListener> listeners = new ArrayList<>();
+  private List<RotaryEncoderEvent> eventQueue = Collections.synchronizedList(new ArrayList<>());
 
   private GpioPinDigitalInput inputA;
   private GpioPinDigitalInput inputB;
 
   private long encoderValue = 0;
-  private int lastEncoded = 0;
   private boolean firstPass = true;
-  private boolean ignoreHalfSteps = false;
-
-  // based on [lastEncoded][encoded] lookup
-  private static final int stateTable[][] = {
-      {0, 1, 1, -1},
-      {-1, 0, 1, -1},
-      {-1, 1, 0, -1},
-      {-1, 1, 1, 0}
-  };
-
+  private boolean ignoreHalfSteps = true;
+  private boolean toLeft = false;
 
   public PiRotaryEndoder(int pinA, int pinB, String name) {
     this.pinA = pinA;
@@ -64,39 +58,69 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
     listeners.add(listener);
   }
 
+  /**
+   * Creepy impl for a rotary encoder. A previous version of this file contains a correct
+   * way to decode the encoder, but this way didn't work with my ALPS encoder, so whatever works...
+   * @param event
+   */
   @Override
   public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-    int stateA = inputA.getState().getValue();
+    //int stateA = inputA.getState().getValue();
     int stateB = inputB.getState().getValue();
 
-    // converting the 2 pin value to single number to end up with 00, 01, 10 or 11
-    int encoded = (stateA << 1) | stateB;
-
-    if(firstPass) {
+    if(firstPass && ignoreHalfSteps) {
+      toLeft = stateB == 0;
+      if(toLeft) {
+        encoderValue--;
+      }
+      else {
+        encoderValue++;
+      }
       firstPass = false;
     } else {
-      // going up states, 01, 11
-      // going down states 00, 10
-      int state = stateTable[lastEncoded][encoded];
-      encoderValue += state;
+      //reset first pass flag
+      firstPass = true;
 
-      //ignore half steps, so we use %2
-      if(ignoreHalfSteps && ((encoderValue % 2) != 0)) {
-        return;
-      }
-
-      RotaryEncoderEventImpl e = new RotaryEncoderEventImpl(encoderValue, state == -1);
-      for(RotaryEncoderListener l : listeners) {
-        l.rotated(e);
-      }
+      RotaryEncoderEventImpl e = new RotaryEncoderEventImpl(encoderValue, toLeft);
+      addToEventQueue(e);
+      emitEvent();
     }
-
-    lastEncoded = encoded;
-
-
   }
 
   // --------------------- Helper -----------------------------------
+
+  /**
+   * Removes an event from the event queue and fires it to all listeners.
+   * The event is removed from the queue afterwards.
+   */
+  private void emitEvent() {
+    new Thread() {
+      @Override
+      public void run() {
+        synchronized(eventQueue) {
+          if(!eventQueue.isEmpty()) {
+            RotaryEncoderEvent rotaryEncoderEvent = eventQueue.get(0);
+            for(RotaryEncoderListener l : listeners) {
+              l.rotated(rotaryEncoderEvent);
+            }
+            eventQueue.clear();
+          }
+        }
+      }
+    }.start();
+  }
+
+  /**
+   * Adds the event to the event queue.
+   * If there is already an event that has not been emitted yet, the given event is ignored.
+   */
+  private void addToEventQueue(RotaryEncoderEvent e) {
+    synchronized(eventQueue) {
+      if(eventQueue.isEmpty()) {
+        eventQueue.add(e);
+      }
+    }
+  }
 
   /**
    * Creates the digital input pins and their listeners.
