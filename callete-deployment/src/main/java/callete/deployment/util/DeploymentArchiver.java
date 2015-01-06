@@ -29,7 +29,6 @@ public class DeploymentArchiver {
   private String javaExecuteable;
   private String host;
   private boolean remoteJMX;
-  private String targetDeploymentDir;
 
   private StringBuilder batchBuffer = new StringBuilder();
 
@@ -49,13 +48,6 @@ public class DeploymentArchiver {
   public void setHost(String host) {
     this.host = host;
   }
-  
-  public void setTargetDeploymentDir(String targetDeploymentDir) {
-    this.targetDeploymentDir = targetDeploymentDir;
-    if(!targetDeploymentDir.endsWith("/") && !targetDeploymentDir.endsWith("\\")) {
-      this.targetDeploymentDir+="/";
-    }
-  }
 
   public void generateScript() throws Exception {
     addPrefix();
@@ -67,8 +59,19 @@ public class DeploymentArchiver {
 
     copyResources();
     copyMainJar();
+    renameCalleteProperties();
     writeBatchFile();
     writeArchive();
+  }
+
+  private void renameCalleteProperties() throws IOException {
+    File deploymentProperties = new File(deploymentDir, "conf/callete-deployment.properties");
+    File renamedDeploymentProperties = new File(deploymentDir, "conf/callete.properties");
+    if(deploymentProperties.exists()) {
+      LOG.info("Renaming callete-deployment.properties");
+      org.apache.commons.io.FileUtils.copyFile(deploymentProperties, renamedDeploymentProperties);
+      deploymentProperties.delete();
+    }
   }
 
   private void addVMParams() {

@@ -11,7 +11,8 @@ import javax.management.ObjectName;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 
 /**
  * Implements the system service interface.
@@ -73,7 +74,8 @@ public class SystemServiceImpl implements SystemService {
   public String getHostname() {
     try {
       return InetAddress.getLocalHost().getHostName();
-    } catch (UnknownHostException e) {
+    } catch (Exception e) {
+      LOG.error("Error resolving host name: " + e.getMessage(), e);
       return null;
     }
   }
@@ -81,9 +83,23 @@ public class SystemServiceImpl implements SystemService {
   @Override
   public String getHostAddress() {
     try {
-      return InetAddress.getLocalHost().getHostAddress();
-    } catch (UnknownHostException e) {
-      return null;
+      Enumeration e = NetworkInterface.getNetworkInterfaces();
+      while(e.hasMoreElements())
+      {
+        NetworkInterface n = (NetworkInterface) e.nextElement();
+        Enumeration ee = n.getInetAddresses();
+        while (ee.hasMoreElements())
+        {
+          InetAddress i = (InetAddress) ee.nextElement();
+          String address = i.getHostAddress();
+          if(address.startsWith("192.")) {
+            return address;
+          }
+        }
+      }
+    } catch (Exception e) {
+      LOG.error("Error resolving IP address: " + e.getMessage(), e);
     }
+    return null;
   }
 }

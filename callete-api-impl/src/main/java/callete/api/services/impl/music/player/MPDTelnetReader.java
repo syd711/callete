@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 /**
  * Reads the output of the telnet connection.
@@ -35,7 +36,7 @@ public class MPDTelnetReader extends Thread {
       do {
         ret_read = instr.read(buff);
         if(ret_read > 0) {
-          b.append(new String(buff, 0, ret_read));
+          b.append(new String(buff, 0, ret_read, Charset.forName("utf8")));
         }
         if(b.toString().contains("OK")) {
           lastCommand = b.toString();
