@@ -82,6 +82,7 @@ public class DeploymentArchiver {
       batchBuffer.append("-Dcom.sun.management.jmxremote.port=1100 ");
       batchBuffer.append("-Djava.rmi.server.hostname=" + host + " ");
     }
+    batchBuffer.append("-Dfile.encoding=utf8 ");
   }
 
   private void copyResources() throws IOException {
