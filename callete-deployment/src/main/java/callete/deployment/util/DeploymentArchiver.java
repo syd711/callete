@@ -83,6 +83,8 @@ public class DeploymentArchiver {
       batchBuffer.append("-Djava.rmi.server.hostname=" + host + " ");
     }
     batchBuffer.append("-Dfile.encoding=utf8 ");
+    batchBuffer.append("-Dlogback.configurationFile=conf/logback.xml ");
+
   }
 
   private void copyResources() throws IOException {

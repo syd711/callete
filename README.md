@@ -6,6 +6,13 @@ Callete is a framework for developing (Java) media clients for embedded systems 
 
 02.01.2015 - Adding documentation
 
+# Known Issues
+
+* The rotary encoder support is just ugly. The original implementation that decoded the value was not working properly.
+ So the current state is a workaround that works for me.
+* The deployment on Linux based machines isn't working. At least you get a deployment bundle after executing maven which
+you can deploy manually. I'm working on that.
+
 ## Prequisites
 
 This documentation is written for the following setup:
