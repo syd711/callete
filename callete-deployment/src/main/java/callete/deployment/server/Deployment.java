@@ -139,8 +139,6 @@ public class Deployment {
    */
   private boolean executeDeployment() {
     try {
-      List<String> cmds = new ArrayList<>();
-
       //determine batch file
       File batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".bat");
       
@@ -154,27 +152,16 @@ public class Deployment {
       
       //read command
       String cmdString = buildCommandString(batchFile);
-      
-      //prepend unix stuff
-      if(!SystemUtils.isWindows()) {
-        cmdString = "cd " + status.getDeploymentDirectory() + " && " + cmdString;
-      }
-
       LOG.info("***************** Executing system command: ***********************************");
       LOG.info(cmdString);
       LOG.info("***************** /Executing system command ***********************************");
-      String[] batchCmds = cmdString.split(" ");
-      cmds.addAll(Arrays.asList(batchCmds));
-
-      LOG.info("Executing batch script in directory " + status.getDeploymentDirectory());
-      final ProcessBuilder processBuilder = new ProcessBuilder(cmds).inheritIO().redirectErrorStream(true);
-
-      //determine the directory the maven call should be executed.
-      File deploymentDirectory = new File(status.getDeploymentDirectory());
-      processBuilder.directory(deploymentDirectory);
-
-      //execute the process build
-      deployedProcess = processBuilder.start();
+      
+      if(SystemUtils.isWindows()) {
+        executeWindowsProcess(cmdString);
+      }
+      else {
+        executeLinuxProcess(cmdString);
+      }
     } catch (Exception e) {
       LOG.error("Error installing deployment: " + e.getMessage());
       status.setErrorMessage(e.getMessage());
@@ -187,5 +174,27 @@ public class Deployment {
     //mpf, well, just read the system command from the file, so no chmod required AND we can kill the process!
     List<String> lines = org.apache.commons.io.FileUtils.readLines(batchFile, "UTF-8");
     return lines.get(0);
+  }
+
+  private void executeLinuxProcess(String cmdString) throws Exception {
+    File execDirectory = new File(status.getDeploymentDirectory());
+    deployedProcess = Runtime.getRuntime().exec(cmdString, new String[]{}, execDirectory);
+  }
+
+  private void executeWindowsProcess(String cmdString) throws Exception {
+    List<String> cmds = new ArrayList<>();
+
+    String[] batchCmds = cmdString.split(" ");
+    cmds.addAll(Arrays.asList(batchCmds));
+
+    LOG.info("Executing batch script in directory " + status.getDeploymentDirectory());
+    final ProcessBuilder processBuilder = new ProcessBuilder(cmds).inheritIO().redirectErrorStream(true);
+
+    //determine the directory the maven call should be executed.
+    File deploymentDirectory = new File(status.getDeploymentDirectory());
+    processBuilder.directory(deploymentDirectory);
+
+    //execute the process build
+    deployedProcess = processBuilder.start();
   }
 }
