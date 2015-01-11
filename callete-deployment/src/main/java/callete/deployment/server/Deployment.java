@@ -206,7 +206,7 @@ public class Deployment {
       if(runFile.exists()) {
         List<String> lines = org.apache.commons.io.FileUtils.readLines(runFile, "UTF-8");
         String cmd = lines.get(0);
-        String className = cmd.substring(cmd.lastIndexOf("."), cmd.length());
+        String className = cmd.substring(cmd.lastIndexOf(".")+1, cmd.length());
         LOG.info("Killing process with name '" + className + "'");
         SystemUtils.executeSystemCommand("./", Arrays.asList("sudo", "pkill", "-f", className));
       }
