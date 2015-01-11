@@ -1,9 +1,6 @@
 package callete.api.services.impl.simulator;
 
-import callete.api.services.gpio.DigitalOutputPin;
-import callete.api.services.gpio.PinState;
-import callete.api.services.gpio.PushButton;
-import callete.api.services.gpio.RotaryEncoder;
+import callete.api.services.gpio.*;
 
 /**
  * A simple service for simulating GPIO.
@@ -13,6 +10,10 @@ import callete.api.services.gpio.RotaryEncoder;
  * visualizes the GPIO states and provides basic input features.
  */
 public class SimulatorGPIOServiceImpl {
+  
+  public ShiftRegister74hc595 connectShiftRegister(int chips, int serPin, int rclkPin, int srclkPin, String name) {
+    return null;
+  }
 
   public PushButton connectPushButton(int pin, String name) {
     SimulatorPushButton simulatorPushButton = new SimulatorPushButton(pin, name);

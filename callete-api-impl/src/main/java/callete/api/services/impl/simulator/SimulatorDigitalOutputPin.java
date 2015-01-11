@@ -24,6 +24,11 @@ public class SimulatorDigitalOutputPin implements DigitalOutputPin {
   }
 
   @Override
+  public void setState(PinState state) {
+    high = state.equals(PinState.HIGH);
+  }
+
+  @Override
   public String getName() {
     return name;
   }

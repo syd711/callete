@@ -9,6 +9,18 @@ import callete.api.services.Service;
 public interface GPIOService extends Service {
 
   /**
+   * Connects a shift register, see http://bildr.org/2011/02/74hc595/
+   * @param chips the amount of 74hc595 chips to use, so you can have n*8 registers available
+   * @param serPin SER (Serial) Input for the next pin that gets shifted in.
+   * @param rclkPin RCLK (Register Clock) Needs to be pulled high to set the output to the new shift register values.
+   *                This must be pulled high directly after SRCLK has gone LOW again.
+   * @param srclkPin SRCLK (Serial Clock) When this pin is pulled high, it will shift the register.
+   * @param name The name of the button, used during emulation.
+   * @return
+   */
+  ShiftRegister74hc595 connectShiftRegister(int chips, int serPin, int rclkPin, int srclkPin, String name);
+
+  /**
    * Registers a push button to the GPIO service.
    * Additional settings are configured on the button itself.
    * The pin depends on the flavor and must not necessarily the number of a GPIO pin.

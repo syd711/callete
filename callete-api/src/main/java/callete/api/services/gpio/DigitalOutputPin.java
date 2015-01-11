@@ -26,6 +26,12 @@ public interface DigitalOutputPin extends GPIOComponent {
   int getPin();
 
   /**
+   * Applies the pin state to this pin.
+   * @param state the state to apply, LOW or HIGH.
+   */
+  void setState(PinState state);
+
+  /**
    * Adds a listener to listen for pin state changes.
    */
   void addPinStateChangeListener(PinStateChangeListener listener);

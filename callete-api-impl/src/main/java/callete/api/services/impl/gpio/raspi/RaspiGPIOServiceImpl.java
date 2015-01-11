@@ -12,6 +12,11 @@ import org.slf4j.LoggerFactory;
 public class RaspiGPIOServiceImpl {
   private final static Logger LOG = LoggerFactory.getLogger(GPIOServiceImpl.class);
 
+  public PiShiftRegister74hc595 connectShiftRegister(int chips, int serPin, int rclkPin, int srclkPin, String name) {
+    LOG.info("Creating shift register '" + name + "' using pins " + serPin + ", " + rclkPin + ", "+  srclkPin);
+    return new PiShiftRegister74hc595(chips, serPin, rclkPin, srclkPin, name);
+  }
+  
   public PushButton connectPushButton(int pin, String name) {
     LOG.info("Creating push button for pin " + pin);
     return new PiPushButton(pin, name);

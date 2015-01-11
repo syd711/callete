@@ -20,6 +20,15 @@ public class GPIOServiceImpl implements GPIOService {
   private boolean simulationMode = false;
 
   @Override
+  public ShiftRegister74hc595 connectShiftRegister(int chips, int serPin, int rclkPin, int srclkPin, String name) {
+    ShiftRegister74hc595 register = getSimulator().connectShiftRegister(chips, serPin, rclkPin, srclkPin, name);
+    if(simulationMode) {
+      return register;
+    }
+    return raspiGPIO.connectShiftRegister(chips, serPin, rclkPin, srclkPin, name);
+  }
+
+  @Override
   public PushButton connectPushButton(int pin, String name) {
     PushButton simulatedPushButton = getSimulator().connectPushButton(pin, name);
     if(simulationMode) {

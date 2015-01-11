@@ -58,6 +58,16 @@ public class PiDigitalOutputPin implements DigitalOutputPin {
   }
 
   @Override
+  public void setState(PinState state) {
+    if(state.equals(PinState.HIGH)) {
+      gpioPinDigitalOutput.high();
+    }
+    else {
+      gpioPinDigitalOutput.low();
+    }
+  }
+
+  @Override
   public void addPinStateChangeListener(PinStateChangeListener listener) {
     pinStateListeners.add(listener);
   }
