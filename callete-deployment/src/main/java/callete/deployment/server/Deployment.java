@@ -177,6 +177,7 @@ public class Deployment {
 
   private void executeLinuxProcess(String cmdString) throws Exception {
     File execDirectory = new File(status.getDeploymentDirectory());
+    cmdString = "cd " + execDirectory.getAbsolutePath() + " && " + cmdString;
     deployedProcess = Runtime.getRuntime().exec(cmdString, new String[]{}, execDirectory);
 
     String s = null;
