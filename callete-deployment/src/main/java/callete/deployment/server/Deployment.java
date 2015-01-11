@@ -155,12 +155,7 @@ public class Deployment {
       LOG.info(cmdString);
       LOG.info("***************** /Executing system command ***********************************");
 
-      if(SystemUtils.isWindows()) {
-        executeWindowsProcess(cmdString);
-      }
-      else {
-        executeLinuxProcess(cmdString);
-      }
+      executeProcess(cmdString);
     } catch (Exception e) {
       LOG.error("Error installing deployment: " + e.getMessage());
       status.setErrorMessage(e.getMessage());
@@ -170,35 +165,16 @@ public class Deployment {
   }
 
   private String buildCommandString(File batchFile) throws IOException {
-    //mpf, well, just read the system command from the file, so no chmod required AND we can kill the process!
-    List<String> lines = org.apache.commons.io.FileUtils.readLines(batchFile, "UTF-8");
-    return lines.get(0);
+    if(SystemUtils.isWindows()) {
+      //mpf, well, just read the system command from the file, so no chmod required AND we can kill the process!
+      List<String> lines = org.apache.commons.io.FileUtils.readLines(batchFile, "UTF-8");
+      return lines.get(0);
+    }
+    
+    return "sudo ./run.sh";
   }
 
-  private void executeLinuxProcess(String cmdString) throws Exception {
-    File execDirectory = new File(status.getDeploymentDirectory());
-    cmdString = "cd " + execDirectory.getAbsolutePath() + " && " + cmdString;
-    deployedProcess = Runtime.getRuntime().exec(cmdString, new String[]{}, execDirectory);
-
-    String s = null;
-    BufferedReader stdInput = new BufferedReader(new
-        InputStreamReader(deployedProcess.getInputStream()));
-
-    BufferedReader stdError = new BufferedReader(new
-        InputStreamReader(deployedProcess.getErrorStream()));
-
-    // read the output from the command
-    while((s = stdInput.readLine()) != null) {
-      LOG.info("[Deployment Out] " + s);
-    }
-
-    // read any errors from the attempted command
-    while((s = stdError.readLine()) != null) {
-      LOG.info("[Deployment Err] " + s);
-    }
-  }
-
-  private void executeWindowsProcess(String cmdString) throws Exception {
+  private void executeProcess(String cmdString) throws Exception {
     List<String> cmds = new ArrayList<>();
 
     String[] batchCmds = cmdString.split(" ");
