@@ -143,15 +143,19 @@ public class Deployment {
 
       //determine batch file
       File batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".bat");
+      String cmdString = buildCommandString(batchFile);
 
       if(!SystemUtils.isWindows()) {
+        //chmod run file
         batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".sh");
         List<String> chmodCmds = Arrays.asList("sudo", "chmod", "777", batchFile.getAbsolutePath());
         LOG.info("Executing chmod: " + StringUtils.join(chmodCmds, " "));
         SystemUtils.executeSystemCommand(batchFile.getParent(), chmodCmds);
+        
+        //prepend folder command
+        cmdString = "cd " + status.getDeploymentDirectory() + " && " + cmdString;
       }
 
-      String cmdString = buildCommandString(batchFile);
       LOG.info("***************** Executing system command: ***********************************");
       LOG.info(cmdString);
       LOG.info("***************** /Executing system command ***********************************");

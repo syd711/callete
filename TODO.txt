@@ -1,0 +1,3 @@
+- fix raspi deployment
+- merge deployment properties with regular ones
+- fix quick deployment
