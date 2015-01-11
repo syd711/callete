@@ -7,9 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -81,7 +79,8 @@ public class Deployment {
       //delete all if this is no quick deployment
       if(!quickDeployment) {
         FileUtils.deleteFolder(targetDirectory, ignoreList, true);
-      } else {
+      }
+      else {
         //delete only main jar
         File[] list = targetDirectory.listFiles(new FilenameFilter() {
           @Override
@@ -141,7 +140,7 @@ public class Deployment {
     try {
       //determine batch file
       File batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".bat");
-      
+
       if(!SystemUtils.isWindows()) {
         //chmod run file
         batchFile = new File(status.getDeploymentDirectory(), DeploymentArchiver.RUN_SCRIPT_NAME + ".sh");
@@ -149,13 +148,13 @@ public class Deployment {
         LOG.info("Executing chmod: " + StringUtils.join(chmodCmds, " "));
         SystemUtils.executeSystemCommand(batchFile.getParent(), chmodCmds);
       }
-      
+
       //read command
       String cmdString = buildCommandString(batchFile);
       LOG.info("***************** Executing system command: ***********************************");
       LOG.info(cmdString);
       LOG.info("***************** /Executing system command ***********************************");
-      
+
       if(SystemUtils.isWindows()) {
         executeWindowsProcess(cmdString);
       }
@@ -179,6 +178,23 @@ public class Deployment {
   private void executeLinuxProcess(String cmdString) throws Exception {
     File execDirectory = new File(status.getDeploymentDirectory());
     deployedProcess = Runtime.getRuntime().exec(cmdString, new String[]{}, execDirectory);
+
+    String s = null;
+    BufferedReader stdInput = new BufferedReader(new
+        InputStreamReader(deployedProcess.getInputStream()));
+
+    BufferedReader stdError = new BufferedReader(new
+        InputStreamReader(deployedProcess.getErrorStream()));
+
+    // read the output from the command
+    while((s = stdInput.readLine()) != null) {
+      LOG.info("[Deployment Out] " + s);
+    }
+
+    // read any errors from the attempted command
+    while((s = stdError.readLine()) != null) {
+      LOG.info("[Deployment Err] " + s);
+    }
   }
 
   private void executeWindowsProcess(String cmdString) throws Exception {
