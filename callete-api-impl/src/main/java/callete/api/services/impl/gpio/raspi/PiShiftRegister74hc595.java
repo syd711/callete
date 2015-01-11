@@ -52,7 +52,6 @@ public class PiShiftRegister74hc595 implements ShiftRegister74hc595 {
 
   @Override
   public void writeRegisters() {
-    LOG.info("Updating registers of " + this);
     rclk.low();
 
     for(int i = registerStates.length - 1; i >= 0; i--) {
