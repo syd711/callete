@@ -16,6 +16,18 @@ import java.util.zip.ZipOutputStream;
  */
 public class FileUtils {
   private final static Logger LOG = LoggerFactory.getLogger(FileUtils.class);
+  
+  public static void delete(File[] files) {
+    for(File file : files) {
+      if(file.delete()) {
+        LOG.info("Deleted " + file.getAbsolutePath());
+      }
+      else {
+        LOG.error("Deletion failed: " + file.getAbsolutePath());
+      }
+    }
+    
+  }
 
   public static void deleteFolder(File folder, List<String> ignoreList, boolean silently) throws IOException {
     File[] files = folder.listFiles();
@@ -106,6 +118,27 @@ public class FileUtils {
     zip.close();
   }
 
+  public static void zipFiles(List<File> files, List<String> exclusions, File destZipFile) throws Exception {
+    FileOutputStream fileWriter = new FileOutputStream(destZipFile.getAbsolutePath());
+    ZipOutputStream zip = new ZipOutputStream(fileWriter);
+
+    for(File f : files) {
+      if(f.isDirectory()) {
+        File[] dirFiles = f.listFiles();
+        for(File file : dirFiles) {
+          addFileToZip(file.getParentFile().getName(), file.getAbsolutePath(), zip, exclusions);
+        }
+      }
+      else {
+        addFileToZip("", f.getAbsolutePath(), zip, Collections.emptyList());
+      }
+    }
+    
+
+    zip.flush();
+    zip.close();
+  }
+
   public static void zipFolder(File srcFolder, File destZipFile, List<String> exclusions) throws Exception {
     FileOutputStream fileWriter = new FileOutputStream(destZipFile.getAbsolutePath());
     ZipOutputStream zip = new ZipOutputStream(fileWriter);
@@ -167,7 +200,10 @@ public class FileUtils {
       if(exclude.toLowerCase().equals(fileName.toLowerCase())) {
         return true;
       }
-      if(file.isFile() && exclude.startsWith(".") && fileName.endsWith(exclude)) {
+      if((file.isFile() && exclude.startsWith(".") && fileName.endsWith(exclude))) {
+        return true;
+      }
+      if(file.isFile() && fileName.startsWith(exclude)) {
         return true;
       }
     }

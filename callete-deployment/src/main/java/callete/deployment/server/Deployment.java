@@ -94,11 +94,25 @@ public class Deployment {
             return name.endsWith(".jar");
           }
         });
-        for(File file : list) {
-          if(file.delete()) {
-            LOG.info("Quick-Deployment deleted " + file.getAbsolutePath());
+        FileUtils.delete(list);
+        
+        //...and callete libs
+        File[] libList = new File(targetDirectory, "libs").listFiles(new FilenameFilter() {
+          @Override
+          public boolean accept(File dir, String name) {
+            return name.contains("callete") && name.endsWith(".jar");
           }
-        }
+        });
+        FileUtils.delete(libList);
+
+        //...and the conf folder
+        File[] confList = new File(targetDirectory, "conf").listFiles(new FilenameFilter() {
+          @Override
+          public boolean accept(File dir, String name) {
+            return name.endsWith(".properties");
+          }
+        });
+        FileUtils.delete(confList);
       }
 
     } catch (IOException e) {

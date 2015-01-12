@@ -115,8 +115,13 @@ public class DeploymentArchiver {
     }
     if(quickDeployment) {
       LOG.info("Archiving main jar for quick deployment.");
-      FileUtils.zipFile(mainJar, tempFile);
-    } else {
+      FileUtils.zipFiles(Arrays.asList(mainJar, new File(deploymentDir, "libs"), new File(deploymentDir, "conf")),
+          Arrays.asList("jersey", "gson", "guava", "jackson", "jaxb", "js", "st", "slf", "ju",
+              "act", "ao", "asm", "gr", "go","java", "log", "mi", "ma", "ro", "com", "gm", "gu", 
+              "http", "img", "jd", "jen", "jet", "pi"),
+          tempFile);
+    }
+    else {
       FileUtils.zipFolder(deploymentDir, tempFile, Arrays.asList(".log", ".MF", "classes", "generated-sources", "maven-archiver"));
       LOG.info("Created " + tempFile.getAbsolutePath());
     }
