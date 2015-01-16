@@ -23,7 +23,9 @@ public class Settings {
     if(settings == null) {
       try {
         File configFile = getConfigFile(CONFIG_FOLDER, CONFIG_FILENAME);
+        LOG.info("Loading settings file " + configFile.getAbsolutePath());
         settings = new PropertiesConfiguration(configFile);
+        settings.load();
       } catch (Throwable e) {
         LOG.error("Error loading " + CONFIG_FILENAME + ": " + e.getMessage(), e);
       }

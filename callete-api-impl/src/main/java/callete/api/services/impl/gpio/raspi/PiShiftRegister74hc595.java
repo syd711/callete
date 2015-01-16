@@ -40,7 +40,12 @@ public class PiShiftRegister74hc595 implements ShiftRegister74hc595 {
 
   @Override
   public void setRegisterPin(int pin, PinState pinState) {
-    this.registerStates[pin] = pinState;
+    try {
+      this.registerStates[pin] = pinState;
+    }
+    catch (ArrayIndexOutOfBoundsException e) {
+      LOG.error("State for pin " + pin + " can not be changed, invalid index.");
+    }
   }
 
   @Override
