@@ -109,7 +109,7 @@ public class Deployment {
         File[] confList = new File(targetDirectory, "conf").listFiles(new FilenameFilter() {
           @Override
           public boolean accept(File dir, String name) {
-            return name.endsWith(".properties");
+            return name.equals("callete.properties");
           }
         });
         FileUtils.delete(confList);

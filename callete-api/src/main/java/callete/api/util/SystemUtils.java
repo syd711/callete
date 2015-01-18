@@ -1,5 +1,6 @@
 package callete.api.util;
 
+import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,13 +15,15 @@ import java.util.List;
 public class SystemUtils {
   private final static Logger LOG = LoggerFactory.getLogger(SystemUtils.class);
 
+  public final static String DELIMITER = System.getProperty("line.separator");
+
   /**
    * Returns true if VM is running on windows.
    */
   public static boolean isWindows() {
     return System.getProperty("os.name").toLowerCase().contains("windows");
   }
-  
+
   public static boolean isWindows(String osName) {
     return osName.toLowerCase().contains("windows");
   }
@@ -43,6 +46,7 @@ public class SystemUtils {
   }
 
   public static boolean executeSystemCommand(String dir, List<String> cmds) {
+    LOG.info("Executing system command: " + Joiner.on(" ").join(cmds));
     try {
       ProcessBuilder processBuilder = new ProcessBuilder(cmds).inheritIO().redirectErrorStream(true);
 
@@ -57,5 +61,22 @@ public class SystemUtils {
       LOG.error("Failed to system command for creating directory: " + e.getMessage(), e);
     }
     return false;
+  }
+
+  public static String execute(List<String> cmds) {
+    try {
+      LOG.info("Executing system command: " + Joiner.on(" ").join(cmds));
+      SystemCommandExecutor exec = new SystemCommandExecutor(cmds);
+      exec.executeCommand();
+
+      String error = exec.getStandardErrorFromCommand().toString();
+      if(error != null && error.trim().length() > 0) {
+        LOG.error("Error executing command: " + error);
+      }
+      return exec.getStandardOutputFromCommand().toString();
+    } catch (Exception e) {
+      LOG.error("Failed to execute command: " + e.getMessage(), e);
+    }
+    return null;
   }
 }

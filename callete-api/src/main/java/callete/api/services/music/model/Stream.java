@@ -6,6 +6,7 @@ package callete.api.services.music.model;
 public class Stream implements PlaylistItem {
   private String name;
   private String url;
+  private int id;
 
   public void setName(String name) {
     this.name = name;
@@ -25,6 +26,14 @@ public class Stream implements PlaylistItem {
   @Override
   public String getPlaybackUrl() {
     return url;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 
   @Override

@@ -6,8 +6,10 @@ import callete.api.services.http.HttpService;
 import callete.api.services.music.google.GoogleMusicService;
 import callete.api.services.music.player.MusicPlayerService;
 import callete.api.services.music.streams.StreamingService;
+import callete.api.services.network.NetworkService;
 import callete.api.services.resources.ResourcesService;
 import callete.api.services.system.SystemService;
+import callete.api.services.template.TemplateService;
 import callete.api.services.weather.WeatherService;
 import callete.api.util.Config;
 import callete.api.util.Settings;
@@ -31,6 +33,9 @@ public class Callete {
   private static StreamingService streamingService;
   private static ResourcesService resourcesService;
   private static SystemService systemService;
+  private static NetworkService networkService;
+  private static TemplateService templateService;
+  
 
   public static MusicPlayerService getMusicPlayer() {
     if(musicPlayer == null) {
@@ -86,6 +91,20 @@ public class Callete {
       systemService = (SystemService) ServiceFactory.createService(SystemService.class);
     }
     return systemService;
+  }
+
+  public static TemplateService getTemplateService() {
+    if(templateService== null) {
+      templateService = (TemplateService) ServiceFactory.createService(TemplateService.class);
+    }
+    return templateService;
+  }
+
+  public static NetworkService getNetworkService() {
+    if(networkService== null) {
+      networkService = (NetworkService) ServiceFactory.createService(NetworkService.class);
+    }
+    return networkService;
   }
 
   public static Configuration getSettings() {
