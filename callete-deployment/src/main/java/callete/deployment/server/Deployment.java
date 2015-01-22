@@ -84,6 +84,7 @@ public class Deployment {
       File targetDirectory = new File(status.getDeploymentDirectory());
       //delete all if this is no quick deployment
       if(!quickDeployment) {
+        LOG.info("No quick deployment, so deleting everything in folder " + targetDirectory.getAbsolutePath());
         FileUtils.deleteFolder(targetDirectory, ignoreList, true);
       }
       else {

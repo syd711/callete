@@ -64,6 +64,7 @@ public class HotSpotImpl implements HotSpot {
   @Override
   public boolean install() {
     try {
+      LOG.info("Installing hot spot '" + ssid + "' with static ip " + staticIp);
       createBackup(INTERFACES_FILE, INTERFACES_BACKUP_FILE);
       createBackup(HOST_APD_FILE, HOST_APD_BACKUP_FILE);
 
@@ -100,6 +101,7 @@ public class HotSpotImpl implements HotSpot {
     hotSpotThread = new Thread() {
       @Override
       public void run() {
+        Thread.currentThread().setName("Hot Spot '" + ssid + "' runner");
         hotSpotExecutor = new SystemCommandExecutor(Splitter.on(" ").splitToList(RUN_CMD));
         try {
           hotSpotExecutor.executeCommand();
@@ -140,9 +142,11 @@ public class HotSpotImpl implements HotSpot {
   }
 
   private void waitUntilAvailable() {
-    int attempts = 0;
+    int attempts = 1;
     try {
+      LOG.info("Waiting until hot spot '" + ssid + "' becomes available...");
       List<WirelessNetwork> wirelessNetworks = Callete.getNetworkService().scanWirelessNetworks();
+      LOG.info("Scanned " + wirelessNetworks.size() + " wireless networks");
       for(WirelessNetwork network : wirelessNetworks) {
         if(network.getSSID().equalsIgnoreCase(ssid)) {
           LOG.info("Found hot spot: " + network);
@@ -150,6 +154,7 @@ public class HotSpotImpl implements HotSpot {
         }
       }
 
+      LOG.info("Waited " + attempts*2 + "seconds...");
       Thread.sleep(2000);
       attempts++;
       if(attempts >= MAX_WAIT_ATTEMPTS) {

@@ -65,7 +65,6 @@ public class SystemUtils {
 
   public static String execute(List<String> cmds) {
     try {
-      LOG.info("Executing system command: " + Joiner.on(" ").join(cmds));
       SystemCommandExecutor exec = new SystemCommandExecutor(cmds);
       exec.executeCommand();
 

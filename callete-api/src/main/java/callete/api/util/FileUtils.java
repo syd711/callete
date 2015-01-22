@@ -198,12 +198,15 @@ public class FileUtils {
     String fileName = file.getName();
     for(String exclude : exclusions) {
       if(exclude.toLowerCase().equals(fileName.toLowerCase())) {
+        LOG.info("Ignoring deletion of " +file.getAbsolutePath() + ", because it matches the exclusion '" + exclude + "'");
         return true;
       }
       if((file.isFile() && exclude.startsWith(".") && fileName.endsWith(exclude))) {
+        LOG.info("Ignoring deletion of " +file.getAbsolutePath() + ", because it ends with the exclusion '" + exclude + "'");
         return true;
       }
       if(file.isFile() && fileName.startsWith(exclude)) {
+        LOG.info("Ignoring deletion of " +file.getAbsolutePath() + ", because it starts with the exclusion '" + exclude + "'");
         return true;
       }
     }
