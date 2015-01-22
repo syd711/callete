@@ -1,4 +1,4 @@
-package callete.deployment.util;
+package callete.api.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

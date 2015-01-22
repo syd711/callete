@@ -1,8 +1,8 @@
 package callete.deployment.server;
 
 import callete.api.util.SystemUtils;
-import callete.deployment.util.DeploymentArchiver;
-import callete.deployment.util.FileUtils;
+import callete.deployment.client.DeploymentArchiver;
+import callete.api.util.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

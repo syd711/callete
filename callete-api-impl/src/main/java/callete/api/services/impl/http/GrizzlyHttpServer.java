@@ -2,6 +2,7 @@ package callete.api.services.impl.http;
 
 import com.google.common.base.Joiner;
 import com.sun.jersey.api.container.grizzly2.GrizzlyWebContainerFactory;
+import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class GrizzlyHttpServer {
    * @throws IllegalArgumentException
    * @throws java.io.IOException
    */
-  public void start() throws Exception {
+  public HttpServer start() throws Exception {
     final Map<String, String> initParams = new HashMap<>();
 
     List<String> packageNames = new ArrayList<>(Arrays.asList(resourcePackages));
@@ -60,6 +61,7 @@ public class GrizzlyHttpServer {
     }
     httpServer.start();
     LOG.info("Started " + this);
+    return httpServer;
   }
 
   public void stop() {

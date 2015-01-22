@@ -2,6 +2,7 @@ package callete.api.services.impl.http;
 
 import callete.api.services.http.HttpService;
 import callete.api.util.SystemUtils;
+import org.glassfish.grizzly.http.server.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,31 +17,19 @@ import java.util.Map;
 public class HttpServiceImpl implements HttpService {
   private final static Logger LOG = LoggerFactory.getLogger(HttpServiceImpl.class);
 
-  private Map<Integer, GrizzlyHttpServer> servers = new HashMap<Integer, GrizzlyHttpServer>();
-
   @Override
-  public void startServer(int port, File resourceDirectory, String[] resourcePackages) {
-    startServer(SystemUtils.resolveHostAddress(), port, resourceDirectory, resourcePackages);
+  public HttpServer startServer(int port, File resourceDirectory, String[] resourcePackages) {
+    return startServer(SystemUtils.resolveHostAddress(), port, resourceDirectory, resourcePackages);
   }
 
   @Override
-  public void startServer(String host, int port, File resourceDirectory, String[] resourcePackages) {
+  public HttpServer startServer(String host, int port, File resourceDirectory, String[] resourcePackages) {
     GrizzlyHttpServer server = new GrizzlyHttpServer(host, port, resourceDirectory, resourcePackages);
     try {
-      server.start();
-      servers.put(port, server);
+      return server.start();
     } catch (Exception e) {
       LOG.error("Error starting " + server + ": " + e.getMessage(), e);
     }
-  }
-
-  @Override
-  public void stopServer(int port) {
-    if(servers.containsKey(port)) {
-      GrizzlyHttpServer server = servers.get(port);
-      server.stop();
-    } else {
-      LOG.error("No server running on port " + port + " to stop.");
-    }
+    return null;
   }
 }

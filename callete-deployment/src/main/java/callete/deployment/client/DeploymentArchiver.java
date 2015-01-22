@@ -1,6 +1,7 @@
-package callete.deployment.util;
+package callete.deployment.client;
 
 import callete.api.util.SystemUtils;
+import callete.api.util.FileUtils;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import org.apache.commons.lang.StringUtils;
@@ -117,7 +118,7 @@ public class DeploymentArchiver {
       LOG.info("Archiving main jar for quick deployment.");
       FileUtils.zipFiles(Arrays.asList(mainJar, new File(deploymentDir, "libs"), new File(deploymentDir, "conf")),
           Arrays.asList("jersey", "gson", "guava", "jackson", "jaxb", "js", "st", "slf", "ju",
-              "act", "ao", "asm", "gr", "go","java", "log", "mi", "ma", "ro", "com", "gm", "gu", 
+              "act", "ao", "asm", "gr", "go", "java", "log", "mi", "ma", "ro", "com", "gm", "gu",
               "http", "img", "jd", "jen", "jet", "pi"),
           tempFile);
     }

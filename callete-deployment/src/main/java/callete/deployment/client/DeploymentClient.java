@@ -2,7 +2,6 @@ package callete.deployment.client;
 
 import callete.deployment.server.Deployment;
 import callete.deployment.server.DeploymentStatus;
-import callete.deployment.util.DeploymentArchiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

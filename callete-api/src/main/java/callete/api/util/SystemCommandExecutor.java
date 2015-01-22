@@ -1,5 +1,9 @@
 package callete.api.util;
 
+import com.google.common.base.Joiner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,10 +38,13 @@ import java.util.List;
  * http://www.gnu.org/licenses/lgpl.txt
  */
 public class SystemCommandExecutor {
+  private final static Logger LOG = LoggerFactory.getLogger(SystemCommandExecutor.class);
+  
   private List<String> commandInformation;
   private String adminPassword;
   private ThreadedStreamHandler inputStreamHandler;
   private ThreadedStreamHandler errorStreamHandler;
+  private Process process;
 
   /**
    * Pass in the system command you want to run as a List of Strings, as shown here:
@@ -67,9 +74,10 @@ public class SystemCommandExecutor {
       throws IOException, InterruptedException {
     int exitValue = -99;
 
+    LOG.info("Executing system command '" + Joiner.on(" ").join(commandInformation) + "'");
     try {
       ProcessBuilder pb = new ProcessBuilder(commandInformation);
-      Process process = pb.start();
+      process = pb.start();
 
       // you need this if you're going to write something to the command's input stream
       // (such as when invoking the 'sudo' command, and it prompts you for a password).
@@ -109,6 +117,10 @@ public class SystemCommandExecutor {
     } finally {
       return exitValue;
     }
+  }
+  
+  public void killProcess() {
+    process.destroyForcibly();
   }
 
   /**

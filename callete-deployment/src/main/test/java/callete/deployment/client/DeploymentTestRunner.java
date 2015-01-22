@@ -1,6 +1,6 @@
 package callete.deployment.client;
 
-import callete.deployment.util.FileUtils;
+import callete.api.util.FileUtils;
 
 import java.io.File;
 import java.util.HashMap;

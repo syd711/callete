@@ -2,9 +2,11 @@ package callete.api.services.impl.network;
 
 import callete.api.services.network.NetworkAuthentication;
 import callete.api.services.network.WirelessNetwork;
-import com.google.common.base.Splitter;
 
 
+/**
+ * Contains
+ */
 public class WirelessNetworkImpl implements WirelessNetwork {
   private String ssid;
   private NetworkAuthentication authentication;

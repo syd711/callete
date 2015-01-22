@@ -1,0 +1,9 @@
+auto lo
+
+iface lo inet loopback
+iface eth0 inet dhcp
+
+# hotspot
+iface wlan0 inet static
+address ${address}
+netmask ${netmask}

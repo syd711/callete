@@ -61,6 +61,16 @@ Edit the /boot/config.txt file and customize the overscan properties, e.g.:
 
 * *overscan_bottom=16*
 
+## Hot Spot Wizard Setup
+
+The framework supports settings up a temporary hotspot to configure the actual WLAN connection. To support
+the hot spot setup, execute the following steps:
+
+* sudo apt-get install hostapd dnsmasq
+* edit the /etc/dnsmasq.conf file, apply the following changes:
+ * * interface=wlan0
+ * * dhcp-range=192.168.2.2,192.168.2.100,255.255.255.0,12h
+
 ## Git Setup
 
 Ensure ssh agent is running: 

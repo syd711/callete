@@ -74,7 +74,6 @@ public interface SystemService extends Service {
 
   /**
    * Returns the CPU usage in percentage.
-   * @return
    */
   double getCpuUsage();
 }
