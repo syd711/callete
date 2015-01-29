@@ -22,6 +22,14 @@ public class TempateSetImpl implements TemplateSet {
   public void renderTemplate(String name, Object model, File target) {
     BufferedOutputStream out = null;
     try {
+      if(!target.exists()) {
+        LOG.info("Template target file " + target.getAbsolutePath() + " not found, creating new file.");
+        boolean newFile = target.createNewFile();
+        if(!newFile) {
+          LOG.error("Failed to create template file " + target.getAbsolutePath());
+        }
+      }
+      
       Template temp = configuration.getTemplate(name);
       out = new BufferedOutputStream(new FileOutputStream(target));
       Writer writer = new OutputStreamWriter(out);

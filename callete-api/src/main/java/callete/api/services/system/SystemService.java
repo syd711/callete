@@ -81,4 +81,9 @@ public interface SystemService extends Service {
    * Executes the reboot command.
    */
   void reboot();
+
+  /**
+   * Deletes biggest system logs.
+   */
+  void deleteLogs();
 }

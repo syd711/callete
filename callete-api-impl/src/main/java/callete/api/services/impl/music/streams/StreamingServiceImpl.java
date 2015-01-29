@@ -30,6 +30,7 @@ public class StreamingServiceImpl implements StreamingService {
       if(streams == null) {
         PropertiesConfiguration configuration = (PropertiesConfiguration) Callete.getConfiguration();
         if(streamConfig != null) {
+          LOG.info("Loading stream from " + streamConfig.getAbsolutePath());
           alternativeConfiguration = new PropertiesConfiguration(streamConfig);
           alternativeConfiguration.load();
           configuration = alternativeConfiguration;
@@ -54,7 +55,7 @@ public class StreamingServiceImpl implements StreamingService {
     if(streamConfig != null) {
       alternativeConfiguration.clear();
       for(int i=1; i<=streams.size(); i++) {
-        alternativeConfiguration.setProperty("stream." + i, streams.get(i).getPlaybackUrl());
+        alternativeConfiguration.setProperty("stream." + i, streams.get(i-1).getPlaybackUrl());
       }
 
       try {
@@ -62,6 +63,8 @@ public class StreamingServiceImpl implements StreamingService {
       } catch (ConfigurationException e) {
         LOG.error("Error updating " + streamConfig.getAbsolutePath() + ": " + e.getMessage(), e);
       }
+      //reset stream to force reload
+      this.streams = null;
     }
     else {
       LOG.error("Trying to save stream properties, but no alternative config file set.");

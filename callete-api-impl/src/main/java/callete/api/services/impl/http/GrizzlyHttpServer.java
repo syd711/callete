@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class GrizzlyHttpServer {
   private final static Logger LOG = LoggerFactory.getLogger(GrizzlyHttpServer.class);
-  public static final String RESOURCES = "/resources";
+  public static final String RESOURCES = "/resources"; //don't forget the leading slash
 
   private int port;
   private String host;
@@ -53,7 +53,7 @@ public class GrizzlyHttpServer {
 
     httpServer = GrizzlyWebContainerFactory.create(url, initParams);
     httpServer.getServerConfiguration().addHttpHandler(new StaticHttpHandler(resourceDirectory.getAbsolutePath()), RESOURCES);
-    LOG.info("Http server resources available under " + url.toString() + RESOURCES);
+    LOG.info("Http server resources available under " + url.toString() + "resources");
 
     //TODO disabled cache since the wrong mime type is returned otherwise
     for(NetworkListener l : httpServer.getListeners()) {

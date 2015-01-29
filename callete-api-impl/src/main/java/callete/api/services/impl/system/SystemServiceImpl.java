@@ -116,4 +116,27 @@ public class SystemServiceImpl implements SystemService {
       LOG.error("Error executing reboot command: " + e.getMessage(), e);
     }
   }
+  
+  @Override
+  public void deleteLogs() {
+    try {
+      LOG.info("Deleting logs");
+      SystemCommandExecutor executor = new SystemCommandExecutor(Splitter.on(" ").splitToList("sudo rm /var/log/*.log"));
+      executor.executeCommand();
+
+      executor = new SystemCommandExecutor(Splitter.on(" ").splitToList("sudo rm /var/log/*.gz"));
+      executor.executeCommand();
+      
+      executor = new SystemCommandExecutor(Splitter.on(" ").splitToList("sudo rm /var/log/messages"));
+      executor.executeCommand();
+
+      executor = new SystemCommandExecutor(Splitter.on(" ").splitToList("sudo rm /var/log/lastlog"));
+      executor.executeCommand();
+
+      executor = new SystemCommandExecutor(Splitter.on(" ").splitToList("sudo rm /var/log/syslog"));
+      executor.executeCommand();
+    } catch (Exception e) {
+      LOG.error("Error deleting logs: " + e.getMessage(), e);
+    }
+  }
 }

@@ -1,5 +1,6 @@
 package callete.deployment.server;
 
+import callete.api.util.SystemCommandExecutor;
 import callete.api.util.SystemUtils;
 import callete.deployment.client.DeploymentArchiver;
 import callete.api.util.FileUtils;
@@ -223,7 +224,11 @@ public class Deployment {
         String cmd = lines.get(0);
         String className = cmd.substring(cmd.lastIndexOf(".")+1, cmd.length());
         LOG.info("Killing process with name '" + className + "'");
-        SystemUtils.executeSystemCommand("./", Arrays.asList("sudo", "pkill", "-f", className));
+        SystemCommandExecutor executor = new SystemCommandExecutor(Arrays.asList("sudo", "pkill", "-f", className));
+        executor.executeCommand();
+        
+        LOG.info("Kill result: " + executor.getStandardOutputFromCommand().toString());
+        LOG.info("Kill error result: " + executor.getStandardErrorFromCommand().toString());
       }
     } catch (Exception e) {
       LOG.error("Error killing process: " + e.getMessage(), e);

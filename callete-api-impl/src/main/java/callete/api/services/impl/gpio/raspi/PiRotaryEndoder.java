@@ -103,7 +103,7 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
         synchronized(eventQueue) {
           if(!eventQueue.isEmpty()) {
             RotaryEncoderEvent e = eventQueue.get(0);
-            LOG.info(this + " fires event: toLeft=" + e.rotatedLeft() + ", steps=" + e.getSteps());
+            LOG.debug(this + " fires event: toLeft=" + e.rotatedLeft() + ", steps=" + e.getSteps());
             for(RotaryEncoderListener l : listeners) {
               l.rotated(e);
             }
