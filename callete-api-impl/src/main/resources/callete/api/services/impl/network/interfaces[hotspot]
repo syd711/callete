@@ -7,3 +7,4 @@ iface eth0 inet dhcp
 iface wlan0 inet static
 address ${address}
 netmask ${netmask}
+

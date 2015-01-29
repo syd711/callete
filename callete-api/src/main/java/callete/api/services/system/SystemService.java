@@ -76,4 +76,9 @@ public interface SystemService extends Service {
    * Returns the CPU usage in percentage.
    */
   double getCpuUsage();
+
+  /**
+   * Executes the reboot command.
+   */
+  void reboot();
 }

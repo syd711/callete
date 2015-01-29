@@ -1,5 +1,8 @@
 package callete.api.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 /**
@@ -36,12 +39,15 @@ import java.io.*;
  * http://www.gnu.org/licenses/lgpl.txt
  */
 class ThreadedStreamHandler extends Thread {
+  private final static Logger LOG = LoggerFactory.getLogger(ThreadedStreamHandler.class);
+  
   InputStream inputStream;
   String adminPassword;
   OutputStream outputStream;
   PrintWriter printWriter;
   StringBuilder outputBuffer = new StringBuilder();
   private boolean sudoIsRequested = false;
+  private boolean enableLog = false;
 
   /**
    * A simple constructor for when the sudo command is not necessary.
@@ -49,9 +55,9 @@ class ThreadedStreamHandler extends Thread {
    * running sudo before the command, and without expecting a password.
    *
    * @param inputStream
-   * @param streamType
    */
-  ThreadedStreamHandler(InputStream inputStream) {
+  ThreadedStreamHandler(String name, InputStream inputStream) {
+    super(name);
     this.inputStream = inputStream;
   }
 
@@ -60,13 +66,13 @@ class ThreadedStreamHandler extends Thread {
    * The outputStream must not be null. If it is, you'll regret it. :)
    * <p/>
    * TODO this currently hangs if the admin password given for the sudo command is wrong.
-   *
+   * @param name
    * @param inputStream
-   * @param streamType
    * @param outputStream
    * @param adminPassword
    */
-  ThreadedStreamHandler(InputStream inputStream, OutputStream outputStream, String adminPassword) {
+  ThreadedStreamHandler(String name, InputStream inputStream, OutputStream outputStream, String adminPassword) {
+    super(name);
     this.inputStream = inputStream;
     this.outputStream = outputStream;
     this.printWriter = new PrintWriter(outputStream);
@@ -90,13 +96,12 @@ class ThreadedStreamHandler extends Thread {
       String line = null;
       while((line = bufferedReader.readLine()) != null) {
         outputBuffer.append(line + "\n");
+        if(enableLog) {
+          LOG.info("System Command Output: " + line);
+        }
       }
-    } catch (IOException ioe) {
-      // TODO handle this better
-      ioe.printStackTrace();
-    } catch (Throwable t) {
-      // TODO handle this better
-      t.printStackTrace();
+    } catch (Exception ioe) {
+      LOG.warn("Error reading process stream: " + ioe.getMessage());
     } finally {
       try {
         bufferedReader.close();
@@ -112,6 +117,10 @@ class ThreadedStreamHandler extends Thread {
     } catch (InterruptedException e) {
       // ignore
     }
+  }
+  
+  public void enableLog(boolean b) {
+    enableLog = b;    
   }
 
   public StringBuilder getOutputBuffer() {

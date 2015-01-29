@@ -1,6 +1,9 @@
 package callete.api.services.impl.system;
 
+import callete.api.Callete;
 import callete.api.services.system.SystemService;
+import callete.api.util.SystemCommandExecutor;
+import com.google.common.base.Splitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +23,7 @@ import java.util.Enumeration;
 @SuppressWarnings("unused")
 public class SystemServiceImpl implements SystemService {
   private final static Logger LOG = LoggerFactory.getLogger(SystemServiceImpl.class);
-  
+
   private MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
   @Override
@@ -84,12 +87,10 @@ public class SystemServiceImpl implements SystemService {
   public String getHostAddress() {
     try {
       Enumeration e = NetworkInterface.getNetworkInterfaces();
-      while(e.hasMoreElements())
-      {
+      while(e.hasMoreElements()) {
         NetworkInterface n = (NetworkInterface) e.nextElement();
         Enumeration ee = n.getInetAddresses();
-        while (ee.hasMoreElements())
-        {
+        while(ee.hasMoreElements()) {
           InetAddress i = (InetAddress) ee.nextElement();
           String address = i.getHostAddress();
           if(address.startsWith("192.")) {
@@ -101,5 +102,18 @@ public class SystemServiceImpl implements SystemService {
       LOG.error("Error resolving IP address: " + e.getMessage(), e);
     }
     return null;
+  }
+
+  @Override
+  public void reboot() {
+    try {
+      LOG.info("Executing rebooting command");
+      SystemCommandExecutor executor = new SystemCommandExecutor(Splitter.on(" ").splitToList("sudo reboot"));
+      executor.executeCommand();
+      
+      LOG.info(executor.getStandardOutputFromCommand().toString());
+    } catch (Exception e) {
+      LOG.error("Error executing reboot command: " + e.getMessage(), e);
+    }
   }
 }

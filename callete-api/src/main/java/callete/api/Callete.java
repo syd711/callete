@@ -15,6 +15,8 @@ import callete.api.util.Config;
 import callete.api.util.Settings;
 import org.apache.commons.configuration.Configuration;
 
+import java.io.File;
+
 /**
  * Central API service entry point.
  */

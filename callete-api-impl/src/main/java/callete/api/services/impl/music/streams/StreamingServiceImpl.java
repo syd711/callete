@@ -6,14 +6,11 @@ import callete.api.services.music.streams.StreamingService;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,49 +19,56 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class StreamingServiceImpl implements StreamingService {
   private final static Logger LOG = LoggerFactory.getLogger(StreamMetaDataProviderImpl.class);
-  public static final String STREAMING_PLAYLIST_URL_PROPERTY = "streaming.playlist.url";
 
   private List<Stream> streams;
+  private File streamConfig;
+  private PropertiesConfiguration alternativeConfiguration;
 
   @Override
   public List<Stream> getStreams() {
-    if(streams == null) {
-      streams = loadStreams();
+    try {
+      if(streams == null) {
+        PropertiesConfiguration configuration = (PropertiesConfiguration) Callete.getConfiguration();
+        if(streamConfig != null) {
+          alternativeConfiguration = new PropertiesConfiguration(streamConfig);
+          alternativeConfiguration.load();
+          configuration = alternativeConfiguration;
+        }
+        streams = loadStreams(configuration);
+      }
+      return streams;
     }
-    return streams;
+    catch (Exception e) {
+      LOG.error("Error loading streams configuration: " + e.getMessage(), e);
+    }
+    return null;
+  }
+
+  @Override
+  public void setConfigFile(File configFile) {
+    this.streamConfig = configFile;
+  }
+
+  @Override
+  public void saveStreams(List<Stream> streams) {
+    if(streamConfig != null) {
+      alternativeConfiguration.clear();
+      for(int i=1; i<=streams.size(); i++) {
+        alternativeConfiguration.setProperty("stream." + i, streams.get(i).getPlaybackUrl());
+      }
+
+      try {
+        alternativeConfiguration.save(streamConfig);
+      } catch (ConfigurationException e) {
+        LOG.error("Error updating " + streamConfig.getAbsolutePath() + ": " + e.getMessage(), e);
+      }
+    }
+    else {
+      LOG.error("Trying to save stream properties, but no alternative config file set.");
+    }
   }
 
   //---------------------- Helper -------------------------------------
-
-  private List<Stream> loadStreams() {
-    Configuration configuration = Callete.getConfiguration();
-    String playlistUrl = configuration.getString(STREAMING_PLAYLIST_URL_PROPERTY);
-    if(StringUtils.isEmpty(playlistUrl)) {
-      LOG.info("Loading streaming information from properties");
-      return loadStreams(configuration);
-    }
-
-    LOG.info("Loading streaming information from url " + playlistUrl);
-    return loadStreams(playlistUrl);
-  }
-
-  /**
-   * Loads the playlist from the given playlist url.
-   */
-  @SuppressWarnings("unchecked")
-  private List<Stream> loadStreams(String playlistUrl) {
-    try {
-      URL url = new URL(playlistUrl);
-      Configuration configuration = new PropertiesConfiguration(url);
-      return loadStreams(configuration);
-    } catch (MalformedURLException e) {
-      LOG.error("Invalid URL for loading streaming information: " + e.getMessage(), e);
-      return Collections.EMPTY_LIST;
-    } catch (ConfigurationException e) {
-      LOG.error("Failed to build properties configuration from url " + playlistUrl + ": " + e.getMessage(), e);
-      return Collections.EMPTY_LIST;
-    }
-  }
 
   /**
    * Loads the streams from a properties file and returns the representing model
@@ -78,14 +82,14 @@ public class StreamingServiceImpl implements StreamingService {
       if(!properties.containsKey(key)) {
         break;
       }
-      if(!key.contains("stream.") || key.equals(STREAMING_PLAYLIST_URL_PROPERTY)) {
+      if(!key.contains("stream.")) {
         continue;
       }
       
       String url = properties.getString(key);
 
       String nameKey = key + ".name";
-      String name = null;
+      String name;
       if(properties.containsKey(nameKey)) {
         name = properties.getString(nameKey);
       }

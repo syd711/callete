@@ -1,5 +1,6 @@
 package callete.api.util;
 
+import com.google.common.io.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,6 +212,27 @@ public class FileUtils {
       }
     }
     return false;
+  }
+
+
+  public static void createBackup(File f, File backup) throws IOException {
+    LOG.info("Creating backup file " + f.getAbsolutePath());
+    if(f.exists()) {
+      if(backup.exists()) {
+        backup.delete();
+      }
+      Files.copy(f, backup);
+    }
+  }
+
+  public static void restoreBackup(File backup, File f) throws IOException {
+    LOG.info("Restoring backup file " + f.getAbsolutePath());
+    if(backup.exists()) {
+      if(f.exists()) {
+        f.delete();
+      }
+      Files.copy(backup, f);
+    }
   }
 }
 
