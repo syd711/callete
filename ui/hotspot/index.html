@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WLAN Setup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+    <script src="js/jquery-1.11.2.min.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/hotspot.js"></script>
+</head>
+
+<body>
+    <div data-role="page">
+
+        <div data-role="header">
+            <h1>WLAN Setup</h1>
+        </div><!-- /header -->
+
+        <div role="main" class="ui-content">
+            <div data-role="tabs">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a class="ui-btn-active" href="#one" data-ajax="false">Setup</a></li>
+                        <li><a href="#two" data-ajax="false">System</a></li>
+                    </ul>
+                </div>
+                <div id="one" class="ui-body-d ui-content">
+                    <h3>Select Network Security</h3>
+                    <div class="ui-field-contain">
+                        <label for="network">Network:</label>
+                        <select name="network" id="network" data-inline="true">
+                        </select>
+                        <a href="#" id="reloadNetworks" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-icon-left ui-icon-recycle">Reload Networks</a>
+                    </div>
+                    <div class="ui-field-contain">
+                        <label for="passwd">Password:</label>
+                        <input type="text" name="passwd" id="passwd" placeholder="Network Password" value="">
+                    </div>
+                    <div class="ui-field-contain">
+                        <label for=""></label>
+                        <a href="#" id="saveButton" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-icon-left ui-icon-check">Save Settings</a>
+                        <a href="#" id="shutdownButton" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-icon-left ui-icon-recycle">Shutdown Hotspot</a>
+                    </div>
+
+
+                </div>
+                <div id="two" class="ui-body-d ui-content">
+                    <h3>System Console</h3>
+                    <label for="commands">Enter command:</label>
+                    <textarea rows="1" id="commands" name="commands" cols="80"></textarea>
+                    <a href="#" id="commandSubmit" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-icon-left ui-icon-check">Submit</a>
+                    <a href="#" id="commandClear" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-icon-left ui-icon-delete">Clear</a>
+                    <label for="output">Output:</label>
+                    <textarea rows="5" id="output" name="output" cols="80" style="height: 200px !important;max-height: 200px !important;overflow:auto !important;"></textarea>
+                    <label for="erroutput">Error Output:</label>
+                    <textarea rows="5" id="erroutput" name="output" cols="80" style="height: 200px !important;max-height: 200px !important;overflow:auto !important;"></textarea>
+                </div>
+            </div>
+        </div><!-- /content -->
+    </div><!-- /page -->
+</body>
+</html>
