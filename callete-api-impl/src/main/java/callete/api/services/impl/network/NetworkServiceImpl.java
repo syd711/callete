@@ -35,7 +35,7 @@ public class NetworkServiceImpl implements NetworkService {
   private static final String DNSMASQ_RESTART_CMD = "sudo service dnsmasq restart";
 
   private final static String WPA_SUPPLICANT_WEP_TEMPLATE = "wpa_supplicant.conf[wep]";
-  private final static String WPA_SUPPLICANT_WAP_TEMPLATE = "wpa_supplicant.conf[wap]";
+  private final static String WPA_SUPPLICANT_WAP_TEMPLATE = "wpa_supplicant.conf[wpa]";
   private final static File WPA_SUPPLICANT_FILE = new File("/etc/wpa_supplicant/wpa_supplicant.conf");
   private final static File WPA_SUPPLICANT_BACKUP_FILE = new File("/etc/wpa_supplicant/wpa_supplicant.conf.bak");
   
@@ -63,6 +63,8 @@ public class NetworkServiceImpl implements NetworkService {
       WPA_SUPPLICANT_FILE.delete();
       LOG.info("Writing new " + WPA_SUPPLICANT_FILE.getAbsolutePath() + " configuration");
       set.renderTemplate(template, new WPASupplicantConfRepresentation(network.getSSID(), password), WPA_SUPPLICANT_FILE);
+      LOG.info("Written " + WPA_SUPPLICANT_FILE.getAbsolutePath());
+      return true;
     }
     catch (Exception e) {
       LOG.error("Error updating WPA supplicant configuration: " + e.getMessage(), e);
@@ -129,11 +131,6 @@ public class NetworkServiceImpl implements NetworkService {
   public void reconnectToWlan() {
     LOG.info("Reassigning IP");
     executeCommand(RECONNECT_WLAN_CMD);
-  }
-
-  @Override
-  public boolean writeWPASupplicantConfiguration(WirelessNetwork network, String password) {
-    return false;
   }
 
   //----------------- Helper ------------------------------------

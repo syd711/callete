@@ -24,7 +24,12 @@ public class Settings {
       try {
         File configFile = getConfigFile(CONFIG_FOLDER, CONFIG_FILENAME);
         LOG.info("Loading settings file " + configFile.getAbsolutePath());
-        settings = new PropertiesConfiguration(configFile);
+        if(configFile.exists()) {
+          settings = new PropertiesConfiguration(configFile);
+        }
+        else {
+          settings = new PropertiesConfiguration();
+        }
         settings.load();
       } catch (Throwable e) {
         LOG.error("Error loading " + CONFIG_FILENAME + ": " + e.getMessage(), e);

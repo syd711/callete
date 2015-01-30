@@ -34,6 +34,7 @@ public class TempateSetImpl implements TemplateSet {
       out = new BufferedOutputStream(new FileOutputStream(target));
       Writer writer = new OutputStreamWriter(out);
       temp.process(model, writer);
+      LOG.info("Written " + target.getAbsolutePath());
     } catch (Exception e) {
       LOG.error("Error rendering template '" + name + "': " + e.getMessage(), e);
     } finally {

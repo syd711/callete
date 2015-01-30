@@ -23,7 +23,7 @@ import java.util.List;
 public class WlanSetupResource {
   private final static Logger LOG = LoggerFactory.getLogger(WlanSetupResource.class);
   
-  private List<WirelessNetwork> lastScan = new ArrayList<>();
+  private static List<WirelessNetwork> lastScan = new ArrayList<>();
 
   @GET
   @Path("/networks")
@@ -62,9 +62,12 @@ public class WlanSetupResource {
     SystemCommandRepresentation result = new SystemCommandRepresentation();
     for(WirelessNetwork network : lastScan) {
       if(network.getSSID().equalsIgnoreCase(ssid)) {
-        Callete.getNetworkService().writeWPASupplicantConfiguration(network, password);
+        LOG.info("Found network configuration for SSID '" + ssid + "'");
+        Callete.getNetworkService().updateWpaSupplicantConf(network, password);
+        return result;
       }
     }
+    LOG.error("No network configuration found fo SSID '" + ssid + "'");
     return result;
   }
 
@@ -90,4 +93,24 @@ public class WlanSetupResource {
     }
     return result;
   }
+
+  @GET
+  @Path("/log")
+  public SystemCommandRepresentation loadLogs() {
+    SystemCommandRepresentation result = new SystemCommandRepresentation();
+    
+    String command = "sudo cat /home/pi/callete-deployment/*.log";
+    SystemCommandExecutor executor = new SystemCommandExecutor(Splitter.on(" ").splitToList(command));
+    try {
+      executor.executeCommand();
+      result.setOutput(executor.getStandardOutputFromCommand().toString());
+      if(StringUtils.isEmpty(result.getOutput())) {
+        result.setOutput(executor.getStandardErrorFromCommand().toString());
+      }
+    } catch (Exception e) {
+      LOG.error("Error executing log read command: " + e.getMessage(), e);
+      result.setError("Exception reading logs: " + e.getMessage());
+    }
+    return result;
+  }  
 }

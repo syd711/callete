@@ -22,6 +22,7 @@
                     <ul>
                         <li><a class="ui-btn-active" href="#one" data-ajax="false">Setup</a></li>
                         <li><a href="#two" data-ajax="false">System</a></li>
+                        <li><a href="#tree" data-ajax="false">Log</a></li>
                     </ul>
                 </div>
                 <div id="one" class="ui-body-d ui-content">
@@ -41,8 +42,6 @@
                         <a href="#" id="saveButton" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-icon-left ui-icon-check">Save Settings</a>
                         <a href="#" id="shutdownButton" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-icon-left ui-icon-recycle">Shutdown Hotspot</a>
                     </div>
-
-
                 </div>
                 <div id="two" class="ui-body-d ui-content">
                     <h3>System Console</h3>
@@ -54,6 +53,10 @@
                     <textarea rows="5" id="output" name="output" cols="80" style="height: 200px !important;max-height: 200px !important;overflow:auto !important;"></textarea>
                     <label for="erroutput">Error Output:</label>
                     <textarea rows="5" id="erroutput" name="output" cols="80" style="height: 200px !important;max-height: 200px !important;overflow:auto !important;"></textarea>
+                </div>
+                <div id="tree" class="ui-body-d ui-content">
+                    <textarea rows="5" id="log" name="log" cols="80" style="height: 300px !important;max-height: 300px !important;overflow:auto !important;"></textarea>
+                    <a href="#" id="loadLogs" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-icon-left ui-icon-check">Reload</a>
                 </div>
             </div>
         </div><!-- /content -->

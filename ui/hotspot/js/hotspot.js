@@ -52,6 +52,14 @@ $(function() {
         $("#output").val('');
         $("#erroutput").val('');
     });
+    
+    $("#loadLogs").click(function() {
+        $("#log").val('');
+        $.getJSON('/hotspot/log', function(data) {
+            $("#log").val(data.output);
+        });
+    });
+
 });
 
 function reloadNetworks() {

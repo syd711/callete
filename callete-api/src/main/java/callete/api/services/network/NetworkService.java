@@ -67,12 +67,4 @@ public interface NetworkService extends Service{
    * @return true if the ping was successful.
    */
   boolean isOnline();
-
-  /**
-   * Overwrites the existing wpa_supplicant.conf file using the given data.
-   * @param network the network information used to overwrite the existing conf file
-   * @param password the password to be used for authentication
-   * @return true if the overwriting was successful.
-   */
-  boolean writeWPASupplicantConfiguration(WirelessNetwork network, String password);
 }
