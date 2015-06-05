@@ -15,7 +15,7 @@ public interface MusicService extends Service {
   /**
    * Login to the service to retrieve the users music information.
    */
-  void authenticate() throws MusicServiceAuthenticationException;
+  boolean authenticate() throws MusicServiceAuthenticationException;
 
   /**
    * Returns a list of all albums the user has uploaded.

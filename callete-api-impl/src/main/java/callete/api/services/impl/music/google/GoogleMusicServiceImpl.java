@@ -6,6 +6,8 @@ import callete.api.services.music.google.GoogleMusicService;
 import callete.api.services.music.model.Album;
 import callete.api.services.music.model.AlbumCollection;
 import callete.api.services.music.model.Song;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -15,11 +17,18 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public class GoogleMusicServiceImpl implements GoogleMusicService {
+  private final static Logger LOG = LoggerFactory.getLogger(JkiddoGoogleApi.class);
   private JkiddoGoogleApi api = new JkiddoGoogleApi();
 
   @Override
-  public void authenticate() throws MusicServiceAuthenticationException {
-    api.connect();
+  public boolean authenticate() throws MusicServiceAuthenticationException {
+    try {
+      api.connect();
+      return true;
+    } catch (MusicServiceAuthenticationException e) {
+      LOG.error("Error during authentication: " + e.getMessage());
+      return false;
+    }
   }
 
   @Override
