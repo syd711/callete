@@ -1,6 +1,7 @@
 package callete.api.services.impl.music.network;
 
 import callete.api.Callete;
+import callete.api.services.music.PlaybackUrlProvider;
 import callete.api.services.music.model.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ import java.util.*;
 /**
  * Well, not a real database, but cached results.
  */
-public class NetworkMusicDatabase {
+public class NetworkMusicDatabase  implements PlaybackUrlProvider {
   private final static Logger LOG = LoggerFactory.getLogger(NetworkMusicDatabase.class);
   private final static String MUSIC_DIRECTORY = "music.directory";
 
@@ -23,8 +24,22 @@ public class NetworkMusicDatabase {
   private List<AlbumCollection> artistByLetter = new ArrayList<>();
   private List<AlbumCollection> albumByLetter = new ArrayList<>();
 
-  public void init() {
+  private String musicDir; 
+
+  @Override
+  public String provideUrl(Object originalSongModel) {
     String musicDir = Callete.getConfiguration().getString(MUSIC_DIRECTORY);
+    String path = ((File)originalSongModel).getPath();
+    path = path.substring(musicDir.length(), path.length());
+    if(path.startsWith("/")) {
+      path = path.substring(1, path.length());
+    }
+    return path;
+  }
+
+
+  public void init() {
+    musicDir = Callete.getConfiguration().getString(MUSIC_DIRECTORY);
     if(musicDir == null) {
       throw new UnsupportedOperationException("No music folder provided in the collete settings, ensure that " +
           "the property " + MUSIC_DIRECTORY+ " points to a valid directory");
@@ -94,7 +109,7 @@ public class NetworkMusicDatabase {
     });
     
     for(File file : listFiles) {
-      Mp3File mp3File = new Mp3File(folder, file);
+      Mp3File mp3File = new Mp3File(this, folder, file);
       songs.put(mp3File.getFile().getName().toLowerCase(), mp3File);
       folder.addSong(mp3File);
     }

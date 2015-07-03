@@ -1,6 +1,5 @@
 package callete.api.services.impl.music.network;
 
-import callete.api.services.music.PlaybackUrlProvider;
 import callete.api.services.music.model.Album;
 import callete.api.services.music.model.Song;
 
@@ -10,7 +9,7 @@ import java.util.List;
 /**
  *
  */
-public class Mp3Folder extends Album implements PlaybackUrlProvider {
+public class Mp3Folder extends Album {
 
   private File folder;
 
@@ -25,12 +24,6 @@ public class Mp3Folder extends Album implements PlaybackUrlProvider {
 
   public String getName() {
     return folder.getName();
-  }
-
-
-  @Override
-  public String provideUrl(Object originalSongModel) {
-    return "file://" + ((File)originalSongModel).getPath();
   }
 
   public String getAlbumName() {

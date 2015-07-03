@@ -1,5 +1,6 @@
 package callete.api.services.impl.music.network;
 
+import callete.api.services.music.PlaybackUrlProvider;
 import callete.api.services.music.model.Album;
 import callete.api.services.music.model.Song;
 import com.mpatric.mp3agic.ID3v1;
@@ -18,8 +19,8 @@ public class Mp3File extends Song {
   private Mp3Folder folder;
   private com.mpatric.mp3agic.Mp3File mp3file;
 
-  public Mp3File(Mp3Folder folder, File file) {
-    super(folder, file);
+  public Mp3File(PlaybackUrlProvider provider, Mp3Folder folder, File file) {
+    super(provider, file);
     this.folder = folder;
     this.file = file;
   }

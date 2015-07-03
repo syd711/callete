@@ -55,7 +55,7 @@ public class Song implements PlaylistItem, Comparable<Song> {
 
   @Override
   public String toString() {
-    return "'" + name + "' by " + artist;
+    return "'" + getName() + "' by " + getArtist();
   }
 
   public String getGenre() {
