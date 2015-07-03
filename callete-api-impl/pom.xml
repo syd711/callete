@@ -46,6 +46,10 @@
             <artifactId>commons-net</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.mpatric</groupId>
+            <artifactId>mp3agic</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-grizzly2</artifactId>
         </dependency>

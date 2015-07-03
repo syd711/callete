@@ -58,7 +58,8 @@ public class AlbumCoverCache {
         imageCache.put(id, file);
       }
       LOG.info("Cache initialization finished: found " + imageCache.size() + " cached images");
-    } else {
+    }
+    else {
       LOG.error("Failed to initialize image cache, caching directory " + IMAGE_CACHE_DIR.getAbsolutePath() + " does not exist.");
     }
   }
@@ -77,16 +78,31 @@ public class AlbumCoverCache {
       if(imageCache.containsKey(id)) {
         File image = imageCache.get(id);
         imageUrl = image.toURI().toURL().toString();
-      } else {
-        imageUrl = imageUrl.replaceAll("http:https", "http"); //scale to used size
-        LOG.info("Caching " + imageUrl);
-        URL imgUrl = new URL(imageUrl);
-        BufferedImage image = ImageIO.read(imgUrl);
-        File target = new File(IMAGE_CACHE_DIR, id + "." + PNG);
-        ImageIO.write(image, PNG, target);
-        LOG.info("Written " + target.getAbsolutePath() + " to cache, URL: " + imageUrl);
-        imageCache.put(id, target);
-        imageUrl = target.toURI().toURL().toString();
+      }
+      else if(imageUrl == null) {
+        return null;
+      }
+      else {
+        if(imageUrl.startsWith("http")) {
+          imageUrl = imageUrl.replaceAll("http:https", "http"); //scale to used size
+          LOG.info("Caching " + imageUrl);
+          URL imgUrl = new URL(imageUrl);
+          BufferedImage image = ImageIO.read(imgUrl);
+          File target = new File(IMAGE_CACHE_DIR, id + "." + PNG);
+          ImageIO.write(image, PNG, target);
+          LOG.info("Written " + target.getAbsolutePath() + " to cache, URL: " + imageUrl);
+          imageCache.put(id, target);
+          imageUrl = target.toURI().toURL().toString();
+        }
+        else if(imageUrl.startsWith("file://")) {
+          String filename = imageUrl.substring("file://".length(), imageUrl.length());
+          BufferedImage image = ImageIO.read(new File(filename));
+          File target = new File(IMAGE_CACHE_DIR, id + "." + PNG);
+          ImageIO.write(image, PNG, target);
+          LOG.info("Written " + target.getAbsolutePath() + " to cache, URL: " + imageUrl);
+          imageCache.put(id, target);
+          imageUrl = target.toURI().toURL().toString();
+        }
 
       }
     } catch (IOException e) {

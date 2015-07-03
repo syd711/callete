@@ -25,6 +25,10 @@ public class Song implements PlaylistItem, Comparable<Song> {
   private byte[] artwork;
   private PlaybackUrlProvider urlProvider;
 
+  public Song(PlaybackUrlProvider urlProvider, Object originalModel) {
+    this.urlProvider = urlProvider;
+    this.originalModel = originalModel;
+  }
   public Song(PlaybackUrlProvider urlProvider) {
     this.urlProvider = urlProvider;
   }
@@ -127,8 +131,8 @@ public class Song implements PlaylistItem, Comparable<Song> {
   }
 
   public String getDuration() {
-    if(this.durationMillis > 0) {
-      return DateFormatUtils.format(this.durationMillis, "mm:ss");
+    if(getDurationMillis() > 0) {
+      return DateFormatUtils.format(getDurationMillis(), "mm:ss");
     }
     return "";
   }

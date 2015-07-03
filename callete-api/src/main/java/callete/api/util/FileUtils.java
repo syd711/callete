@@ -17,7 +17,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class FileUtils {
   private final static Logger LOG = LoggerFactory.getLogger(FileUtils.class);
-  
+
   public static void delete(File[] files) {
     for(File file : files) {
       if(file.delete()) {
@@ -27,7 +27,7 @@ public class FileUtils {
         LOG.error("Deletion failed: " + file.getAbsolutePath());
       }
     }
-    
+
   }
 
   public static void deleteFolder(File folder, List<String> ignoreList, boolean silently) throws IOException {
@@ -48,11 +48,13 @@ public class FileUtils {
         }
         if(f.isDirectory()) {
           deleteSubFolder(f, ignoreList, silently);
-        } else {
+        }
+        else {
           if(!f.delete()) {
             if(!silently) {
               throw new IOException("Failed to delete " + f.getAbsolutePath());
-            } else {
+            }
+            else {
               LOG.error("Failed to delete " + f.getAbsolutePath() + ", ignored silently.");
             }
           }
@@ -62,7 +64,8 @@ public class FileUtils {
     if(!folder.delete()) {
       if(!silently) {
         throw new IOException("Failed to delete " + folder.getAbsolutePath());
-      } else {
+      }
+      else {
         LOG.error("Failed to delete " + folder.getAbsolutePath() + ", ignored silently.");
       }
     }
@@ -86,7 +89,8 @@ public class FileUtils {
         if(entry.isDirectory()) {
           f.mkdirs();
           continue;
-        } else {
+        }
+        else {
           f.getParentFile().mkdirs();
           f.createNewFile();
         }
@@ -134,7 +138,7 @@ public class FileUtils {
         addFileToZip("", f.getAbsolutePath(), zip, Collections.emptyList());
       }
     }
-    
+
 
     zip.flush();
     zip.close();
@@ -161,7 +165,8 @@ public class FileUtils {
       if(!exclude(file, exclusions)) {
         addFolderToZip(path, srcFile, zip, exclusions);
       }
-    } else {
+    }
+    else {
       if(!exclude(file, exclusions)) {
         byte[] buf = new byte[1024];
         int len;
@@ -189,7 +194,8 @@ public class FileUtils {
       }
       if(path.equals("")) {
         addFileToZip(folder.getName(), srcFolder + "/" + file.getName(), zip, exclusions);
-      } else {
+      }
+      else {
         addFileToZip(path + "/" + folder.getName(), srcFolder + "/" + file.getName(), zip, exclusions);
       }
     }
@@ -199,15 +205,15 @@ public class FileUtils {
     String fileName = file.getName();
     for(String exclude : exclusions) {
       if(exclude.toLowerCase().equals(fileName.toLowerCase())) {
-        LOG.info("Ignoring deletion of " +file.getAbsolutePath() + ", because it matches the exclusion '" + exclude + "'");
+        LOG.info("Ignoring deletion of " + file.getAbsolutePath() + ", because it matches the exclusion '" + exclude + "'");
         return true;
       }
       if((file.isFile() && exclude.startsWith(".") && fileName.endsWith(exclude))) {
-        LOG.info("Ignoring deletion of " +file.getAbsolutePath() + ", because it ends with the exclusion '" + exclude + "'");
+        LOG.info("Ignoring deletion of " + file.getAbsolutePath() + ", because it ends with the exclusion '" + exclude + "'");
         return true;
       }
       if(file.isFile() && fileName.startsWith(exclude)) {
-        LOG.info("Ignoring deletion of " +file.getAbsolutePath() + ", because it starts with the exclusion '" + exclude + "'");
+        LOG.info("Ignoring deletion of " + file.getAbsolutePath() + ", because it starts with the exclusion '" + exclude + "'");
         return true;
       }
     }
@@ -232,6 +238,16 @@ public class FileUtils {
         f.delete();
       }
       Files.copy(backup, f);
+    }
+  }
+
+  public static void write(File file, String json) {
+    try {
+      Writer out = new FileWriter(file);
+      out.write(json);
+      out.close();
+    } catch (Exception e) {
+      LOG.error("Error writing " + file.getAbsolutePath() + ": " + e.getMessage(), e);
     }
   }
 }
