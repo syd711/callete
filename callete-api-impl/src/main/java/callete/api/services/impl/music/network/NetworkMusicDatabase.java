@@ -38,11 +38,15 @@ public class NetworkMusicDatabase  implements PlaybackUrlProvider {
   }
 
 
-  public void init() {
+  public void init() {    
     musicDir = Callete.getConfiguration().getString(MUSIC_DIRECTORY);
+    LOG.info("Initializing music database with folder " + musicDir);
+        
     if(musicDir == null) {
-      throw new UnsupportedOperationException("No music folder provided in the collete settings, ensure that " +
-          "the property " + MUSIC_DIRECTORY+ " points to a valid directory");
+      String msg = "No music folder provided in the collete settings, ensure that " +
+          "the property " + MUSIC_DIRECTORY+ " points to a valid directory";
+      LOG.info(msg);
+      throw new UnsupportedOperationException(msg);
     }
     LOG.info("Scanning folder " + musicDir);
     scan(null, new File(musicDir));
@@ -84,50 +88,59 @@ public class NetworkMusicDatabase  implements PlaybackUrlProvider {
    * @param folder the current lookup folder.
    */
   private void scan(Mp3Folder parent, File folder) {
-    Mp3Folder mp3Folder = new Mp3Folder(parent, folder);
-    scanMp3(mp3Folder);
+    LOG.info("Scanning " + folder.getAbsolutePath());
+    try {
+      Mp3Folder mp3Folder = new Mp3Folder(parent, folder);
+      scanMp3(mp3Folder);
 
-    File[] subFolders = folder.listFiles(new FilenameFilter() {
-      @Override
-      public boolean accept(File dir, String name) {
-        return new File(dir, name).isDirectory();
+      File[] subFolders = folder.listFiles(new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+          return new File(dir, name).isDirectory();
+        }
+      });
+
+
+      for(File subFolder : subFolders) {
+        scan(mp3Folder, subFolder);
       }
-    });
-
-    
-    for(File subFolder : subFolders) {
-      scan(mp3Folder, subFolder);
+    } catch (Exception e) {
+      LOG.error("Error scanning folder " + folder.getAbsolutePath() + ": " + e.getMessage(), e);
     }
   }
 
   private void scanMp3(Mp3Folder folder) {
-    File[] listFiles = folder.getFolder().listFiles(new FilenameFilter() {
-      @Override
-      public boolean accept(File dir, String name) {
-        return name.toLowerCase().endsWith(".mp3") || name.toLowerCase().endsWith(".ogg");
-      }
-    });
-    
-    for(File file : listFiles) {
-      Mp3File mp3File = new Mp3File(this, folder, file);
-      songs.put(mp3File.getFile().getName().toLowerCase(), mp3File);
-      folder.addSong(mp3File);
-    }
+    try {
+      File[] listFiles = folder.getFolder().listFiles(new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+          return name.toLowerCase().endsWith(".mp3") || name.toLowerCase().endsWith(".ogg");
+        }
+      });
 
-    //check for cover art
-    File[] coverArt = folder.getFolder().listFiles(new FilenameFilter() {
-      @Override
-      public boolean accept(File dir, String name) {
-        return name.toLowerCase().endsWith(".jpg") || name.toLowerCase().endsWith(".png");
+      for(File file : listFiles) {
+        Mp3File mp3File = new Mp3File(this, folder, file);
+        songs.put(mp3File.getFile().getName().toLowerCase(), mp3File);
+        folder.addSong(mp3File);
       }
-    });
-    
-    if(coverArt.length > 0){
-      folder.setArtUrl("file://" + coverArt[0].getAbsolutePath());
-    }
-    
-    if(!folder.getSongs().isEmpty()) {
-      albums.put(folder.getAlbumName().toLowerCase(), folder);
+
+      //check for cover art
+      File[] coverArt = folder.getFolder().listFiles(new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+          return name.toLowerCase().endsWith(".jpg") || name.toLowerCase().endsWith(".png");
+        }
+      });
+
+      if(coverArt.length > 0){
+        folder.setArtUrl("file://" + coverArt[0].getAbsolutePath());
+      }
+
+      if(!folder.getSongs().isEmpty()) {
+        albums.put(folder.getAlbumName().toLowerCase(), folder);
+      }
+    } catch (Exception e) {
+      LOG.error("Error scanning mp3s in folder " + folder.getFolder().getAbsolutePath() + ": " + e.getMessage(), e);
     }
   }
 
