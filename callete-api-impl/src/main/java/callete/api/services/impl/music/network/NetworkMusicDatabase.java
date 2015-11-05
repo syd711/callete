@@ -100,9 +100,10 @@ public class NetworkMusicDatabase  implements PlaybackUrlProvider {
         }
       });
 
-
-      for(File subFolder : subFolders) {
-        scan(mp3Folder, subFolder);
+      if(subFolders != null) {
+        for(File subFolder : subFolders) {
+          scan(mp3Folder, subFolder);
+        }
       }
     } catch (Exception e) {
       LOG.error("Error scanning folder " + folder.getAbsolutePath() + ": " + e.getMessage(), e);
@@ -117,6 +118,11 @@ public class NetworkMusicDatabase  implements PlaybackUrlProvider {
           return name.toLowerCase().endsWith(".mp3") || name.toLowerCase().endsWith(".ogg");
         }
       });
+
+      if(listFiles == null) {
+        LOG.error("MP3 folder is not there: " + folder.getFolder().getAbsolutePath());
+        return;
+      }
 
       for(File file : listFiles) {
         Mp3File mp3File = new Mp3File(this, folder, file);

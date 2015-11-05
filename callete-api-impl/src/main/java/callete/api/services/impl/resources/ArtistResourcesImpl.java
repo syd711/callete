@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,7 +65,8 @@ public class ArtistResourcesImpl implements ArtistResources {
               scaleHeight = scaleHeight * widthFactor;
             }
             image = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT, (int) scaleWidth + 1, (int) scaleHeight + 1, Scalr.OP_ANTIALIAS);
-          } else {
+          }
+          else {
             double widthRatio = width / imageWidth;
             double scaleWidth = imageWidth * widthRatio;
             double scaleHeight = imageHeight * widthRatio;
@@ -87,6 +89,7 @@ public class ArtistResourcesImpl implements ArtistResources {
 
   @Override
   public ImageResource getRandomImage(int minImageSize) {
+    URL imageURL = null;
     try {
       //we return the first image that matches the size, so lets randomize them
       long seed = System.nanoTime();
@@ -95,26 +98,42 @@ public class ArtistResourcesImpl implements ArtistResources {
       //no image size given, so apply first randomized hit
       if(minImageSize <= 0 && !images.isEmpty()) {
         Image image = images.get(0);
-        URL imageURL = new URL(image.getURL());
+        imageURL = new URL(image.getURL());
         BufferedImage bufferedImage = ImageIO.read(imageURL);
         return new ImageResourceImpl(image.getURL(), bufferedImage);
       }
 
+
       for(Image image : images) {
-        URL imageURL = new URL(image.getURL());
-        BufferedImage bufferedImage = ImageIO.read(imageURL);
-        int imageWidth = bufferedImage.getWidth();
-        int imageHeight = bufferedImage.getHeight();
-        if(imageHeight > minImageSize || imageWidth > minImageSize) {
-          LOG.info("Image size match found, resolved " + imageWidth + "x" + imageHeight + " for " + image.getURL());
-          return new ImageResourceImpl(image.getURL(), bufferedImage);
-        } else {
-          LOG.info("Ignoring image resource " + image.getURL() + ", cause ratio is only " + imageWidth + "x" + imageHeight);
+        if(image.getURL().toString().contains("userserve-ak.last.fm")) {
+          LOG.info("Ignoring image from server 'userserve-ak.last.fm' since it's out of date.");
+          continue;
+        }
+
+        imageURL = new URL(image.getURL());
+        BufferedImage bufferedImage = null;
+        try {
+          bufferedImage = ImageIO.read(imageURL);
+        } catch (IOException e) {
+          LOG.info("Could not read image for '" + artist + "' from URL '" + imageURL + "': " + e.getMessage());
+          LOG.info("Cancel image lookup for '" + artist + "'");
+          break;
+        }
+        if(bufferedImage != null) {
+          int imageWidth = bufferedImage.getWidth();
+          int imageHeight = bufferedImage.getHeight();
+          if(imageHeight > minImageSize || imageWidth > minImageSize) {
+            LOG.info("Image size match found, resolved " + imageWidth + "x" + imageHeight + " for " + image.getURL());
+            return new ImageResourceImpl(image.getURL(), bufferedImage);
+          }
+          else {
+            LOG.info("Ignoring image resource " + image.getURL() + " for '" + artist + "' , cause ratio is only " + imageWidth + "x" + imageHeight);
+          }
         }
       }
       LOG.info("No image found for artist '" + artist + "'");
     } catch (Exception e) {
-      LOG.error("Error search for a matching image for " + artist + ": " + e.getMessage());
+      LOG.error("Error search for a matching image for " + artist + ": " + e.getMessage() + " (" + imageURL.toString() + ")", e);
     }
     return null;
   }
