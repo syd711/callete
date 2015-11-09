@@ -86,4 +86,9 @@ public interface SystemService extends Service {
    * Deletes biggest system logs.
    */
   void deleteLogs();
+
+  /**
+   * Executes the given command
+   */
+  String executeCommand(String command);
 }

@@ -1,6 +1,5 @@
 package callete.api.services.impl.system;
 
-import callete.api.Callete;
 import callete.api.services.system.SystemService;
 import callete.api.util.SystemCommandExecutor;
 import com.google.common.base.Splitter;
@@ -137,6 +136,18 @@ public class SystemServiceImpl implements SystemService {
       executor.executeCommand();
     } catch (Exception e) {
       LOG.error("Error deleting logs: " + e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public String executeCommand(String cmd) {
+    try {
+      SystemCommandExecutor executor = new SystemCommandExecutor(Splitter.on(" ").splitToList(cmd));
+      executor.executeCommand();
+      return executor.getStandardErrorFromCommand().toString();
+    } catch (Exception e) {
+      LOG.error("Error executing command: " + e.getMessage(), e);
+      return e.getMessage();
     }
   }
 }

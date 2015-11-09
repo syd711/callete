@@ -18,11 +18,13 @@ public class Mp3File extends Song {
   private ID3v1 tag;
   private Mp3Folder folder;
   private com.mpatric.mp3agic.Mp3File mp3file;
+  private boolean parseIdTag;
 
-  public Mp3File(PlaybackUrlProvider provider, Mp3Folder folder, File file) {
+  public Mp3File(PlaybackUrlProvider provider, Mp3Folder folder, File file, boolean parseIdTag) {
     super(provider, file);
     this.folder = folder;
     this.file = file;
+    this.parseIdTag = parseIdTag;
   }
 
   private ID3v1 getTag() {
@@ -60,15 +62,23 @@ public class Mp3File extends Song {
 
   @Override
   public String getName() {
-    String name = getTag().getTitle();
-    if(name == null) {
-      name = file.getName();
+    if(parseIdTag) {
+      String name = getTag().getTitle();
+      if(name == null) {
+        return file.getName();
+      }
     }
-    return name;
+    return file.getName();
   }
 
   public String getArtist() {
-    return getTag().getArtist();
+    if(parseIdTag) {
+      return getTag().getArtist();
+    }
+    if(folder.getParent() != null) {
+      return folder.getParent().getName();
+    }
+    return null;
   }
 
   public Album getAlbum() {
@@ -76,26 +86,35 @@ public class Mp3File extends Song {
   }
 
   public String getTitle() {
-    String title = getTag().getTitle();
-    if(title == null) {
-      title = file.getName();
+    if(parseIdTag) {
+      String title = getTag().getTitle();
+      if(title == null) {
+        title = file.getName();
+      }
+      return title;
     }
-    return title;
+    return file.getName();
   }
 
   @Override
   public int getYear() {
-    try {
-      String year = getTag().getYear();
-      return Integer.parseInt(year);
-    } catch (NumberFormatException e) {
-      return -1;
+    if(parseIdTag) {
+      try {
+        String year = getTag().getYear();
+        return Integer.parseInt(year);
+      } catch (NumberFormatException e) {
+        return -1;
+      }
     }
+    return -1;
   }
 
   @Override
   public long getDurationMillis() {
-    return getMp3File().getLengthInMilliseconds();
+    if(parseIdTag) {
+      return getMp3File().getLengthInMilliseconds();
+    }
+    return 0;
   }
 
   public File getFile() {

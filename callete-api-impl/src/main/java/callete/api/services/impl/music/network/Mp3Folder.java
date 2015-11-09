@@ -12,6 +12,7 @@ import java.util.List;
 public class Mp3Folder extends Album {
 
   private File folder;
+  private Mp3Folder parent;
 
 
   public Mp3Folder(Mp3Folder parent, File folder) {
@@ -20,6 +21,7 @@ public class Mp3Folder extends Album {
       setArtist(parent.getName());
     }
     this.folder = folder;
+    this.parent = parent;
   }
 
   public String getName() {
@@ -43,5 +45,9 @@ public class Mp3Folder extends Album {
       }
     }
     return -1;
+  }
+
+  public Mp3Folder getParent() {
+    return parent;
   }
 }

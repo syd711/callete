@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MPDPlayer implements MPDErrorListener, OutputChangeListener {
   private final static Logger LOG = LoggerFactory.getLogger(MPDPlayer.class);
+  private final static boolean MPC_SYSTEM_CMD = Callete.getConfiguration().getBoolean("mpc.use.systemcommands", false);
 
   public static final String MPD_STATE_PAUSED = "pause";
   public static final String MPD_STATE_PLAYING = "play";
@@ -86,16 +87,26 @@ public class MPDPlayer implements MPDErrorListener, OutputChangeListener {
 
   public void play(PlaylistItem item) {
     try {
-      LOG.info("Starting playback: " + item);
+      LOG.info("Starting playback: " + item.getPlaybackUrl());
       MPDSong mpdSong = new MPDSong();
       mpdSong.setFile(item.getPlaybackUrl());
       mpd.getPlaylist().clearPlaylist();
-      mpd.getPlaylist().addSong(mpdSong);
-      mpd.getPlayer().play();
+      //LOG.info("Updating MPD Database");
+      //mpd.getAdmin().updateDatabase();
+      if(MPC_SYSTEM_CMD) {
+        LOG.info("MPC Command: " + Callete.getSystemService().executeCommand("mpc add " + item.getPlaybackUrl()));
+        LOG.info("MPC Command: " + Callete.getSystemService().executeCommand("mpc play"));
+      }
+      else {
+        mpd.getPlaylist().addSong(mpdSong);
+        mpd.getPlayer().play();
+      }
     } catch (MPDPlaylistException e) {
       LOG.error("MPD playlist exception: " + e.getMessage(), e);
     } catch (MPDPlayerException e) {
       LOG.error("MPD player exception: " + e.getMessage(), e);
+//    } catch (MPDAdminException e) {
+//      LOG.error("MPD admin exception: " + e.getMessage(), e);
     }
   }
 

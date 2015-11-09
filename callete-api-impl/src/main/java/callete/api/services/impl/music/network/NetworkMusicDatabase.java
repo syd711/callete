@@ -3,6 +3,7 @@ package callete.api.services.impl.music.network;
 import callete.api.Callete;
 import callete.api.services.music.PlaybackUrlProvider;
 import callete.api.services.music.model.*;
+import callete.api.util.DateUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,9 @@ public class NetworkMusicDatabase  implements PlaybackUrlProvider {
   private List<AlbumCollection> artistByLetter = new ArrayList<>();
   private List<AlbumCollection> albumByLetter = new ArrayList<>();
 
-  private String musicDir; 
+  private final boolean PARSE_ID3 = Callete.getConfiguration().getBoolean("music.parseIdTag", true);
+
+  private String musicDir;
 
   @Override
   public String provideUrl(Object originalSongModel) {
@@ -34,14 +37,16 @@ public class NetworkMusicDatabase  implements PlaybackUrlProvider {
     if(path.startsWith("/")) {
       path = path.substring(1, path.length());
     }
-    return path;
+    LOG.info("Resolved playback URL '" + path + "' for " + originalSongModel);
+    return "\"" + path + "\"";
   }
 
 
   public void init() {    
     musicDir = Callete.getConfiguration().getString(MUSIC_DIRECTORY);
     LOG.info("Initializing music database with folder " + musicDir);
-        
+    long start = System.currentTimeMillis();
+
     if(musicDir == null) {
       String msg = "No music folder provided in the collete settings, ensure that " +
           "the property " + MUSIC_DIRECTORY+ " points to a valid directory";
@@ -51,7 +56,8 @@ public class NetworkMusicDatabase  implements PlaybackUrlProvider {
     LOG.info("Scanning folder " + musicDir);
     scan(null, new File(musicDir));
 
-    LOG.info("Scanned " + albums.size() + " folders");
+    long end = System.currentTimeMillis();
+    LOG.info("Scanned " + albums.size() + " folders, took " + DateUtil.formatTime((int)(end-start)/1000));
 
     for(Album album : albums.values()) {
       String artist = album.getArtist();
@@ -115,7 +121,15 @@ public class NetworkMusicDatabase  implements PlaybackUrlProvider {
       File[] listFiles = folder.getFolder().listFiles(new FilenameFilter() {
         @Override
         public boolean accept(File dir, String name) {
-          return name.toLowerCase().endsWith(".mp3") || name.toLowerCase().endsWith(".ogg");
+          return name.toLowerCase().endsWith(".mp3")
+              || name.toLowerCase().endsWith(".ogg")
+              || name.toLowerCase().endsWith(".wav")
+              || name.toLowerCase().endsWith(".flac")
+              || name.toLowerCase().endsWith(".flc")
+              || name.toLowerCase().endsWith(".oga")
+              || name.toLowerCase().endsWith(".aac")
+              || name.toLowerCase().endsWith(".wma")
+              || name.toLowerCase().endsWith(".wmv");
         }
       });
 
@@ -125,7 +139,7 @@ public class NetworkMusicDatabase  implements PlaybackUrlProvider {
       }
 
       for(File file : listFiles) {
-        Mp3File mp3File = new Mp3File(this, folder, file);
+        Mp3File mp3File = new Mp3File(this, folder, file, PARSE_ID3);
         songs.put(mp3File.getFile().getName().toLowerCase(), mp3File);
         folder.addSong(mp3File);
       }
@@ -134,7 +148,8 @@ public class NetworkMusicDatabase  implements PlaybackUrlProvider {
       File[] coverArt = folder.getFolder().listFiles(new FilenameFilter() {
         @Override
         public boolean accept(File dir, String name) {
-          return name.toLowerCase().endsWith(".jpg") || name.toLowerCase().endsWith(".png");
+          return name.toLowerCase().endsWith(".jpg")
+              || name.toLowerCase().endsWith(".png");
         }
       });
 
