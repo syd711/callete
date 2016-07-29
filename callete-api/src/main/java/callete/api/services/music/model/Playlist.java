@@ -33,7 +33,7 @@ public abstract class Playlist implements ServiceModel {
     Collections.sort(songs, new Comparator<Song>() {
       @Override
       public int compare(Song o1, Song o2) {
-        return o1.compareTo(o2);
+        return o1.getName().compareTo(o2.getName());
       }
     });
     return songs;
@@ -75,9 +75,6 @@ public abstract class Playlist implements ServiceModel {
    * Applies a track id if not set already.
    */
   public void addSong(Song song) {
-    if(song.getTrack() == 0) {
-      song.setTrack(this.getSize() + 1);
-    }
     songs.add(song);
   }
 

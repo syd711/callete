@@ -3,6 +3,7 @@ package callete.api;
 import callete.api.services.ServiceFactory;
 import callete.api.services.gpio.GPIOService;
 import callete.api.services.http.HttpService;
+import callete.api.services.monitoring.MonitoringService;
 import callete.api.services.music.google.GoogleMusicService;
 import callete.api.services.music.network.NetworkMusicService;
 import callete.api.services.music.player.MusicPlayerService;
@@ -15,8 +16,6 @@ import callete.api.services.weather.WeatherService;
 import callete.api.util.Config;
 import callete.api.util.Settings;
 import org.apache.commons.configuration.Configuration;
-
-import java.io.File;
 
 /**
  * Central API service entry point.
@@ -39,6 +38,7 @@ public class Callete {
   private static NetworkService networkService;
   private static TemplateService templateService;
   private static NetworkMusicService networkMusicService;
+  private static MonitoringService monitoringService;
   
 
   public static MusicPlayerService getMusicPlayer() {
@@ -109,6 +109,13 @@ public class Callete {
       networkService = (NetworkService) ServiceFactory.createService(NetworkService.class);
     }
     return networkService;
+  }
+
+  public static MonitoringService getMonitoringService() {
+    if(monitoringService == null) {
+      monitoringService = (MonitoringService) ServiceFactory.createService(MonitoringService.class);
+    }
+    return monitoringService;
   }
 
   public static NetworkMusicService getNetworkMusicService() {
