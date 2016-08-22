@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -48,6 +49,7 @@ public class SystemCommandExecutor {
   private Process process;
   private boolean enableLogging = false;
   private String commandError;
+  private File dir;
 
   /**
    * Pass in the system command you want to run as a List of Strings, as shown here:
@@ -89,6 +91,11 @@ public class SystemCommandExecutor {
     LOG.info("Executing system command '" + Joiner.on(" ").join(commandInformation) + "'");
     try {
       ProcessBuilder pb = new ProcessBuilder(commandInformation);
+
+      if(dir != null) {
+        pb.directory(dir);
+      }
+
       process = pb.start();
 
       // you need this if you're going to write something to the command's input stream
@@ -150,6 +157,10 @@ public class SystemCommandExecutor {
       return new StringBuilder(commandError);
     }
     return errorStreamHandler.getOutputBuffer();
+  }
+
+  public void setDir(File dir) {
+    this.dir = dir;
   }
 }
 
