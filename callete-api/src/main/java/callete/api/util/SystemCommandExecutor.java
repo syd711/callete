@@ -84,7 +84,26 @@ public class SystemCommandExecutor {
     this.enableLogging = b;
   }
 
-  public int executeCommand()
+  public void executeCommandAsync() {
+    Thread t = new Thread() {
+      @Override
+      public void run() {
+        try {
+          execute();
+        } catch (Exception e) {
+          LOG.error("Failed to execute command " + Joiner.on(" ").join(commandInformation) + ": " + e.getMessage(), e);
+        }
+      }
+    };
+    t.setName("Async. Executor for " + Joiner.on(" ").join(commandInformation));
+    t.start();
+  }
+
+  public int executeCommand() throws IOException, InterruptedException {
+    return execute();
+  }
+
+  private int execute()
       throws IOException, InterruptedException {
     int exitValue = -99;
 
