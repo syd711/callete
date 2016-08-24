@@ -128,6 +128,8 @@ public class SystemCommandExecutor {
       errorStreamHandler.interrupt();
       inputStreamHandler.join();
       errorStreamHandler.join();
+
+      LOG.info("Executed system command '" + Joiner.on(" ").join(commandInformation) + "': exit code " + exitValue);
     } catch (Exception e) {
       commandError = e.getMessage();
     } finally {
