@@ -66,10 +66,6 @@
             <artifactId>jersey-json</artifactId>
         </dependency>
         <dependency>
-            <groupId>googlemusic.api</groupId>
-            <artifactId>googlemusic.api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.googlecode.jen-api</groupId>
             <artifactId>jen-api</artifactId>
         </dependency>

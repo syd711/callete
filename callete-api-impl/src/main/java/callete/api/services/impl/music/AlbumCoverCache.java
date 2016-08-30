@@ -1,4 +1,4 @@
-package callete.api.services.impl.music.google;
+package callete.api.services.impl.music;
 
 import callete.api.services.music.model.Album;
 import callete.api.util.SystemUtils;

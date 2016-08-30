@@ -2,9 +2,7 @@ package callete.test;
 
 import callete.api.Callete;
 import callete.api.services.music.MusicServiceAuthenticationException;
-import callete.api.services.music.google.GoogleMusicService;
 import callete.api.services.music.model.Album;
-import callete.api.services.music.model.Song;
 import callete.api.services.music.network.NetworkMusicService;
 import org.junit.Test;
 

@@ -101,11 +101,6 @@
                 <version>1.9.1</version>
             </dependency>
             <dependency>
-                <groupId>googlemusic.api</groupId>
-                <artifactId>googlemusic.api</artifactId>
-                <version>1.0.0</version>
-            </dependency>
-            <dependency>
                 <groupId>com.googlecode.jen-api</groupId>
                 <artifactId>jen-api</artifactId>
                 <version>4.x.p</version>
