@@ -12,8 +12,12 @@ import java.net.URL;
 public class MonitoringServiceImpl implements MonitoringService {
 
   @Override
-  public int httpPing(String ip, int port) throws IOException {
-    URL url = new URL("http://" + ip + ":" + port);
+  public int httpPing(String ip) throws IOException {
+    String host = ip;
+    if(!host.startsWith("http://")) {
+      host = "http://" + host;
+    }
+    URL url = new URL(host);
     HttpURLConnection connection = (HttpURLConnection)url.openConnection();
     connection.setRequestMethod("GET");
     connection.connect();
