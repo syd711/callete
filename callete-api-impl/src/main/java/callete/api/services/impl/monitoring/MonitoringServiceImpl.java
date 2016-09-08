@@ -22,6 +22,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     connection.setRequestMethod("GET");
     connection.connect();
 
+
     return connection.getResponseCode();
   }
 }
