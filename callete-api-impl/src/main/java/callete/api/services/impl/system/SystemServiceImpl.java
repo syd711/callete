@@ -3,6 +3,7 @@ package callete.api.services.impl.system;
 import callete.api.services.system.SystemService;
 import callete.api.util.SystemCommandExecutor;
 import com.google.common.base.Splitter;
+import org.apache.commons.lang.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,6 +138,10 @@ public class SystemServiceImpl implements SystemService {
     } catch (Exception e) {
       LOG.error("Error deleting logs: " + e.getMessage(), e);
     }
+  }
+
+  public boolean isLinux() {
+    return SystemUtils.IS_OS_LINUX;
   }
 
   @Override

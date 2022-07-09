@@ -89,8 +89,11 @@ public class MusicPlayerServiceImpl implements MusicPlayerService {
 
   private MPDPlayer getPlayer() {
     if(mpdPlayer == null) {
+      LOG.info("Creating new MPD client.");
       mpdPlayer = new MPDPlayer(this, playlist);
+      LOG.info("Connecting to MPD");
       mpdPlayer.connect();
+      LOG.info("MPD connect successful.");
     }
     return mpdPlayer;
   }

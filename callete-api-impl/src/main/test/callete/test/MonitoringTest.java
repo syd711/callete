@@ -11,7 +11,7 @@ public class MonitoringTest {
 
   @Test
   public void test() throws IOException {
-    int result = Callete.getMonitoringService().httpPing("www.google.de", 80);
+    int result = Callete.getMonitoringService().httpPing("www.google.de");
     assert(result == 200);
   }
 }

@@ -100,6 +100,7 @@ public class StreamingServiceImpl implements StreamingService {
         name = key;
       }
 
+      LOG.info("Creating Stream " + url);
       Stream info = new Stream();
       info.setUrl(url);
       info.setId(index);

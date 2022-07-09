@@ -91,4 +91,6 @@ public interface SystemService extends Service {
    * Executes the given command
    */
   String executeCommand(String command);
+
+  boolean isLinux();
 }
