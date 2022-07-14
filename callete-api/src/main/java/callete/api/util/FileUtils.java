@@ -19,15 +19,16 @@ public class FileUtils {
   private final static Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 
   public static void delete(File[] files) {
-    for(File file : files) {
-      if(file.delete()) {
-        LOG.info("Deleted " + file.getAbsolutePath());
-      }
-      else {
-        LOG.error("Deletion failed: " + file.getAbsolutePath());
+    if(files != null) {
+      for(File file : files) {
+        if(file.delete()) {
+          LOG.info("Deleted " + file.getAbsolutePath());
+        }
+        else {
+          LOG.error("Deletion failed: " + file.getAbsolutePath());
+        }
       }
     }
-
   }
 
   public static void deleteFolder(File folder, List<String> ignoreList, boolean silently) throws IOException {
