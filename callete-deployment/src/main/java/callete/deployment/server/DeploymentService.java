@@ -20,6 +20,7 @@ public class DeploymentService {
     String host = Callete.getConfiguration().getString("deployment.host");
     if(StringUtils.isEmpty(host)) {
       host = SystemUtils.resolveHostAddress();
+      LOG.warn("No 'deployment.host' set, resolved " + host);
     }
     Callete.getHttpService().startServer(host, port, new File("./"), new String[]{"callete.deployment"});
 
