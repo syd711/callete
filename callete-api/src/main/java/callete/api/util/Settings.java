@@ -26,11 +26,12 @@ public class Settings {
         LOG.info("Loading settings file " + configFile.getAbsolutePath());
         if(configFile.exists()) {
           settings = new PropertiesConfiguration(configFile);
+          settings.load();
         }
         else {
+          LOG.warn("No settings " + configFile.getAbsolutePath() + " found.");
           settings = new PropertiesConfiguration();
         }
-        settings.load();
       } catch (Throwable e) {
         LOG.error("Error loading " + CONFIG_FILENAME + ": " + e.getMessage(), e);
       }
