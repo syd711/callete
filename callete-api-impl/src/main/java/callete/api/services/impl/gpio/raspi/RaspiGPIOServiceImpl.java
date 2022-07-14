@@ -54,7 +54,7 @@ public class RaspiGPIOServiceImpl {
         board = RASPBERRY_PI_3_MODEL_B;
       }
 
-      LOG.info("Using GPIO configuration for board " + RASPBERRY_PI_MODEL_B);
+      LOG.info("Using GPIO configuration for board " + board);
     }
 
     if (board.equals(RASPBERRY_PI_MODEL_B)) {
