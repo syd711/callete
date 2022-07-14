@@ -17,31 +17,16 @@ you can deploy manually. I'm working on that.
 
 This documentation is written for the following setup:
 
-* Raspberry Pi Model B 512MB Ram
-* 2014-06-20-wheezy-raspbian.zip, 4gb SD installed and (http://www.raspberrypi.org/downloads/)
+* Raspberry Pi 3 Model B 512MB Ram
 * enabled ssh access (*sudo raspi-config*)
 * enabled internet access
 
 ## Raspberry Pi Setup
 
-Updating the existing Java installation:
+- make sure Java is installed
+- make sure Maven is installed
 
-* *sudo apt-get update*
-* *sudo apt-get remove oracle-java7-jdk*
-
-Download the latest JDK8 for Linux Arm and extract it: 
-
-* *sudo gunzip jdk-8u6-linux-arm-vfp-hflt.gz*
-* *sudo tar xvf jdk-8u6-linux-arm-vfp-hflt -C /opt*
-
-Set default java and javac to the new installed jdk8 (the command failed when I executed it, caused by copy'n paste errors, so I inputted them manually): 
-
-* *sudo update-alternatives -–install /usr/bin/javac javac /opt/jdk1.8.0_06/bin/javac 1*
-* *sudo update-alternatives -–install /usr/bin/java java /opt/jdk1.8.0_06/bin/java 1*
-* *sudo update-alternatives –config javac*
-* *sudo update-alternatives –config java*
-
-I recommend to overclock the Pi, you can do set in the setup menu by calling
+If you are usinga frontend, I recommend to overclock the Pi, you can do set in the setup menu by calling
 
 * *sudo raspi-config*
 
@@ -60,16 +45,6 @@ Adjust settings of your custom UI (e.g. a JavaFX or AWT GUI):
 Edit the /boot/config.txt file and customize the overscan properties, e.g.:
 
 * *overscan_bottom=16*
-
-## Hot Spot Wizard Setup
-
-The framework supports settings up a temporary hotspot to configure the actual WLAN connection. To support
-the hot spot setup, execute the following steps:
-
-* sudo apt-get install hostapd dnsmasq
-* edit the /etc/dnsmasq.conf file, apply the following changes:
- * * interface=wlan0
- * * dhcp-range=192.168.2.2,192.168.2.100,255.255.255.0,12h
 
 ## Git Setup
 
