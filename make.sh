@@ -1,2 +1,2 @@
 #!/bin/sh
-sudo /home/pi/apache-maven-3.1.1/bin/mvn clean install
+sudo /opt/apache-maven-3.8.6/bin/mvn clean install
