@@ -5,6 +5,12 @@ package callete.api.services.gpio;
  */
 public interface RotaryEncoder extends GPIOComponent {
 
+  enum ENCODING_MODE {
+    MANUAL,
+    STATE_TABLE
+  }
+
+
   /**
    * Add a listener to the rotary encoder that is fired when
    * the encoder is rotated left or right (not used for push buttons)

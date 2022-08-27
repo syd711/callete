@@ -37,11 +37,22 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
   private boolean firstPass = true;
   private boolean ignoreHalfSteps = true;
   private boolean toLeft = false;
+  private ENCODING_MODE mode;
 
-  public PiRotaryEndoder(int pinA, int pinB, String name) {
+
+  private int lastEncoded = 0;
+  private static final int stateTable[][] = {
+      {0, 1, 1, -1},
+      {-1, 0, 1, -1},
+      {-1, 1, 0, -1},
+      {-1, 1, 1, 0}
+  };
+
+  public PiRotaryEndoder(int pinA, int pinB, String name, PiRotaryEndoder.ENCODING_MODE mode) {
     this.pinA = pinA;
     this.pinB = pinB;
     this.name = name;
+    this.mode = mode;
 
     registerInputListeners();
   }
@@ -68,9 +79,41 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
    */
   @Override
   public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-    //int stateA = inputA.getState().getValue();
+    if(mode.equals(ENCODING_MODE.STATE_TABLE)) {
+      stateEncoding(event);
+    }
+    else {
+      manualEncoding(event);
+    }
+  }
+
+  private void stateEncoding(GpioPinDigitalStateChangeEvent event) {
+    int stateA = inputA.getState().getValue();
     int stateB = inputB.getState().getValue();
 
+    // converting the 2 pin value to single number to end up with 00, 01, 10 or 11
+    int encoded = (stateA << 1) | stateB;
+
+    if (firstPass) {
+      firstPass = false;
+    } else {
+      // going up states, 01, 11
+      // going down states 00, 10
+      int state = stateTable[lastEncoded][encoded];
+      encoderValue += state;
+
+      //ignore half steps, so we use %2
+      if (ignoreHalfSteps && ((encoderValue % 2) != 0)) {
+        return;
+      }
+
+      RotaryEncoderEventImpl e = new RotaryEncoderEventImpl(encoderValue, state == -1);
+    }
+  }
+
+  private void manualEncoding(GpioPinDigitalStateChangeEvent event) {
+    //int stateA = inputA.getState().getValue();
+    int stateB = inputB.getState().getValue();
     if(firstPass && ignoreHalfSteps) {
       toLeft = stateB == 0;
       if(toLeft) {

@@ -49,9 +49,10 @@ public interface GPIOService extends Service {
    * @param pinA The pin A of the rotary encoder
    * @param pinB The pin B of the rotary encoder
    * @param name The name of the rotary encoder, used during emulation.
+   * @param mode Determines how the encoder signales are resolved.
    * @return A push button instance where different event listeners can be registered.
    */
-  RotaryEncoder connectRotaryEncoder(int pinA, int pinB, String name);
+  RotaryEncoder connectRotaryEncoder(int pinA, int pinB, String name, RotaryEncoder.ENCODING_MODE mode);
 
   /**
    * Concrete API implementation to map the numeric pin number to the API instance.

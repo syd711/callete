@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * GPIO service implementation for the Raspberry Pi.
- * //TODO the simulation stuff is just sloppy but works so far 
+ * //TODO the simulation stuff is just sloppy but works so far
  */
 @SuppressWarnings("unused")
 public class GPIOServiceImpl implements GPIOService {
@@ -22,7 +22,7 @@ public class GPIOServiceImpl implements GPIOService {
   @Override
   public ShiftRegister74hc595 connectShiftRegister(int chips, int serPin, int rclkPin, int srclkPin, String name) {
     ShiftRegister74hc595 register = getSimulator().connectShiftRegister(chips, serPin, rclkPin, srclkPin, name);
-    if(simulationMode) {
+    if (simulationMode) {
       return register;
     }
     return raspiGPIO.connectShiftRegister(chips, serPin, rclkPin, srclkPin, name);
@@ -31,25 +31,25 @@ public class GPIOServiceImpl implements GPIOService {
   @Override
   public PushButton connectPushButton(int pin, String name) {
     PushButton simulatedPushButton = getSimulator().connectPushButton(pin, name);
-    if(simulationMode) {
+    if (simulationMode) {
       return simulatedPushButton;
     }
     return raspiGPIO.connectPushButton(pin, name);
   }
 
   @Override
-  public RotaryEncoder connectRotaryEncoder(int pinA, int pinB, String name) {
+  public RotaryEncoder connectRotaryEncoder(int pinA, int pinB, String name, RotaryEncoder.ENCODING_MODE mode) {
     RotaryEncoder simulatedRotaryEncoder = getSimulator().connectRotaryEncoder(pinA, pinB, name);
-    if(simulationMode) {
+    if (simulationMode) {
       return simulatedRotaryEncoder;
     }
-    return raspiGPIO.connectRotaryEncoder(pinA, pinB, name);
+    return raspiGPIO.connectRotaryEncoder(pinA, pinB, name, mode);
   }
 
   @Override
   public DigitalOutputPin connectDigitalOutputPin(int pin, String name, PinState pinState) {
     DigitalOutputPin simulatedDigitalOutputPin = getSimulator().connectDigitalOutputPin(pin, pinState, name);
-    if(simulationMode) {
+    if (simulationMode) {
       return simulatedDigitalOutputPin;
     }
     return raspiGPIO.connectDigitalOutputPin(pin, name, pinState);
@@ -57,7 +57,7 @@ public class GPIOServiceImpl implements GPIOService {
 
   @Override
   public Object convertPinStateToApiInstance(PinState state) {
-    if(simulationMode) {
+    if (simulationMode) {
       return null;
     }
     return raspiGPIO.convertPinStateToApiInstance(state);
@@ -65,7 +65,7 @@ public class GPIOServiceImpl implements GPIOService {
 
   @Override
   public Object convertPinToApiInstance(int pin) {
-    if(simulationMode) {
+    if (simulationMode) {
       return null;
     }
     return raspiGPIO.convertPinToApiInstance(pin);
@@ -87,7 +87,7 @@ public class GPIOServiceImpl implements GPIOService {
    * Lazy creation of the GPIO simulator.
    */
   private SimulatorGPIOServiceImpl getSimulator() {
-    if(simGPIO == null) {
+    if (simGPIO == null) {
       LOG.info("Creating GPIO simulator");
       simGPIO = new SimulatorGPIOServiceImpl();
     }

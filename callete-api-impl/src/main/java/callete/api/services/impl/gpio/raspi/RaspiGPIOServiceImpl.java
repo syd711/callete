@@ -29,9 +29,9 @@ public class RaspiGPIOServiceImpl {
     return new PiPushButton(pin, name);
   }
 
-  public RotaryEncoder connectRotaryEncoder(int pinA, int pinB, String name) {
+  public RotaryEncoder connectRotaryEncoder(int pinA, int pinB, String name, RotaryEncoder.ENCODING_MODE mode) {
     LOG.info("Creating rotary encoder for pin " + pinA + " and pin " + pinB);
-    return new PiRotaryEndoder(pinA, pinB, name);
+    return new PiRotaryEndoder(pinA, pinB, name, mode);
   }
 
   public DigitalOutputPin connectDigitalOutputPin(int pin, String name, PinState pinState) {
