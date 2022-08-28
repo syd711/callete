@@ -48,6 +48,9 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
       {-1, 1, 1, 0}
   };
 
+  private Thread emitThread;
+  private boolean emitThreadRunning = true;
+
   public PiRotaryEndoder(int pinA, int pinB, String name, PiRotaryEndoder.ENCODING_MODE mode) {
     this.pinA = pinA;
     this.pinB = pinB;
@@ -55,6 +58,7 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
     this.mode = mode;
 
     registerInputListeners();
+    this.initEmitterThread();
   }
 
   @Override
@@ -75,11 +79,12 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
   /**
    * Creepy impl for a rotary encoder. A previous version of this file contains a correct
    * way to decode the encoder, but this way didn't work with my ALPS encoder, so whatever works...
+   *
    * @param event
    */
   @Override
   public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-    if(mode.equals(ENCODING_MODE.STATE_TABLE)) {
+    if (mode.equals(ENCODING_MODE.STATE_TABLE)) {
       stateEncoding(event);
     }
     else {
@@ -96,7 +101,8 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
 
     if (firstPass) {
       firstPass = false;
-    } else {
+    }
+    else {
       // going up states, 01, 11
       // going down states 00, 10
       int state = stateTable[lastEncoded][encoded];
@@ -112,60 +118,66 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
   }
 
   private void manualEncoding(GpioPinDigitalStateChangeEvent event) {
-    //int stateA = inputA.getState().getValue();
+    int stateA = inputA.getState().getValue();
     int stateB = inputB.getState().getValue();
-    if(firstPass && ignoreHalfSteps) {
+//    LOG.debug("[" + event.getPin().getName() + "] Edge " + event.getEdge().getName() + "=" + event.getEdge().getValue() + "; State " + event.getState().getName() + "="  + event.getState().getValue() + " States: " + stateA + "/" +stateB);
+    if (firstPass && ignoreHalfSteps) {
       toLeft = stateB == 0;
-      if(toLeft) {
+      if (toLeft) {
         encoderValue--;
       }
       else {
         encoderValue++;
       }
       firstPass = false;
-    } else {
+    }
+    else {
       //reset first pass flag
       firstPass = true;
 
       RotaryEncoderEventImpl e = new RotaryEncoderEventImpl(encoderValue, toLeft);
       addToEventQueue(e);
-      emitEvent();
     }
   }
 
-  // --------------------- Helper -----------------------------------
-
-  /**
-   * Removes an event from the event queue and fires it to all listeners.
-   * The event is removed from the queue afterwards.
-   */
-  private void emitEvent() {
-    new Thread() {
+  private void initEmitterThread() {
+    this.emitThread = new Thread() {
       @Override
       public void run() {
-        synchronized(eventQueue) {
-          if(!eventQueue.isEmpty()) {
-            RotaryEncoderEvent e = eventQueue.get(0);
-            LOG.debug(this + " fires event: toLeft=" + e.rotatedLeft() + ", steps=" + e.getSteps());
-            for(RotaryEncoderListener l : listeners) {
-              l.rotated(e);
+        try {
+          while (emitThreadRunning) {
+            if (!eventQueue.isEmpty()) {
+              RotaryEncoderEvent e = eventQueue.get(0);
+              LOG.debug(this + " fires event: toLeft=" + e.rotatedLeft() + ", steps=" + e.getSteps());
+              for (RotaryEncoderListener l : listeners) {
+                l.rotated(e);
+              }
+              Thread.sleep(250);
+              eventQueue.clear();
             }
-            eventQueue.clear();
+
+            synchronized (this) {
+              this.wait();
+            }
           }
+        } catch (InterruptedException e) {
+          LOG.error("Failed to emit event queue", e);
         }
       }
-    }.start();
+    };
+    this.emitThread.start();
   }
+
+  // --------------------- Helper -----------------------------------
 
   /**
    * Adds the event to the event queue.
    * If there is already an event that has not been emitted yet, the given event is ignored.
    */
   private void addToEventQueue(RotaryEncoderEvent e) {
-    synchronized(eventQueue) {
-      if(eventQueue.isEmpty()) {
-        eventQueue.add(e);
-      }
+    eventQueue.add(e);
+    synchronized (emitThread) {
+      this.emitThread.notifyAll();
     }
   }
 
@@ -174,12 +186,15 @@ public class PiRotaryEndoder implements RotaryEncoder, GpioPinListenerDigital {
    */
   private void registerInputListeners() {
     Pin raspiPinA = (Pin) Callete.getGPIOService().convertPinToApiInstance(pinA);
+    LOG.info("Register rotary encoder input listener for " + raspiPinA);
     Pin raspiPinB = (Pin) Callete.getGPIOService().convertPinToApiInstance(pinB);
+    LOG.info("Register rotary encoder input listener for " + raspiPinB);
 
     inputA = GpioFactory.getInstance().provisionDigitalInputPin(raspiPinA, PinPullResistance.PULL_UP);
     inputB = GpioFactory.getInstance().provisionDigitalInputPin(raspiPinB, PinPullResistance.PULL_UP);
 
     inputA.addListener(this);
+    inputB.addListener(this);
   }
 
 
